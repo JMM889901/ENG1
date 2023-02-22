@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.devcharles.piazzapanic.components.B2dBodyComponent;
 import com.devcharles.piazzapanic.components.ControllableComponent;
 import com.devcharles.piazzapanic.components.PlayerComponent;
+import com.devcharles.piazzapanic.components.Powerups.speedBoostComponent;
 import com.devcharles.piazzapanic.input.KeyboardInput;
 import com.devcharles.piazzapanic.utility.Mappers;
 
@@ -87,8 +88,16 @@ public class PlayerControlSystem extends IteratingSystem {
         // and length (speed) is sqrt(2)
         // but we need length to be 1
         direction.nor();
-
-        Vector2 finalV = direction.cpy().scl(2000 * deltaTime);
+        int moveSpeed = 2000;
+        if (entity.getComponent(speedBoostComponent.class) != null) {
+            moveSpeed = speedBoostComponent.boostSpeed;
+            if (entity.getComponent(speedBoostComponent.class).timeHad > speedBoostComponent.timeMax) {
+                entity.remove(speedBoostComponent.class);
+            } else {
+                entity.getComponent(speedBoostComponent.class).timeHad += deltaTime;
+            }
+        }
+        Vector2 finalV = direction.cpy().scl(moveSpeed * deltaTime);
 
         // Rotate the box2d shape in the movement direction
         if (!direction.isZero(0.7f)) {

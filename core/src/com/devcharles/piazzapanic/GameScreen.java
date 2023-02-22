@@ -1,4 +1,6 @@
 package com.devcharles.piazzapanic;
+
+import com.badlogic.ashley.core.Entity;
 //poggers. `
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
@@ -9,12 +11,15 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.devcharles.piazzapanic.componentsystems.StationSystem;
+import com.devcharles.piazzapanic.components.Powerups.PowerupSpawnControllerComponent;
 import com.devcharles.piazzapanic.componentsystems.CarryItemsSystem;
 import com.devcharles.piazzapanic.componentsystems.CustomerAISystem;
 import com.devcharles.piazzapanic.componentsystems.InventoryUpdateSystem;
 import com.devcharles.piazzapanic.componentsystems.LightingSystem;
 import com.devcharles.piazzapanic.componentsystems.PhysicsSystem;
 import com.devcharles.piazzapanic.componentsystems.PlayerControlSystem;
+import com.devcharles.piazzapanic.componentsystems.PowerupPickupSystem;
+import com.devcharles.piazzapanic.componentsystems.PowerupSpawnSystem;
 import com.devcharles.piazzapanic.componentsystems.RenderingSystem;
 import com.devcharles.piazzapanic.input.KeyboardInput;
 import com.devcharles.piazzapanic.utility.EntityFactory;
@@ -80,6 +85,12 @@ public class GameScreen implements Screen {
         engine.addSystem(new CustomerAISystem(mapLoader.getObjectives(), world, factory, hud, reputationPoints));
         engine.addSystem(new CarryItemsSystem());
         engine.addSystem(new InventoryUpdateSystem(hud));
+
+        Entity powerupController = engine.createEntity();
+        powerupController.add(engine.createComponent(PowerupSpawnControllerComponent.class));
+        engine.addEntity(powerupController);
+        engine.addSystem(new PowerupSpawnSystem(engine, factory, world));
+        engine.addSystem(new PowerupPickupSystem(engine, world));
 
         world.setContactListener(new WorldContactListener());
 

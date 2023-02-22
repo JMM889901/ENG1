@@ -219,6 +219,7 @@ public class StationSystem extends IteratingSystem {
 
     /**
      * Attempt to create a food.
+     * 
      * @param count number of ingredients to combine
      */
     private FoodType tryServe(ControllableComponent controllable, int count) {
@@ -265,7 +266,9 @@ public class StationSystem extends IteratingSystem {
     }
 
     /**
-     * Cook the food in the station. This progresses the timer in the food being cooked in the station.
+     * Cook the food in the station. This progresses the timer in the food being
+     * cooked in the station.
+     * 
      * @param station
      * @param deltaTime
      */

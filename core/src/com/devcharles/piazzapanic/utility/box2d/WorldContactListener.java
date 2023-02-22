@@ -7,11 +7,15 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.devcharles.piazzapanic.components.PlayerComponent;
 import com.devcharles.piazzapanic.components.StationComponent;
+import com.devcharles.piazzapanic.components.Powerups.PowerupComponent;
+import com.devcharles.piazzapanic.components.Powerups.speedBoostComponent;
+import com.devcharles.piazzapanic.componentsystems.PowerupSpawnSystem;
 import com.devcharles.piazzapanic.utility.Mappers;
 import com.devcharles.piazzapanic.utility.Pair;
 
 /**
- * Handles collision events, allows interactivity between the player and other objects.
+ * Handles collision events, allows interactivity between the player and other
+ * objects.
  */
 public class WorldContactListener implements ContactListener {
 
@@ -28,6 +32,7 @@ public class WorldContactListener implements ContactListener {
             // Gdx.app.log("Begin contact", "Cook+Customer");
             Mappers.customer.get(customerCook.first).interactingCook = customerCook.second;
         }
+        powerupInteractResolver(contact);
     }
 
     @Override
@@ -102,6 +107,36 @@ public class WorldContactListener implements ContactListener {
             }
         }
         return null;
+    }
+
+    private void powerupInteractResolver(Contact contact) {
+        Object objA = contact.getFixtureA().getUserData();
+        Object objB = contact.getFixtureB().getUserData();
+
+        if (objA == null || objB == null) {
+            return;
+        }
+
+        boolean objAEntity = (Entity.class.isAssignableFrom(objA.getClass()));
+        boolean objBEntity = (Entity.class.isAssignableFrom(objB.getClass()));
+
+        if (!objAEntity || !objBEntity) {
+            return;
+        }
+
+        Entity a = (Entity) objA;
+        Entity b = (Entity) objB;
+        PowerupComponent boosta = a.getComponent(PowerupComponent.class);
+        PowerupComponent boostb = b.getComponent(PowerupComponent.class);
+        if (boosta != null && Mappers.player.has(b)) {
+            boosta.markedForDeletion = true;
+            boosta.playerTouched = b;
+
+        }
+        if (boostb != null && Mappers.player.has(a)) {
+            boostb.markedForDeletion = true;
+            boostb.playerTouched = a;
+        }
     }
 
     @Override

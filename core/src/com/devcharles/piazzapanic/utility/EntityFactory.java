@@ -26,6 +26,11 @@ import com.devcharles.piazzapanic.components.TextureComponent;
 import com.devcharles.piazzapanic.components.TransformComponent;
 import com.devcharles.piazzapanic.components.WalkingAnimationComponent;
 import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
+import com.devcharles.piazzapanic.components.Powerups.PowerupComponent;
+import com.devcharles.piazzapanic.components.Powerups.PowerupSpawnerComponent;
+import com.devcharles.piazzapanic.components.Powerups.speedBoostComponent;
+import com.devcharles.piazzapanic.components.Powerups.PowerupComponent.powerupType;
+import com.devcharles.piazzapanic.componentsystems.PowerupSpawnSystem;
 import com.devcharles.piazzapanic.components.StationComponent;
 import com.devcharles.piazzapanic.utility.box2d.Box2dSteeringBody;
 import com.devcharles.piazzapanic.utility.box2d.CollisionCategory;
@@ -339,6 +344,61 @@ public class EntityFactory {
         entity.add(walkingAnimation);
         entity.add(aiAgent);
         entity.add(customer);
+        engine.addEntity(entity);
+
+        return entity;
+    }
+
+    public Entity createPowerup(Vector2 position) {
+        Entity entity = engine.createEntity();
+
+        B2dBodyComponent b2dBody = engine.createComponent(B2dBodyComponent.class);
+
+        TextureComponent texture = engine.createComponent(TextureComponent.class);
+
+        TransformComponent transform = engine.createComponent(TransformComponent.class);
+
+        PowerupComponent boost = engine.createComponent(PowerupComponent.class);
+
+        int type = ThreadLocalRandom.current().nextInt(0, 1);
+        switch (type) {
+            case 0:
+            case 1:
+                boost.type = powerupType.speedBoost;
+        }
+        boost.markedForDeletion = false;
+        entity.add(boost);
+        // AnimationComponent an = engine.createComponent(AnimationComponent.class);
+
+        // Reuse existing body definition
+        movingBodyDef.position.set(position.x, position.y);
+        b2dBody.body = world.createBody(movingBodyDef);
+        b2dBody.body.createFixture(movingFixtureDef).setUserData(entity);
+
+        texture.region = new TextureRegion(new Texture("droplet.png"));
+        texture.scale.set(0.02f, 0.02f);
+
+        transform.isHidden = false;
+
+        entity.add(b2dBody);
+        entity.add(transform);
+        entity.add(texture);
+        // entity.add(an);
+        engine.addEntity(entity);
+        Gdx.app.log("PowerupSystem",
+                String.format("Powerup spawned at x:%.2f y:%.2f", position.x, position.y));
+        return entity;
+    }
+
+    public Entity createPowerupSpawner(Vector2 position) {
+        Entity entity = engine.createEntity();
+
+        PowerupSpawnerComponent spawner = engine.createComponent(PowerupSpawnerComponent.class);
+
+        spawner.pos = position;
+        // B2dBodyComponent b2dBody = engine.createComponent(B2dBodyComponent.class);
+
+        entity.add(spawner);
         engine.addEntity(entity);
 
         return entity;

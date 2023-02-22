@@ -46,6 +46,8 @@ public class MapLoader {
     static final String aiSpawnPoint = "aispawnpoint";
     static final String aiObjective = "aiobjective";
 
+    static final String powerupSpawner = "PowerupSpawnPoint";
+
     // Layers relevant to loading the map
     static final String objectLayer = "MapObjects";
     static final String collisionLayer = "Obstacles";
@@ -146,6 +148,10 @@ public class MapLoader {
                     aiObjectives.put(objective, new Box2dLocation(new Vector2(pos.x, pos.y), (float) (1.5f * Math.PI)));
                     Gdx.app.log("map parsing",
                             String.format("Ai objective %d at x:%.2f y:%.2f", objective, pos.x, pos.y));
+                } else if (properties.containsKey(powerupSpawner)) {
+                    factory.createPowerupSpawner(pos);
+                    Gdx.app.log("map parsing",
+                            String.format("Powerup spawner at x:%.2f y:%.2f", pos.x, pos.y));
                 }
             }
         }
@@ -166,7 +172,7 @@ public class MapLoader {
      * Edit Tileset -> Tile Properties.
      * 
      * @param engine Ashley {@link Engine} instance.
-     * @param world The Box2D world instance to add sensor bodies to.
+     * @param world  The Box2D world instance to add sensor bodies to.
      */
     public void buildStations(Engine engine, World world) {
         TiledMapTileLayer stations = (TiledMapTileLayer) (map.getLayers().get(stationLayer));

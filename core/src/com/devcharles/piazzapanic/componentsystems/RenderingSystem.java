@@ -15,6 +15,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector3;
 import com.devcharles.piazzapanic.components.TextureComponent;
 import com.devcharles.piazzapanic.components.TransformComponent;
+import com.devcharles.piazzapanic.components.Powerups.PowerupComponent;
 import com.devcharles.piazzapanic.utility.Mappers;
 import com.devcharles.piazzapanic.utility.WalkAnimator;
 import com.devcharles.piazzapanic.utility.WorldTilemapRenderer;
@@ -47,12 +48,12 @@ public class RenderingSystem extends IteratingSystem {
     public void update(float deltaTime) {
         super.update(deltaTime);
 
+        // entities.addAll(PowerupSpawnSystem.powerUps);
         renderingAccumulator += deltaTime;
 
         Collections.shuffle(entities);
         Collections.sort(entities, Zcomparator);
         Collections.sort(entities, Ycomparator);
-
 
         sb.setProjectionMatrix(camera.combined);
         camera.update();
@@ -61,6 +62,7 @@ public class RenderingSystem extends IteratingSystem {
         mapRenderer.renderBackground();
 
         for (Entity entity : entities) {
+
             if (entity == null) {
                 continue;
             }
@@ -71,7 +73,7 @@ public class RenderingSystem extends IteratingSystem {
             if (transform.isHidden) {
                 continue;
             }
-            
+
             TextureRegion toRender = texture.region;
             Float rotation = null;
             boolean flip = false;
@@ -182,7 +184,7 @@ public class RenderingSystem extends IteratingSystem {
 
             TransformComponent transformFood = Mappers.transform.get(entity);
             transformFood.position.set(foodPos.cpy());
-            
+
             if (Mappers.station.get(station).type == StationType.cutting_board) {
                 transformFood.scale.set(0.4f, 0.4f);
             } else if (Mappers.station.get(station).type == StationType.oven) {
@@ -195,6 +197,7 @@ public class RenderingSystem extends IteratingSystem {
 
     protected void processEntity(Entity entity, float deltaTime) {
         entities.add(entity);
+
     }
 
     @Override
