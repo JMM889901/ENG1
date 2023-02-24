@@ -1,8 +1,12 @@
 package com.devcharles.piazzapanic.componentsystems;
 
+import java.util.ArrayList;
+
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.math.Vector2;
 import com.devcharles.piazzapanic.components.B2dBodyComponent;
 import com.devcharles.piazzapanic.components.ControllableComponent;
@@ -14,16 +18,19 @@ import com.devcharles.piazzapanic.utility.Mappers;
 /**
  * Controls the one cook that has the PlayerComponent
  */
-public class PlayerControlSystem extends IteratingSystem {
+public class PlayerControlSystem extends IteratingSystem {    
+
+    boolean hasInitComponent = false;
 
     KeyboardInput input;
 
     boolean changingCooks = false;
     PlayerComponent playerComponent;
 
-    public PlayerControlSystem(KeyboardInput input) {
+    Engine engine;
+    public PlayerControlSystem(KeyboardInput input, Engine engine) {
         super(Family.all(ControllableComponent.class).get());
-
+        this.engine = engine;
         this.input = input;
     }
 
@@ -45,9 +52,32 @@ public class PlayerControlSystem extends IteratingSystem {
         if (input.changeCooks) {
             input.changeCooks = false;
 
-            this.changingCooks = true; // Next cook in the queue will get playercomponent
-            this.playerComponent = Mappers.player.get(entity);
+            // Tells next cook to add playercomponent.
+            this.changingCooks = true;
+
+            // Remember the current cook as the previous cook.
+            //this.previousPlayerComponent = this.playerComponent;
+
+            // Set playerComponent to be the next cook.
+            if(!hasInitComponent) {
+                this.playerComponent = Mappers.player.get(entity);
+            }
+            hasInitComponent = true;
+
+            // Remove playercomponent from current cook.
             entity.remove(PlayerComponent.class);
+            return;
+        }
+
+        if (input.changeCooksReverse) {
+            input.changeCooksReverse = false;
+
+
+            ImmutableArray<Entity> cooks = engine.getEntitiesFor(getFamily());
+            int chefNum = cooks.size();
+
+            entity.remove(PlayerComponent.class);
+            cooks.get((cooks.indexOf(entity, true)-1 + chefNum) % chefNum).add(this.playerComponent);
             return;
         }
 
