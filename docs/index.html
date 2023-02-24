@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Manages the styles etc for the design e.g. don't touch unless you know what you're doing!-->
+    <title>Vehicular Homicide Games</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, 
+                         initial-scale=1">
+    <title>Vehicular Homicide Games</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <section class="hero is-fullheight">
+        <!-- Hero head: will stick at the top -->
+        <div class="hero-head">
+            <nav class="navbar">
+                <div class="container">
+                    <div class="navbar-brand">
+                        <!-- Logo placeholder-->
+                        <a class="navbar-item" href="index.html">
+                            <img class="logo" src="images/logo-light.png" alt="logo">
+                        </a>
+                        <span class="navbar-burger" data-target="navbarMenuHeroA">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </span>
+                    </div>
+                    <div id="navbarMenuHeroA" class="navbar-menu">
+                        <div class="navbar-end">
+                            <a href="index.html" class="navbar-item">
+                                Home
+                            </a>
+                            <div class="navbar-item has-dropdown is-hoverable">
+                                <a href="document.html" class="navbar-link">
+                                    Documentation
+                                </a>
+
+                                <div class="navbar-dropdown">
+                                    <a href="document.html" class="navbar-item">
+                                        Extra diagrams
+                                    </a>
+                                    <a href="docs/Requirements_Doc_NEW.pdf" class="navbar-item">
+                                        Requirements
+                                    </a>
+                                    <a href="docs/Architecture.pdf" class="navbar-item">
+                                        Architecture
+                                    </a>
+                                    <a href="docs/Method_selection_and_planning.pdf" class="navbar-item">
+                                        Method Selection and Planning
+                                    </a>
+                                    <a href="docs/Risk_assessment_and_mitigation.pdf" class="navbar-item">
+                                        Risk Assesment and Mitigation
+                                    </a>
+                                    <a href="docs/Implementation.pdf" class="navbar-item">
+                                        Implementation
+                                    </a>
+                                    <a href="javadoc/index.html" class="navbar-item">
+                                        Javadoc
+                                    </a>
+                                </div>
+                            </div>
+                            <span class="navbar-item">
+                                <!-- Set as primary so we can customise the colour scheme later with sass -->
+                                <a href="piazzaPanic.jar" class="button is-link">
+                                    <span>Download</span>
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Hero content: will be in the middle -->
+        <div class="hero-body">
+            <div class="container is-widescreen">
+                <div class="columns">
+                    <div class="column is-three-fifths">
+                        <p id="main-title" class="title">
+                            <strong>Piazza Panic</strong>
+                        </p>
+                        <p class="subtitle">
+                            <!-- This is placeholder text, use this to generate more: https://www.lipsum.com/ -->
+                            Our submission for the ENG1 Assesment 2 is here!
+                            <br>
+                            <br>
+                            Our contact emails:
+                        <div class="content">
+                            <ul>
+                                <li>Emily Dennison (ehd507)</li>
+                                <li>Louise Evenden (le761)</li>
+                                <li>Joss Davis (jd1987)</li>
+                                <li>Josh McWilliam (jm3018)</li>
+                                <li>Amber hemsley (ah2393)</li>
+                                <li>Lianyu Zhao (lz1843)</li>
+                            </ul>
+                        </div>
+                        </p>
+                    </div>
+                    <div class="column">
+                        <figure class="image is-5by3">
+                            <img src="images/gameScreenshot.png">
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero footer: will stick at the bottom -->
+        <div class="hero-foot">
+            <nav class="tabs">
+                <div class="container">
+                    <ul>
+                        <li><a href="licence.html">Licenses & Attribution</a></li>
+                        <li><a href="snapshots.html">Weekly snapshots</a></li>
+                        <li><a href="https://github.com/dislocated-su/ENG1">Github</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </section>
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // Get all "navbar-burger" elements
+        const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+        // Add a click event on each of them
+        $navbarBurgers.forEach(el => {
+            el.addEventListener('click', () => {
+
+                // Get the target from the "data-target" attribute
+                const target = el.dataset.target;
+                const $target = document.getElementById(target);
+
+                // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+                el.classList.toggle('is-active');
+                $target.classList.toggle('is-active');
+
+            });
+        });
+
+    });
+</script>
