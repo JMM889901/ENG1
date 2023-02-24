@@ -9,6 +9,8 @@ public class KeyboardInput implements InputProcessor {
 
     public boolean changeCooks;
 
+    public boolean changeCooksReverse;
+
     public boolean putDown;
 
     public boolean pickUp;
@@ -16,6 +18,9 @@ public class KeyboardInput implements InputProcessor {
     public boolean interact;
 
     public boolean disableHud;
+
+    private static int alternative_keys_progress = 0;
+    private static boolean alt_keys = false;
     
     public void clearInputs() {
         left = false;
@@ -50,22 +55,58 @@ public class KeyboardInput implements InputProcessor {
                 down = true;
                 break;
             case Keys.F:
-                putDown = true;
+                // This is simply because Joss' muscle memory for using F to pick things up is too strong.
+                if(alt_keys) {
+                    pickUp = true;
+                } else {
+                    putDown = true;
+                }
+                
                 break;
             case Keys.E:
+                if(!alt_keys) {
+                    changeCooks = true;
+                }
+                break;
+            case Keys.K:
                 changeCooks = true;
                 break;
+            case Keys.L:
+                changeCooksReverse = true;
+                break;
             case Keys.R:
-                pickUp = true;
+                if(alt_keys) {
+                    pickUp = true;
+                }
                 break;
             case Keys.Q:
                 interact = true;
+                break;
+            case Keys.SPACE:
+                interact = true;
+                if(alt_keys) {
+                    putDown = true;
+                } else {
+                    pickUp = true;
+                }
+                break;
+            case Keys.SHIFT_RIGHT:
+                alternative_keys_progress |= 1;
+                break;
+            case Keys.SHIFT_LEFT:
+                alternative_keys_progress |= 2;
                 break;
             case Keys.H:
                 disableHud = true;
             default:
                 processed = false;
         }
+        if((alternative_keys_progress & 3) == 3)
+        {
+            alt_keys = true;
+            System.out.println("### Using alternative keys ###");
+        }
+
         return processed;
     }
 
@@ -90,15 +131,44 @@ public class KeyboardInput implements InputProcessor {
                 down = false;
                 break;
             case Keys.E:
+                if(!alt_keys) {
+                    changeCooks = false;
+                }
+                break;
+            case Keys.K:
                 changeCooks = false;
+                break;
+            case Keys.L:
+                changeCooksReverse = false;
+                break;
             case Keys.F:
-                putDown = false;
+                if((alternative_keys_progress & 4) == 4) {
+                    pickUp = false;
+                } else {
+                    putDown = false;
+                }
                 break;
             case Keys.R:
-                pickUp = false;
+                if((alternative_keys_progress & 4) != 4) {
+                    pickUp = false;
+                }
                 break;
             case Keys.Q:
                 interact = false;
+                break;
+            case Keys.SPACE:
+                interact = false;
+                if((alternative_keys_progress & 4) == 4) {
+                    putDown = false;
+                } else {
+                    pickUp = false;
+                }
+                break;
+            case Keys.SHIFT_RIGHT:
+                alternative_keys_progress &= ~1;
+                break;
+            case Keys.SHIFT_LEFT:
+                alternative_keys_progress &= ~2;
                 break;
             case Keys.H:
                 disableHud = false;
