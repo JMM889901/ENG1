@@ -59,10 +59,13 @@ public class Hud extends ApplicationAdapter {
 
     /**
      * Create the hud.
-     * @param spriteBatch the batch to draw the HUD with
-     * @param savedGame reference to the screen drawing the hud to switch back to in case of screen transitions.
-     * @param game {@link PiazzaPanic} instance for switching screens.
-     * @param reputationPoints Must be an object to pass by reference, see https://stackoverflow.com/questions/3326112/java-best-way-to-pass-int-by-reference
+     * 
+     * @param spriteBatch      the batch to draw the HUD with
+     * @param savedGame        reference to the screen drawing the hud to switch
+     *                         back to in case of screen transitions.
+     * @param game             {@link PiazzaPanic} instance for switching screens.
+     * @param reputationPoints Must be an object to pass by reference, see
+     *                         https://stackoverflow.com/questions/3326112/java-best-way-to-pass-int-by-reference
      */
     public Hud(SpriteBatch spriteBatch, final GameScreen savedGame, final Game game, Integer[] reputationPoints) {
         this.game = game;
@@ -151,7 +154,7 @@ public class Hud extends ApplicationAdapter {
         TextButton resumeButton = new TextButton("Resume", skin);
         TextButton recipeBookButton = new TextButton("Recipe Book", skin);
         TextButton tutorialButton = new TextButton("Tutorial", skin);
-        
+
         resumeButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 pauseToggled = true;
@@ -192,9 +195,9 @@ public class Hud extends ApplicationAdapter {
         for (int i = 0; i < inventory.length; i++) {
             TextureRegion region = EntityFactory.getFoodTexture(inventory[i]);
             if (region == null) {
-                Gdx.app.log("Texture is null", "");  // debugger can be ignored/removed idk do what you want
+                Gdx.app.log("Texture is null", ""); // debugger can be ignored/removed idk do what you want
             } else {
-                // adds images of the items the controlled cook is holding into the inventory  
+                // adds images of the items the controlled cook is holding into the inventory
                 photo = new Image(region);
                 tableBottom.add(photo).width(64).height(64).center();
             }
@@ -252,13 +255,12 @@ public class Hud extends ApplicationAdapter {
                 triggerWin = false;
                 win();
             }
-            if (pauseToggled) {
-                pauseToggled = false;
-                this.pause();
-            }
             timeCounter -= 1;
         }
-
+        if (pauseToggled) {
+            pauseToggled = false;
+            this.pause();
+        }
         stage.act();
         stage.draw();
 
@@ -313,7 +315,7 @@ public class Hud extends ApplicationAdapter {
         // labels given different fonts so it looks nicer
         Label congrats = new Label("Congratulations!", titleLabelStyle);
         Label congratsSubtitle = new Label("You won!", hudLabelStyle);
-        //colspan2 important! do some googling if you dont know what it does (scene2d)
+        // colspan2 important! do some googling if you dont know what it does (scene2d)
         centerTable.add(congrats).padBottom(40).colspan(2);
         centerTable.row();
         centerTable.add(congratsSubtitle).padBottom(30).colspan(2);
