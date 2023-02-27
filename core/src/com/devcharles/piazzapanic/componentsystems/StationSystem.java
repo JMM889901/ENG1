@@ -80,10 +80,6 @@ public class StationSystem extends IteratingSystem {
                         processBin(controllable);
                         break;
 
-                    case serve:
-                        processServe(station.interactingCook);
-                        break;
-
                     default:
                         processStation(controllable, station);
                         break;
@@ -108,6 +104,14 @@ public class StationSystem extends IteratingSystem {
             } else if (player.interact) {
                 player.interact = false;
                 interactStation(station);
+            } else if (player.compileMeal) {
+                player.compileMeal = false;
+
+                // If the player tries to compile a meal while not at a serving station, it
+                // doesn't matter, the code doesn't need to handle that here.
+                if(station.type == StationType.serve) {
+                    processServe(station.interactingCook);
+                }
             }
         }
     }

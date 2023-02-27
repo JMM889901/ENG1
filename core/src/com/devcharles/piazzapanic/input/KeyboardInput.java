@@ -1,5 +1,19 @@
 package com.devcharles.piazzapanic.input;
 
+import com.badlogic.gdx.Gdx;
+
+// Changes from original:
+// Added functionality in PlayerControlSystem to allow all changing cooks in the reverse order.
+// R, originally pick up, now does nothing.
+// Q, originally interact, now does nothing.
+// F is still put down.
+// Space now picks up and also interacts.
+// Ctrl+Space now puts down.
+// E no longer changes cooks, K for forwards and L for backwards.
+// LShift and RShift together enable an alternate set of keys, this is a debug feature so will
+// likely do nothing in release and for most of development.
+
+
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
 
@@ -17,7 +31,14 @@ public class KeyboardInput implements InputProcessor {
 
     public boolean interact;
 
+    public boolean compileMeal;
+
+    public boolean giveToCustomer;
+
     public boolean disableHud;
+
+    // checks whether ctrl+space was used to put down an item, rather than f.
+    private boolean ctrl_spaced = false;
 
     private static int alternative_keys_progress = 0;
     private static boolean alt_keys = false;
@@ -31,7 +52,11 @@ public class KeyboardInput implements InputProcessor {
         putDown = false;
         pickUp = false;
         interact = false;
+        compileMeal = false;
+        giveToCustomer = false;
         disableHud = false;
+
+        ctrl_spaced = false;
     }
 
     @Override
@@ -55,18 +80,8 @@ public class KeyboardInput implements InputProcessor {
                 down = true;
                 break;
             case Keys.F:
-                // This is simply because Joss' muscle memory for using F to pick things up is too strong.
-                if(alt_keys) {
-                    pickUp = true;
-                } else {
-                    putDown = true;
-                }
-                
-                break;
-            case Keys.E:
-                if(!alt_keys) {
-                    changeCooks = true;
-                }
+                putDown = true;
+                ctrl_spaced = false;
                 break;
             case Keys.K:
                 changeCooks = true;
@@ -74,18 +89,15 @@ public class KeyboardInput implements InputProcessor {
             case Keys.L:
                 changeCooksReverse = true;
                 break;
-            case Keys.R:
-                if(alt_keys) {
-                    pickUp = true;
-                }
-                break;
-            case Keys.Q:
-                interact = true;
-                break;
             case Keys.SPACE:
                 interact = true;
-                if(alt_keys) {
+                compileMeal = true;
+                giveToCustomer = true;
+                // if ctrl is held, put down instead of pick up.
+                if(Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))
+                {
                     putDown = true;
+                    ctrl_spaced = true;
                 } else {
                     pickUp = true;
                 }
@@ -130,11 +142,6 @@ public class KeyboardInput implements InputProcessor {
             case Keys.S:
                 down = false;
                 break;
-            case Keys.E:
-                if(!alt_keys) {
-                    changeCooks = false;
-                }
-                break;
             case Keys.K:
                 changeCooks = false;
                 break;
@@ -142,26 +149,17 @@ public class KeyboardInput implements InputProcessor {
                 changeCooksReverse = false;
                 break;
             case Keys.F:
-                if((alternative_keys_progress & 4) == 4) {
-                    pickUp = false;
-                } else {
-                    putDown = false;
-                }
-                break;
-            case Keys.R:
-                if((alternative_keys_progress & 4) != 4) {
-                    pickUp = false;
-                }
-                break;
-            case Keys.Q:
-                interact = false;
+                putDown = false;
                 break;
             case Keys.SPACE:
                 interact = false;
-                if((alternative_keys_progress & 4) == 4) {
+                compileMeal = false;
+                giveToCustomer = false;
+                pickUp = false;
+                if(ctrl_spaced)
+                {
                     putDown = false;
-                } else {
-                    pickUp = false;
+                    ctrl_spaced = false;
                 }
                 break;
             case Keys.SHIFT_RIGHT:
