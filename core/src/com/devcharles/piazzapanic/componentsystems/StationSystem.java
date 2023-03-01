@@ -17,8 +17,10 @@ import com.devcharles.piazzapanic.components.StationComponent;
 import com.devcharles.piazzapanic.components.TintComponent;
 import com.devcharles.piazzapanic.components.CookingComponent;
 import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
+import com.devcharles.piazzapanic.components.Powerups.cookBoostComponent;
 import com.devcharles.piazzapanic.input.KeyboardInput;
 import com.devcharles.piazzapanic.utility.EntityFactory;
+import com.devcharles.piazzapanic.utility.GdxTimer;
 import com.devcharles.piazzapanic.utility.Mappers;
 import com.devcharles.piazzapanic.utility.Station;
 import com.devcharles.piazzapanic.utility.Station.StationType;
@@ -112,6 +114,14 @@ public class StationSystem extends IteratingSystem {
             } else if (player.interact) {
                 player.interact = false;
                 interactStation(station);
+            } else if (player.compileMeal) {
+                player.compileMeal = false;
+
+                // If the player tries to compile a meal while not at a serving station, it
+                // doesn't matter, the code doesn't need to handle that here.
+                if(station.type == StationType.serve) {
+                    processServe(station.interactingCook);
+                }
             }
         }
     }
@@ -156,6 +166,9 @@ public class StationSystem extends IteratingSystem {
 
         CookingComponent cooking = getEngine().createComponent(CookingComponent.class);
 
+        if (station.interactingCook.getComponent(cookBoostComponent.class) != null) {
+            cooking.timer = new GdxTimer(cookBoostComponent.boostTime, false, false);
+        }
         cooking.timer.start();
 
         station.food.get(foodIndex).add(cooking);

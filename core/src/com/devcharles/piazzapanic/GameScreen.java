@@ -80,7 +80,7 @@ public class GameScreen implements Screen {
         engine.addSystem(new LightingSystem(rayhandler, camera));
         // This can be commented in during debugging.
         // engine.addSystem(new DebugRendererSystem(world, camera));
-        engine.addSystem(new PlayerControlSystem(kbInput));
+        engine.addSystem(new PlayerControlSystem(kbInput, engine));
         engine.addSystem(new StationSystem(kbInput, factory));
         engine.addSystem(new CustomerAISystem(mapLoader.getObjectives(), world, factory, hud, reputationPoints));
         engine.addSystem(new CarryItemsSystem());

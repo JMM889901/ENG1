@@ -147,10 +147,10 @@ public class CustomerAISystem extends IteratingSystem {
 
             // In order, check if the player is touching and pressing
             // the correct key to interact with the customer.
-            if (player == null || !player.putDown) {
+            if (player == null || !player.giveToCustomer) {
                 return;
             }
-            player.putDown = false;
+            player.giveToCustomer = false;
 
             ControllableComponent cook = Mappers.controllable.get(customer.interactingCook);
 

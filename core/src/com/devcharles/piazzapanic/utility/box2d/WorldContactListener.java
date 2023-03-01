@@ -51,6 +51,9 @@ public class WorldContactListener implements ContactListener {
 
     }
 
+    /**
+     * Things to do upon finishing a contact interaction between cook and station.
+     */
     private Pair<StationComponent, Entity> stationInteractResolver(Contact contact) {
         Object objA = contact.getFixtureA().getUserData();
         Object objB = contact.getFixtureB().getUserData();
@@ -71,12 +74,16 @@ public class WorldContactListener implements ContactListener {
             if (cook != null && player != null) {
                 player.putDown = false;
                 player.pickUp = false;
+                player.compileMeal = false;
                 return new Pair<StationComponent, Entity>((StationComponent) station, cook);
             }
         }
         return null;
     }
 
+    /**
+     * Things to do upon finishing a contact interaction between cook and customer.
+     */
     private Pair<Entity, Entity> customerInteractResolver(Contact contact) {
         Object objA = contact.getFixtureA().getUserData();
         Object objB = contact.getFixtureB().getUserData();
@@ -103,6 +110,7 @@ public class WorldContactListener implements ContactListener {
 
             if (cook != null && player != null) {
                 player.putDown = false;
+                player.giveToCustomer = false;
                 return new Pair<Entity, Entity>(customer, cook);
             }
         }

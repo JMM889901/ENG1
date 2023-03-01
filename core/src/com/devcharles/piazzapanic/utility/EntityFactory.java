@@ -360,11 +360,14 @@ public class EntityFactory {
 
         PowerupComponent boost = engine.createComponent(PowerupComponent.class);
 
-        int type = ThreadLocalRandom.current().nextInt(0, 1);
+        int type = ThreadLocalRandom.current().nextInt(0, 2);
         switch (type) {
             case 0:
-            case 1:
                 boost.type = powerupType.speedBoost;
+                break;
+            case 1:
+                boost.type = powerupType.cookBoost;
+                break;
         }
         boost.markedForDeletion = false;
         entity.add(boost);
@@ -386,7 +389,7 @@ public class EntityFactory {
         // entity.add(an);
         engine.addEntity(entity);
         Gdx.app.log("PowerupSystem",
-                String.format("Powerup spawned at x:%.2f y:%.2f", position.x, position.y));
+                String.format("Powerup " + boost.type + " spawned at x:%.2f y:%.2f", position.x, position.y));
         return entity;
     }
 

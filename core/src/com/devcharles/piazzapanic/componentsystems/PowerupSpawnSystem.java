@@ -36,6 +36,9 @@ public class PowerupSpawnSystem extends EntitySystem {
         this.world = world;
     }
 
+    /**
+     * Called every frame, spawns a powerup at random intervals.
+     */
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
@@ -51,10 +54,22 @@ public class PowerupSpawnSystem extends EntitySystem {
         }
     }
 
+    /**
+     * Get the chance of spawning a powerup this frame, the probability is the proportion of
+     * timeLastSpawned that getPowerupSpawnTime() is. That is to say, when timeLastSpawned is half
+     * of getPowerupSpawnTime(), there is a 50% chance of spawning - THEN this probability is
+     * divided by 10, then divided by the FPS.
+     * @param delta previous frame duration - the probability of spawning increases the longer a frame lasts.
+     * @return a decimal number, 0-1 probability.
+     */
     public float getPowerupSpawnChanceFrame(float delta) {
         return ((timeLastSpawned / getPowerupSpawnTime()) * delta) / 10; // probably worth making the chance exponential
     }
 
+    /**
+     * Roughly how long it should take to spawn a powerup.
+     * @return
+     */
     public int getPowerupSpawnTime() {
         return 5;// Temporary for if i decide to move this to an external class and such for
                  // upgrades
