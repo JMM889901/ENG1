@@ -221,6 +221,8 @@ public class CustomerAISystem extends IteratingSystem {
 
     /**
      * Give customer food, send them away and remove the order from the list
+     * @param entity The actual customer that walks about.
+     * @param customer The component properties of the customer.
      */
     private void fulfillOrder(Entity entity, CustomerComponent customer, Entity foodEntity) {
 
@@ -246,8 +248,8 @@ public class CustomerAISystem extends IteratingSystem {
 
     /**
      * Fulfill the order as above, but determine the food type from the customer's order.
-     * @param entity
-     * @param customer
+     * @param entity The actual customer that walks about.
+     * @param customer The component properties of the customer.
      */
     public void autoFulfillOrder(Entity entity, CustomerComponent customer) {
 
