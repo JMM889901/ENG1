@@ -349,6 +349,11 @@ public class EntityFactory {
         return entity;
     }
 
+    /**
+     * This gets run run by the component system. Given a location, this code chooses a powerup and places it.
+     * @param position Where the powerup will be placed.
+     * @return The powerup (stored as an entity with various relevant components).
+     */
     public Entity createPowerup(Vector2 position) {
         Entity entity = engine.createEntity();
 
@@ -360,10 +365,9 @@ public class EntityFactory {
 
         PowerupComponent boost = engine.createComponent(PowerupComponent.class);
 
-        String boostIconPath = "boosts/boostError.png";
+        String boostIconPath = "boosts/boostError.png";  // Initiaise it to display an error if something goes wrong.
 
         int type = ThreadLocalRandom.current().nextInt(0, 5);
-        //type = 4;
         switch (type) {
             case 0:
                 boost.type = powerupType.speedBoost;
@@ -400,11 +404,11 @@ public class EntityFactory {
 
         transform.isHidden = false;
 
-        entity.add(b2dBody);
-        entity.add(transform);
-        entity.add(texture);
+        entity.add(b2dBody);  // Attach a physics body to the entity.
+        entity.add(transform);  // Attach location data to the entity.
+        entity.add(texture);  // Give the powerup the relevant texture.
         // entity.add(an);
-        engine.addEntity(entity);
+        engine.addEntity(entity);  // Let the engine know about this powerup.
         Gdx.app.log("PowerupSystem",
                 String.format("Powerup " + boost.type + " spawned at x:%.2f y:%.2f", position.x, position.y));
         return entity;
