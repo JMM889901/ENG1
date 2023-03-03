@@ -49,7 +49,8 @@ public class Station {
         }
     };
     /**
-     * Maps the stationType to recipes available to that station. This avoids excessive branching.
+     * Maps the stationType to recipes available to that station. This avoids
+     * excessive branching.
      */
     public static Map<StationType, HashMap<FoodType, FoodType>> recipeMap = new HashMap<StationType, HashMap<FoodType, FoodType>>() {
         {
@@ -69,7 +70,8 @@ public class Station {
         sink(4),
         bin(5),
         ingredient(6),
-        serve(7);
+        serve(7),
+        counter(8);
 
         private int value;
 
