@@ -53,7 +53,7 @@
         "objects.tsx",
         "tileset_32.tsx"
     ],
-    "project": "",
+    "project": "maps.tiled-project",
     "property.type": "int",
     "recentFiles": [
         "tileset_32.tsx",

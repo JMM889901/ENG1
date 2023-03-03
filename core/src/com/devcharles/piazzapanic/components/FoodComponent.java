@@ -22,7 +22,19 @@ public class FoodComponent implements Component {
         slicedTomato(10),
         onion(11),
         slicedOnion(12),
-        salad(13);
+        salad(13),
+        potato(14),
+        bakedPotatoPlain(15),
+        bakedPotato(16),
+        butter(17),
+        dough(18),
+        pizzaBase(19),
+        tomatoPizza(20),
+        rawPizza(21),
+        pizza(22),
+        tomatoSauce(23),
+        cheese(24),
+        slicedCheese(25);
 
         private int value;
 

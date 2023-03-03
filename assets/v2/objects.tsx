@@ -106,4 +106,28 @@
    <property name="stationID" type="int" value="7"/>
   </properties>
  </tile>
+ <tile id="36">
+  <properties>
+   <property name="ingredientType" type="int" value="14"/>
+   <property name="stationID" type="int" value="6"/>
+  </properties>
+ </tile>
+ <tile id="37">
+  <properties>
+   <property name="ingredientType" type="int" value="17"/>
+   <property name="stationID" type="int" value="6"/>
+  </properties>
+ </tile>
+ <tile id="39">
+  <properties>
+   <property name="ingredientType" type="int" value="24"/>
+   <property name="stationID" type="int" value="6"/>
+  </properties>
+ </tile>
+ <tile id="40">
+  <properties>
+   <property name="ingredientType" type="int" value="18"/>
+   <property name="stationID" type="int" value="6"/>
+  </properties>
+ </tile>
 </tileset>

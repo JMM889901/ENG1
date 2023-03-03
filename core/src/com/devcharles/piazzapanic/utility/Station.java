@@ -22,12 +22,22 @@ public class Station {
         }
     };
 
+    public static HashMap<FoodType, FoodType> ovenRecipes = new HashMap<FoodType, FoodType>() {
+        {
+            put(FoodType.rawPizza, FoodType.pizza);
+            put(FoodType.potato, FoodType.bakedPotatoPlain);
+        }
+    };
+
     public static HashMap<FoodType, FoodType> cuttingBoardRecipes = new HashMap<FoodType, FoodType>() {
         {
             put(FoodType.tomato, FoodType.slicedTomato);
             put(FoodType.lettuce, FoodType.slicedLettuce);
             put(FoodType.unformedPatty, FoodType.formedPatty);
             put(FoodType.onion, FoodType.slicedOnion);
+            put(FoodType.dough, FoodType.pizzaBase);
+            put(FoodType.slicedTomato, FoodType.tomatoSauce);
+            put(FoodType.cheese, FoodType.slicedCheese);
         }
     };
 
@@ -46,6 +56,19 @@ public class Station {
                     add(FoodType.slicedTomato);
                 }
             }, FoodType.salad);
+            put(new HashSet<FoodType>() {
+                {
+                    add(FoodType.pizzaBase);
+                    add(FoodType.tomatoSauce);
+                    add(FoodType.slicedCheese);
+                }
+            }, FoodType.rawPizza);
+            put(new HashSet<FoodType>() {
+                {
+                    add(FoodType.bakedPotatoPlain);
+                    add(FoodType.butter);
+                }
+            }, FoodType.bakedPotato);
         }
     };
     /**
@@ -69,7 +92,8 @@ public class Station {
         sink(4),
         bin(5),
         ingredient(6),
-        serve(7);
+        serve(7),
+        counterTop(8);
 
         private int value;
 

@@ -82,6 +82,14 @@ public class StationSystem extends IteratingSystem {
                         processBin(controllable);
                         break;
 
+                    case serve:
+                        processServe(station.interactingCook);
+                        break;
+                    
+                    //case counterTop:
+                     //   processCounterTop(controllable, station);
+                     //   break;
+
                     default:
                         processStation(controllable, station);
                         break;
