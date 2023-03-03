@@ -360,13 +360,30 @@ public class EntityFactory {
 
         PowerupComponent boost = engine.createComponent(PowerupComponent.class);
 
-        int type = ThreadLocalRandom.current().nextInt(0, 2);
+        String boostIconPath = "boosts/boostError.png";
+
+        int type = ThreadLocalRandom.current().nextInt(0, 5);
+        //type = 4;
         switch (type) {
             case 0:
                 boost.type = powerupType.speedBoost;
+                boostIconPath = "boosts/boostSpeed.png";
                 break;
             case 1:
                 boost.type = powerupType.cookBoost;
+                boostIconPath = "boosts/boostCook.png";
+                break;
+            case 2:
+                boost.type = powerupType.cutBoost;
+                boostIconPath = "boosts/boostCut.png";
+                break;
+            case 3:
+                boost.type = powerupType.timeFreezeBoost;
+                boostIconPath = "boosts/boostTimeFreeze.png";
+                break;
+            case 4:
+                boost.type = powerupType.orderBoost;
+                boostIconPath = "boosts/boostOrder.png";
                 break;
         }
         boost.markedForDeletion = false;
@@ -378,7 +395,7 @@ public class EntityFactory {
         b2dBody.body = world.createBody(movingBodyDef);
         b2dBody.body.createFixture(movingFixtureDef).setUserData(entity);
 
-        texture.region = new TextureRegion(new Texture("droplet.png"));
+        texture.region = new TextureRegion(new Texture(boostIconPath));
         texture.scale.set(0.02f, 0.02f);
 
         transform.isHidden = false;
