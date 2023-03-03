@@ -72,12 +72,14 @@ public class Station {
         }
     };
     /**
-     * Maps the stationType to recipes available to that station. This avoids excessive branching.
+     * Maps the stationType to recipes available to that station. This avoids
+     * excessive branching.
      */
     public static Map<StationType, HashMap<FoodType, FoodType>> recipeMap = new HashMap<StationType, HashMap<FoodType, FoodType>>() {
         {
             put(StationType.grill, grillRecipes);
             put(StationType.cutting_board, cuttingBoardRecipes);
+            put(StationType.oven, ovenRecipes);
         }
     };
 
@@ -93,7 +95,7 @@ public class Station {
         bin(5),
         ingredient(6),
         serve(7),
-        counterTop(8);
+        counter(8);
 
         private int value;
 

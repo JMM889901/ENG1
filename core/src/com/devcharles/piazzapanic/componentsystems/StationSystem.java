@@ -85,10 +85,10 @@ public class StationSystem extends IteratingSystem {
                     case serve:
                         processServe(station.interactingCook);
                         break;
-                    
-                    //case counterTop:
-                     //   processCounterTop(controllable, station);
-                     //   break;
+
+                    case counter:
+                        processCounterTop(controllable, station);
+                        break;
 
                     default:
                         processStation(controllable, station);
@@ -119,11 +119,34 @@ public class StationSystem extends IteratingSystem {
 
                 // If the player tries to compile a meal while not at a serving station, it
                 // doesn't matter, the code doesn't need to handle that here.
-                if(station.type == StationType.serve) {
+                if (station.type == StationType.serve) {
                     processServe(station.interactingCook);
                 }
             }
         }
+    }
+
+    private void processCounterTop(ControllableComponent controllable, StationComponent station) {
+
+        if (controllable.currentFood.isEmpty()) {
+            return;
+        }
+
+        Gdx.app.log("putDown on countertop", Mappers.food.get(controllable.currentFood.peek()).type.name());
+
+        FoodComponent food = Mappers.food.get(controllable.currentFood.peek());
+
+        int foodIndex = station.food.indexOf(null);
+
+        // If there is space on the station
+        if (foodIndex != -1) {
+            // Pop if off player stack
+            // Store in station
+            station.food.set(foodIndex, controllable.currentFood.pop());
+        } else {
+            return;
+        }
+
     }
 
     /**

@@ -177,15 +177,25 @@ public class MapLoader {
     public void buildStations(Engine engine, World world) {
         TiledMapTileLayer stations = (TiledMapTileLayer) (map.getLayers().get(stationLayer));
         TiledMapTileLayer stations_f = (TiledMapTileLayer) (map.getLayers().get(stationLayer + "_f"));
-
-        int columns = stations.getWidth();
-        int rows = stations.getHeight();
+        TiledMapTileLayer counters = (TiledMapTileLayer) (map.getLayers().get(counterTopLayer));
+        TiledMapTileLayer counters_f = (TiledMapTileLayer) (map.getLayers().get(counterTopLayer + "_f"));
+        int columns = Math.max(stations.getWidth(), counters.getWidth());
+        int rows = Math.max(stations.getHeight(), counters.getHeight());
 
         Cell currentCell;
 
         for (int i = 0; i < columns; i++) {
             for (int j = 0; j < rows; j++) {
-                currentCell = stations.getCell(i, j) != null ? stations.getCell(i, j) : stations_f.getCell(i, j);
+                currentCell = stations.getCell(i, j);
+                if (currentCell == null) {
+                    currentCell = stations_f.getCell(i, j);
+                }
+                if (currentCell == null) {
+                    currentCell = counters.getCell(i, j);
+                }
+                if (currentCell == null) {
+                    currentCell = counters_f.getCell(i, j);
+                }
                 if (currentCell != null) {
                     Object object = currentCell.getTile().getProperties().get(stationIdProperty);
                     if (object != null && object instanceof Integer) {
@@ -197,7 +207,7 @@ public class MapLoader {
                             ingredientType = FoodType
                                     .from((Integer) currentCell.getTile().getProperties().get(ingredientTypeProperty));
                         }
-
+                        System.out.println("Creating station at " + i + ", " + j + " of type " + stationType);
                         factory.createStation(stationType, new Vector2((i * 2) + 1, (j * 2) + 1), ingredientType);
                     }
                 }

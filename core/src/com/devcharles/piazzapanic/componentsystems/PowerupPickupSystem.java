@@ -5,13 +5,16 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.physics.box2d.World;
+import com.devcharles.piazzapanic.components.CustomerComponent;
 import com.devcharles.piazzapanic.components.Powerups.PowerupComponent;
 import com.devcharles.piazzapanic.components.Powerups.cookBoostComponent;
 import com.devcharles.piazzapanic.components.Powerups.cutBoostComponent;
 import com.devcharles.piazzapanic.components.Powerups.speedBoostComponent;
 import com.devcharles.piazzapanic.components.Powerups.PowerupComponent.powerupType;
 import com.devcharles.piazzapanic.utility.Mappers;
+import com.devcharles.piazzapanic.componentsystems.CustomerAISystem;
 
 public class PowerupPickupSystem extends IteratingSystem {
     World world;
@@ -58,6 +61,11 @@ public class PowerupPickupSystem extends IteratingSystem {
                 break;
             case cutBoost:
                 player.add(engine.createComponent(cutBoostComponent.class));
+            case orderBoost: // Fulfil the order immediately
+                // TODO, make this random and also implement the rest of the powerups.
+                ImmutableArray<Entity> customers = engine.getEntitiesFor(Family.all(CustomerComponent.class).get()); // Gets all the entities that have CustomerComponent
+                Entity happyCustomer = customers.get(0); // Get the first customer in the list
+                engine.getSystem(CustomerAISystem.class).autoFulfillOrder(happyCustomer);
                 break;
             default:
                 System.out.println("Tried to give a powerup that doesn't exist.");
