@@ -6,7 +6,10 @@ import com.badlogic.ashley.core.Entity;
 public class PowerupComponent implements Component {
     public enum powerupType {
         speedBoost,
-        cookBoost
+        cookBoost,
+        cutBoost,
+        timeFreezeBoost,
+        orderBoost
     }
 
     public Entity playerTouched;
