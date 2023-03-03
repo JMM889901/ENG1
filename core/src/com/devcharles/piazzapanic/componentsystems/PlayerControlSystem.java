@@ -1,8 +1,10 @@
 package com.devcharles.piazzapanic.componentsystems;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.math.Vector2;
 import com.devcharles.piazzapanic.components.B2dBodyComponent;
 import com.devcharles.piazzapanic.components.ControllableComponent;
@@ -14,27 +16,39 @@ import com.devcharles.piazzapanic.utility.Mappers;
 /**
  * Controls the one cook that has the PlayerComponent
  */
-public class PlayerControlSystem extends IteratingSystem {
+public class PlayerControlSystem extends IteratingSystem {    
+
+    boolean hasInitComponent = false;
 
     KeyboardInput input;
 
     boolean changingCooks = false;
     PlayerComponent playerComponent;
 
-    public PlayerControlSystem(KeyboardInput input) {
+    Engine engine;
+    public PlayerControlSystem(KeyboardInput input, Engine engine) {
         super(Family.all(ControllableComponent.class).get());
-
+        this.engine = engine;
         this.input = input;
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
+        // Remember what playerComponent is, regardless of cook (just do this once at the start).
+        if(!hasInitComponent) {
+            this.playerComponent = Mappers.player.get(entity);
+
+            // It doesn't matter if it gets run multiple times, just being explicit here.
+            hasInitComponent = true;
+        }
 
         // Collect toggleable inputs
         // Those need to be toggled off once recieved to prevent registering the input
         // twice
         if (this.changingCooks) {
             this.changingCooks = false;
+
+            // [B1] Add playercomponent to new cook (the next cook iterated on by an external loop).
             entity.add(this.playerComponent);
         }
 
@@ -45,9 +59,29 @@ public class PlayerControlSystem extends IteratingSystem {
         if (input.changeCooks) {
             input.changeCooks = false;
 
-            this.changingCooks = true; // Next cook in the queue will get playercomponent
-            this.playerComponent = Mappers.player.get(entity);
+            // This is run once for each chef in a given frame, so we set this now, and then the
+            // value is caught by the next chef in the loop (ie on line 43,
+            //if(this.changingCooks) {...} ).
+            this.changingCooks = true;
+
+            // [A1] Remove playercomponent from current cook.
             entity.remove(PlayerComponent.class);
+            return;
+        }
+
+        if (input.changeCooksReverse) {
+            input.changeCooksReverse = false;
+
+            // [A2] Remove playercomponent from current cook.
+            entity.remove(PlayerComponent.class);
+
+            // Get an array of all the cooks and a record of how many cooks.
+            ImmutableArray<Entity> cooks = engine.getEntitiesFor(getFamily());
+            int cookNum = cooks.size();
+            Entity prevCook = cooks.get((cooks.indexOf(entity, true)-1 + cookNum) % cookNum);
+
+            // [B2] Add playercomponent to new cook (the previous cook identified above).
+            prevCook.add(this.playerComponent);
             return;
         }
 
@@ -62,6 +96,14 @@ public class PlayerControlSystem extends IteratingSystem {
         if (input.interact) {
             input.interact = false;
             Mappers.player.get(entity).interact = true;
+        }
+        if (input.compileMeal) {
+            input.compileMeal = false;
+            Mappers.player.get(entity).compileMeal = true;
+        }
+        if (input.giveToCustomer) {
+            input.giveToCustomer = false;
+            Mappers.player.get(entity).giveToCustomer = true;
         }
 
         B2dBodyComponent b2body = Mappers.b2body.get(entity);

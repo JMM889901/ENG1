@@ -123,11 +123,15 @@ public class CustomerAISystem extends IteratingSystem {
         CustomerComponent customer = Mappers.customer.get(entity);
         TransformComponent transform = Mappers.transform.get(entity);
 
+        // Once the customer has got their food (ironically setting their food to null), they
+        // wander off to the right. This code destroys the customer once they have gone far enough.
         if (customer.food != null && transform.position.x >= (objectives.get(-1).getPosition().x - 2)) {
             destroyCustomer(entity);
             return;
         }
 
+        // Set the customer's location ID to be that of their position in the queue
+        // (customers.size() is the number of customers.)
         if (aiAgent.steeringBody.getSteeringBehavior() == null) {
             makeItGoThere(aiAgent, customers.size() - 1);
         }
@@ -145,12 +149,12 @@ public class CustomerAISystem extends IteratingSystem {
         if (customer.interactingCook != null) {
             PlayerComponent player = Mappers.player.get(customer.interactingCook);
 
-            // In order, check if the player is touching and pressing
-            // the correct key to interact with the customer.
-            if (player == null || !player.putDown) {
+            // If there is both a player, and they are pressing the giveToCustomer key, then
+            // continue below...
+            if (player == null || !player.giveToCustomer) {
                 return;
             }
-            player.putDown = false;
+            player.giveToCustomer = false;
 
             ControllableComponent cook = Mappers.controllable.get(customer.interactingCook);
 
@@ -219,6 +223,38 @@ public class CustomerAISystem extends IteratingSystem {
      * Give customer food, send them away and remove the order from the list
      */
     private void fulfillOrder(Entity entity, CustomerComponent customer, Entity foodEntity) {
+
+        Engine engine = getEngine();
+
+        customer.order = null;
+
+        ItemComponent heldItem = engine.createComponent(ItemComponent.class);
+        heldItem.holderTransform = Mappers.transform.get(entity);
+
+        foodEntity.add(heldItem);
+
+        customer.food = foodEntity;
+
+        AIAgentComponent aiAgent = Mappers.aiAgent.get(entity);
+        makeItGoThere(aiAgent, -1);
+
+        customer.timer.stop();
+        customer.timer.reset();
+
+        customers.remove(entity);
+    }
+
+    /**
+     * Fulfill the order as above, but determine the food type from the customer's order.
+     * @param entity
+     * @param customer
+     */
+    public void autoFulfillOrder(Entity entity, CustomerComponent customer) {
+
+        Gdx.app.log("Order automatically resolved", customer.order.name());
+        // This is created automatically rather than taking a food entity from the parameters of
+        // the method.
+        Entity foodEntity = factory.createFood(customer.order);
 
         Engine engine = getEngine();
 
