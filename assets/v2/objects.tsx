@@ -26,6 +26,51 @@
    <property name="stationID" type="int" value="1"/>
   </properties>
  </tile>
+ <tile id="5">
+  <properties>
+   <property name="stationID" type="int" value="8"/>
+  </properties>
+ </tile>
+ <tile id="6">
+  <properties>
+   <property name="stationID" type="int" value="8"/>
+  </properties>
+ </tile>
+ <tile id="7">
+  <properties>
+   <property name="stationID" type="int" value="8"/>
+  </properties>
+ </tile>
+ <tile id="8">
+  <properties>
+   <property name="stationID" type="int" value="8"/>
+  </properties>
+ </tile>
+ <tile id="9">
+  <properties>
+   <property name="stationID" type="int" value="8"/>
+  </properties>
+ </tile>
+ <tile id="10">
+  <properties>
+   <property name="stationID" type="int" value="8"/>
+  </properties>
+ </tile>
+ <tile id="11">
+  <properties>
+   <property name="stationID" type="int" value="8"/>
+  </properties>
+ </tile>
+ <tile id="12">
+  <properties>
+   <property name="stationID" type="int" value="8"/>
+  </properties>
+ </tile>
+ <tile id="13">
+  <properties>
+   <property name="stationID" type="int" value="8"/>
+  </properties>
+ </tile>
  <tile id="16">
   <properties>
    <property name="stationID" type="int" value="2"/>

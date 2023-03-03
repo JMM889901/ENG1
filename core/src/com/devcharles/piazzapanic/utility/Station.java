@@ -78,6 +78,7 @@ public class Station {
         {
             put(StationType.grill, grillRecipes);
             put(StationType.cutting_board, cuttingBoardRecipes);
+            put(StationType.oven, ovenRecipes);
         }
     };
 
