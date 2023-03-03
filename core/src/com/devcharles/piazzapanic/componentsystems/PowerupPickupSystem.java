@@ -54,6 +54,7 @@ public class PowerupPickupSystem extends IteratingSystem {
                 ImmutableArray<Entity> customers = engine.getEntitiesFor(Family.all(CustomerComponent.class).get()); // Gets all the entities that have CustomerComponent
                 Entity happyCustomer = customers.get(0); // Get the first customer in the list
                 engine.getSystem(CustomerAISystem.class).autoFulfillOrder(happyCustomer);
+                break;
             default:
                 player.add(engine.createComponent(speedBoostComponent.class));
                 break;
