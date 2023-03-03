@@ -246,11 +246,11 @@ public class CustomerAISystem extends IteratingSystem {
 
     /**
      * Fulfill the order as above, but determine the food type from the customer's order.
-     * @param entity
-     * @param customer
+     * @param entity The Customer entity
+     * @param customer The CustomerComponent
      */
-    public void autoFulfillOrder(Entity entity, CustomerComponent customer) {
-
+    public void autoFulfillOrder(Entity entity) {
+        CustomerComponent customer = entity.getComponent(CustomerComponent.class);
         Gdx.app.log("Order automatically resolved", customer.order.name());
         // This is created automatically rather than taking a food entity from the parameters of
         // the method.
