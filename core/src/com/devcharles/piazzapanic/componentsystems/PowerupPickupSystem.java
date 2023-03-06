@@ -1,5 +1,7 @@
 package com.devcharles.piazzapanic.componentsystems;
 
+import java.util.ArrayList;
+
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
@@ -12,6 +14,7 @@ import com.devcharles.piazzapanic.components.Powerups.PowerupComponent;
 import com.devcharles.piazzapanic.components.Powerups.cookBoostComponent;
 import com.devcharles.piazzapanic.components.Powerups.cutBoostComponent;
 import com.devcharles.piazzapanic.components.Powerups.speedBoostComponent;
+import com.devcharles.piazzapanic.components.Powerups.timeFreezeBoostComponent;
 import com.devcharles.piazzapanic.components.Powerups.PowerupComponent.powerupType;
 import com.devcharles.piazzapanic.utility.Mappers;
 import com.devcharles.piazzapanic.componentsystems.CustomerAISystem;
@@ -29,9 +32,9 @@ public class PowerupPickupSystem extends IteratingSystem {
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         if (entity.getComponent(PowerupComponent.class).markedForDeletion == true) {
-            givePowerup(entity.getComponent(PowerupComponent.class).playerTouched,
-                    entity.getComponent(PowerupComponent.class).type);
-            destroyPowerup(entity);
+            if(givePowerup(entity.getComponent(PowerupComponent.class).playerTouched, entity.getComponent(PowerupComponent.class).type)) {
+                destroyPowerup(entity);
+            }
         }
     }
 
@@ -43,10 +46,11 @@ public class PowerupPickupSystem extends IteratingSystem {
 
     /**
      * What happens when a player walks over a powerup.
-     * @param player
-     * @param type
+     * @param player The chef/entity being controlled by the user.
+     * @param type The type of powerup picked up (eg cook boost, time freeze etc.).
+     * @return Whether the powerup was used.
      */
-    public void givePowerup(Entity player, powerupType type) {
+    public boolean givePowerup(Entity player, powerupType type) {
         System.out.print("Given powerup: ");
         System.out.println(type);
 
@@ -61,15 +65,36 @@ public class PowerupPickupSystem extends IteratingSystem {
                 break;
             case cutBoost:
                 player.add(engine.createComponent(cutBoostComponent.class));
+                break;
+            case timeFreezeBoost:
+                // Stuff can be changed in HUD.java for this.
+                player.add(engine.createComponent(timeFreezeBoostComponent.class));
+                break;
             case orderBoost: // Fulfil the order immediately
-                // TODO, make this random and also implement the rest of the powerups.
                 ImmutableArray<Entity> customers = engine.getEntitiesFor(Family.all(CustomerComponent.class).get()); // Gets all the entities that have CustomerComponent
-                Entity happyCustomer = customers.get(0); // Get the first customer in the list
-                engine.getSystem(CustomerAISystem.class).autoFulfillOrder(happyCustomer);
+                ArrayList<Entity> filtered_customers = new ArrayList<Entity>(); // filter out customers that have been served (because trying to auto serve them will just crash).
+
+                for(Entity customer : customers) {
+                    if(customer.getComponent(CustomerComponent.class).order != null) {
+                        filtered_customers.add(customer);
+                    }
+                }
+                
+                // If there are customers, choose one at random.
+                if(filtered_customers.size() > 0) {
+                    Entity happyCustomer = filtered_customers.get((int) (Math.random() * filtered_customers.size()));
+                    engine.getSystem(CustomerAISystem.class).autoFulfillOrder(happyCustomer);
+                } else {
+                    // Otherwise, let the calling function know that the powerup wasn't used.
+                    return false;
+                }
+
                 break;
             default:
-                System.out.println("Tried to give a powerup that doesn't exist.");
+                System.out.println("(!) Tried to give a powerup that doesn't exist.");
                 break;
         }
+
+        return true;  // Assume the powerup is used if not otherwise indicated above.
     }
 }

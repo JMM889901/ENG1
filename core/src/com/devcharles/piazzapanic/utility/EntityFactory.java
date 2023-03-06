@@ -367,8 +367,9 @@ public class EntityFactory {
 
         String boostIconPath = "boosts/boostError.png";  // Initiaise it to display an error if something goes wrong.
 
-        int type = ThreadLocalRandom.current().nextInt(0, 5);
-        switch (type) {
+        int newPowerupType = ThreadLocalRandom.current().nextInt(0, 5);
+        newPowerupType = 4;  // This is to make everything order boosts, this shouldn't make it into the final game!
+        switch (newPowerupType) {
             case 0:
                 boost.type = powerupType.speedBoost;
                 boostIconPath = "boosts/boostSpeed.png";
