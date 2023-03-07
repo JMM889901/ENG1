@@ -259,7 +259,7 @@ public class StationSystem extends IteratingSystem {
 
     /**
      * Attempt to create a food.
-     * 
+     * Allows combining ingredients for non servable as well such as raw pizza
      * @param count number of ingredients to combine
      */
     private FoodType tryServe(ControllableComponent controllable, int count) {

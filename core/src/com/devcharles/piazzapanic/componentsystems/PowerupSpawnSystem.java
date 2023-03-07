@@ -71,7 +71,7 @@ public class PowerupSpawnSystem extends EntitySystem {
      * @return
      */
     public float getPowerupSpawnTime() {
-        return 0.2f;// Temporary for if i decide to move this to an external class and such for
+        return 20f;// Temporary for if i decide to move this to an external class and such for
                  // upgrades
         // I changed the type to float and made it very quick for testing purposes. - Joss
     }
