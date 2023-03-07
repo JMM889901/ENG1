@@ -250,8 +250,15 @@ public class StationSystem extends IteratingSystem {
 
             i++;
         }
+        FoodType recipe;
+        try {
+            recipe = Station.serveRecipes.get(ingredients);
+        } catch (Exception e) {
+            recipe = Station.combineRecipes.get(ingredients);
+        }
+    
 
-        return Station.serveRecipes.get(ingredients);
+        return recipe;
     }
 
     /**
