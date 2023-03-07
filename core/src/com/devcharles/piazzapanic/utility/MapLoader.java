@@ -207,7 +207,7 @@ public class MapLoader {
                             ingredientType = FoodType
                                     .from((Integer) currentCell.getTile().getProperties().get(ingredientTypeProperty));
                         }
-
+                        System.out.println("Creating station at " + i + ", " + j + " of type " + stationType);
                         factory.createStation(stationType, new Vector2((i * 2) + 1, (j * 2) + 1), ingredientType);
                     }
                 }
