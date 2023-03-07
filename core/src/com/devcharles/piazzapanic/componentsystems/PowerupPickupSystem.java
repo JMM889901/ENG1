@@ -43,6 +43,7 @@ public class PowerupPickupSystem extends IteratingSystem {
 
     /**
      * What happens when a player walks over a powerup.
+     * 
      * @param player
      * @param type
      */
@@ -61,9 +62,11 @@ public class PowerupPickupSystem extends IteratingSystem {
                 break;
             case cutBoost:
                 player.add(engine.createComponent(cutBoostComponent.class));
+                break;
             case orderBoost: // Fulfil the order immediately
                 // TODO, make this random and also implement the rest of the powerups.
-                ImmutableArray<Entity> customers = engine.getEntitiesFor(Family.all(CustomerComponent.class).get()); // Gets all the entities that have CustomerComponent
+                ImmutableArray<Entity> customers = engine.getEntitiesFor(Family.all(CustomerComponent.class).get());
+                // Gets all the entities that have CustomerComponent
                 Entity happyCustomer = customers.get(0); // Get the first customer in the list
                 engine.getSystem(CustomerAISystem.class).autoFulfillOrder(happyCustomer);
                 break;
