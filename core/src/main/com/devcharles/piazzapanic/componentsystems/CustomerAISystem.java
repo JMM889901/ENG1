@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic.componentsystems;
+package main.com.devcharles.piazzapanic.componentsystems;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,19 +15,19 @@ import com.badlogic.gdx.ai.steer.behaviors.CollisionAvoidance;
 import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
-import com.devcharles.piazzapanic.components.AIAgentComponent;
-import com.devcharles.piazzapanic.components.ControllableComponent;
-import com.devcharles.piazzapanic.components.CustomerComponent;
-import com.devcharles.piazzapanic.components.ItemComponent;
-import com.devcharles.piazzapanic.components.PlayerComponent;
-import com.devcharles.piazzapanic.components.TransformComponent;
-import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
-import com.devcharles.piazzapanic.scene2d.Hud;
-import com.devcharles.piazzapanic.utility.EntityFactory;
-import com.devcharles.piazzapanic.utility.GdxTimer;
-import com.devcharles.piazzapanic.utility.Mappers;
-import com.devcharles.piazzapanic.utility.box2d.Box2dLocation;
-import com.devcharles.piazzapanic.utility.box2d.Box2dRadiusProximity;
+import main.com.devcharles.piazzapanic.components.AIAgentComponent;
+import main.com.devcharles.piazzapanic.components.ControllableComponent;
+import main.com.devcharles.piazzapanic.components.CustomerComponent;
+import main.com.devcharles.piazzapanic.components.ItemComponent;
+import main.com.devcharles.piazzapanic.components.PlayerComponent;
+import main.com.devcharles.piazzapanic.components.TransformComponent;
+import main.com.devcharles.piazzapanic.components.FoodComponent.FoodType;
+import main.com.devcharles.piazzapanic.scene2d.Hud;
+import main.com.devcharles.piazzapanic.utility.EntityFactory;
+import main.com.devcharles.piazzapanic.utility.GdxTimer;
+import main.com.devcharles.piazzapanic.utility.Mappers;
+import main.com.devcharles.piazzapanic.utility.box2d.Box2dLocation;
+import main.com.devcharles.piazzapanic.utility.box2d.Box2dRadiusProximity;
 
 /**
  * Controls the AI Customers, creates orders.

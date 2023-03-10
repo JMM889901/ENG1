@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic;
+package main.com.devcharles.piazzapanic;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

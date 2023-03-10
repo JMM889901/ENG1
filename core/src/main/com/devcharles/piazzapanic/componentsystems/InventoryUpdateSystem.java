@@ -1,13 +1,13 @@
-package com.devcharles.piazzapanic.componentsystems;
+package main.com.devcharles.piazzapanic.componentsystems;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.devcharles.piazzapanic.components.ControllableComponent;
-import com.devcharles.piazzapanic.components.PlayerComponent;
-import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
-import com.devcharles.piazzapanic.scene2d.Hud;
-import com.devcharles.piazzapanic.utility.Mappers;
+import main.com.devcharles.piazzapanic.components.ControllableComponent;
+import main.com.devcharles.piazzapanic.components.PlayerComponent;
+import main.com.devcharles.piazzapanic.components.FoodComponent.FoodType;
+import main.com.devcharles.piazzapanic.scene2d.Hud;
+import main.com.devcharles.piazzapanic.utility.Mappers;
 /**
  * Links up the cook's inventory to the hud.
  */

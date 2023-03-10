@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic.utility;
+package main.com.devcharles.piazzapanic.utility;
 
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -16,24 +16,24 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.devcharles.piazzapanic.components.AIAgentComponent;
-import com.devcharles.piazzapanic.components.AnimationComponent;
-import com.devcharles.piazzapanic.components.B2dBodyComponent;
-import com.devcharles.piazzapanic.components.ControllableComponent;
-import com.devcharles.piazzapanic.components.CustomerComponent;
-import com.devcharles.piazzapanic.components.FoodComponent;
-import com.devcharles.piazzapanic.components.TextureComponent;
-import com.devcharles.piazzapanic.components.TransformComponent;
-import com.devcharles.piazzapanic.components.WalkingAnimationComponent;
-import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
-import com.devcharles.piazzapanic.components.Powerups.PowerupComponent;
-import com.devcharles.piazzapanic.components.Powerups.PowerupSpawnerComponent;
-import com.devcharles.piazzapanic.components.Powerups.speedBoostComponent;
-import com.devcharles.piazzapanic.components.Powerups.PowerupComponent.powerupType;
-import com.devcharles.piazzapanic.componentsystems.PowerupSpawnSystem;
-import com.devcharles.piazzapanic.components.StationComponent;
-import com.devcharles.piazzapanic.utility.box2d.Box2dSteeringBody;
-import com.devcharles.piazzapanic.utility.box2d.CollisionCategory;
+import main.com.devcharles.piazzapanic.components.AIAgentComponent;
+import main.com.devcharles.piazzapanic.components.AnimationComponent;
+import main.com.devcharles.piazzapanic.components.B2dBodyComponent;
+import main.com.devcharles.piazzapanic.components.ControllableComponent;
+import main.com.devcharles.piazzapanic.components.CustomerComponent;
+import main.com.devcharles.piazzapanic.components.FoodComponent;
+import main.com.devcharles.piazzapanic.components.TextureComponent;
+import main.com.devcharles.piazzapanic.components.TransformComponent;
+import main.com.devcharles.piazzapanic.components.WalkingAnimationComponent;
+import main.com.devcharles.piazzapanic.components.FoodComponent.FoodType;
+import main.com.devcharles.piazzapanic.components.Powerups.PowerupComponent;
+import main.com.devcharles.piazzapanic.components.Powerups.PowerupSpawnerComponent;
+import main.com.devcharles.piazzapanic.components.Powerups.speedBoostComponent;
+import main.com.devcharles.piazzapanic.components.Powerups.PowerupComponent.powerupType;
+import main.com.devcharles.piazzapanic.componentsystems.PowerupSpawnSystem;
+import main.com.devcharles.piazzapanic.components.StationComponent;
+import main.com.devcharles.piazzapanic.utility.box2d.Box2dSteeringBody;
+import main.com.devcharles.piazzapanic.utility.box2d.CollisionCategory;
 
 /**
  * Factory pattern class that creates entities used in the game.

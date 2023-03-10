@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic;
+package main.com.devcharles.piazzapanic;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -18,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.devcharles.piazzapanic.scene2d.Slideshow;
+import main.com.devcharles.piazzapanic.scene2d.Slideshow;
 
 /**
  * Main menu of the game, transitions the player to the Tutorial

@@ -1,17 +1,17 @@
-package com.devcharles.piazzapanic.utility.box2d;
+package main.com.devcharles.piazzapanic.utility.box2d;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.devcharles.piazzapanic.components.PlayerComponent;
-import com.devcharles.piazzapanic.components.StationComponent;
-import com.devcharles.piazzapanic.components.Powerups.PowerupComponent;
-import com.devcharles.piazzapanic.components.Powerups.speedBoostComponent;
-import com.devcharles.piazzapanic.componentsystems.PowerupSpawnSystem;
-import com.devcharles.piazzapanic.utility.Mappers;
-import com.devcharles.piazzapanic.utility.Pair;
+import main.com.devcharles.piazzapanic.components.PlayerComponent;
+import main.com.devcharles.piazzapanic.components.StationComponent;
+import main.com.devcharles.piazzapanic.components.Powerups.PowerupComponent;
+import main.com.devcharles.piazzapanic.components.Powerups.speedBoostComponent;
+import main.com.devcharles.piazzapanic.componentsystems.PowerupSpawnSystem;
+import main.com.devcharles.piazzapanic.utility.Mappers;
+import main.com.devcharles.piazzapanic.utility.Pair;
 
 /**
  * Handles collision events, allows interactivity between the player and other

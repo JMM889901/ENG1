@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic.componentsystems;
+package main.com.devcharles.piazzapanic.componentsystems;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,15 +13,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector3;
-import com.devcharles.piazzapanic.components.TextureComponent;
-import com.devcharles.piazzapanic.components.TransformComponent;
-import com.devcharles.piazzapanic.components.Powerups.PowerupComponent;
-import com.devcharles.piazzapanic.utility.Mappers;
-import com.devcharles.piazzapanic.utility.WalkAnimator;
-import com.devcharles.piazzapanic.utility.WorldTilemapRenderer;
-import com.devcharles.piazzapanic.utility.YComparator;
-import com.devcharles.piazzapanic.utility.ZComparator;
-import com.devcharles.piazzapanic.utility.Station.StationType;
+import main.com.devcharles.piazzapanic.components.TextureComponent;
+import main.com.devcharles.piazzapanic.components.TransformComponent;
+import main.com.devcharles.piazzapanic.components.Powerups.PowerupComponent;
+import main.com.devcharles.piazzapanic.utility.Mappers;
+import main.com.devcharles.piazzapanic.utility.WalkAnimator;
+import main.com.devcharles.piazzapanic.utility.WorldTilemapRenderer;
+import main.com.devcharles.piazzapanic.utility.YComparator;
+import main.com.devcharles.piazzapanic.utility.ZComparator;
+import main.com.devcharles.piazzapanic.utility.Station.StationType;
 
 public class RenderingSystem extends IteratingSystem {
 

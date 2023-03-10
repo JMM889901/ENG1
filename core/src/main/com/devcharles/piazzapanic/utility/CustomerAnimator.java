@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic.utility;
+package main.com.devcharles.piazzapanic.utility;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -25,7 +25,7 @@ public class CustomerAnimator extends WalkAnimator {
     /*
      * (non-Javadoc)
      * 
-     * @see com.devcharles.piazzapanic.utility.WalkAnimator#getFrame(float, boolean,
+     * @see main.com.devcharles.piazzapanic.utility.WalkAnimator#getFrame(float, boolean,
      * float)
      */
     @Override

@@ -1,10 +1,10 @@
-package com.devcharles.piazzapanic.utility;
+package main.com.devcharles.piazzapanic.utility;
 
 import java.util.ArrayDeque;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.devcharles.piazzapanic.components.ItemComponent;
+import main.com.devcharles.piazzapanic.components.ItemComponent;
 
 public class FoodStack extends ArrayDeque<Entity> {
 

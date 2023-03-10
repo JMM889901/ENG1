@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic.componentsystems;
+package main.com.devcharles.piazzapanic.componentsystems;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
@@ -6,12 +6,12 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.math.Vector2;
-import com.devcharles.piazzapanic.components.B2dBodyComponent;
-import com.devcharles.piazzapanic.components.ControllableComponent;
-import com.devcharles.piazzapanic.components.PlayerComponent;
-import com.devcharles.piazzapanic.components.Powerups.speedBoostComponent;
-import com.devcharles.piazzapanic.input.KeyboardInput;
-import com.devcharles.piazzapanic.utility.Mappers;
+import main.com.devcharles.piazzapanic.components.B2dBodyComponent;
+import main.com.devcharles.piazzapanic.components.ControllableComponent;
+import main.com.devcharles.piazzapanic.components.PlayerComponent;
+import main.com.devcharles.piazzapanic.components.Powerups.speedBoostComponent;
+import main.com.devcharles.piazzapanic.input.KeyboardInput;
+import main.com.devcharles.piazzapanic.utility.Mappers;
 
 /**
  * Controls the one cook that has the PlayerComponent

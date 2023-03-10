@@ -1,11 +1,11 @@
-package com.devcharles.piazzapanic.utility;
+package main.com.devcharles.piazzapanic.utility;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
+import main.com.devcharles.piazzapanic.components.FoodComponent.FoodType;
 
 /**
  * Helper class for storing station recipes and {@link StationType} of the

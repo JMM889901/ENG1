@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic.componentsystems;
+package main.com.devcharles.piazzapanic.componentsystems;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -7,9 +7,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.devcharles.piazzapanic.components.B2dBodyComponent;
-import com.devcharles.piazzapanic.components.TransformComponent;
-import com.devcharles.piazzapanic.utility.Mappers;
+import main.com.devcharles.piazzapanic.components.B2dBodyComponent;
+import main.com.devcharles.piazzapanic.components.TransformComponent;
+import main.com.devcharles.piazzapanic.utility.Mappers;
 
 /**
  * Steps the Box2D world and maps the body positions to their

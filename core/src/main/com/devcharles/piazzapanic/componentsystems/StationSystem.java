@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic.componentsystems;
+package main.com.devcharles.piazzapanic.componentsystems;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,20 +10,20 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.devcharles.piazzapanic.components.ControllableComponent;
-import com.devcharles.piazzapanic.components.FoodComponent;
-import com.devcharles.piazzapanic.components.PlayerComponent;
-import com.devcharles.piazzapanic.components.StationComponent;
-import com.devcharles.piazzapanic.components.TintComponent;
-import com.devcharles.piazzapanic.components.CookingComponent;
-import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
-import com.devcharles.piazzapanic.components.Powerups.cookBoostComponent;
-import com.devcharles.piazzapanic.input.KeyboardInput;
-import com.devcharles.piazzapanic.utility.EntityFactory;
-import com.devcharles.piazzapanic.utility.GdxTimer;
-import com.devcharles.piazzapanic.utility.Mappers;
-import com.devcharles.piazzapanic.utility.Station;
-import com.devcharles.piazzapanic.utility.Station.StationType;
+import main.com.devcharles.piazzapanic.components.ControllableComponent;
+import main.com.devcharles.piazzapanic.components.FoodComponent;
+import main.com.devcharles.piazzapanic.components.PlayerComponent;
+import main.com.devcharles.piazzapanic.components.StationComponent;
+import main.com.devcharles.piazzapanic.components.TintComponent;
+import main.com.devcharles.piazzapanic.components.CookingComponent;
+import main.com.devcharles.piazzapanic.components.FoodComponent.FoodType;
+import main.com.devcharles.piazzapanic.components.Powerups.cookBoostComponent;
+import main.com.devcharles.piazzapanic.input.KeyboardInput;
+import main.com.devcharles.piazzapanic.utility.EntityFactory;
+import main.com.devcharles.piazzapanic.utility.GdxTimer;
+import main.com.devcharles.piazzapanic.utility.Mappers;
+import main.com.devcharles.piazzapanic.utility.Station;
+import main.com.devcharles.piazzapanic.utility.Station.StationType;
 
 /**
  * This system manages player-station interaction and station food processing.

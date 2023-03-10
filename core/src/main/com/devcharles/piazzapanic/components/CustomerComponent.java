@@ -1,10 +1,10 @@
-package com.devcharles.piazzapanic.components;
+package main.com.devcharles.piazzapanic.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Pool.Poolable;
-import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
-import com.devcharles.piazzapanic.utility.GdxTimer;
+import main.com.devcharles.piazzapanic.components.FoodComponent.FoodType;
+import main.com.devcharles.piazzapanic.utility.GdxTimer;
 
 public class CustomerComponent implements Component, Poolable {
     public FoodType order = null;

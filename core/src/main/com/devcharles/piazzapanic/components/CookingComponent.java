@@ -1,8 +1,8 @@
-package com.devcharles.piazzapanic.components;
+package main.com.devcharles.piazzapanic.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.utils.Pool.Poolable;
-import com.devcharles.piazzapanic.utility.GdxTimer;
+import main.com.devcharles.piazzapanic.utility.GdxTimer;
 
 public class CookingComponent implements Component, Poolable {
     public GdxTimer timer = new GdxTimer(5000, false, false);

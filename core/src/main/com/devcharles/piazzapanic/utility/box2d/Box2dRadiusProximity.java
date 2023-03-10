@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
- package com.devcharles.piazzapanic.utility.box2d;
+ package main.com.devcharles.piazzapanic.utility.box2d;
 
  import com.badlogic.gdx.ai.steer.Proximity;
  import com.badlogic.gdx.ai.steer.Steerable;

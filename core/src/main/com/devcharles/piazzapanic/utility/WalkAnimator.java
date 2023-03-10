@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic.utility;
+package main.com.devcharles.piazzapanic.utility;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,9 +1,9 @@
-package com.devcharles.piazzapanic.components.Powerups;
+package main.com.devcharles.piazzapanic.components.Powerups;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
-import com.devcharles.piazzapanic.utility.EntityFactory;
+import main.com.devcharles.piazzapanic.utility.EntityFactory;
 
 /*
  * {@link componentsystems.PowerupSpawnSystem}

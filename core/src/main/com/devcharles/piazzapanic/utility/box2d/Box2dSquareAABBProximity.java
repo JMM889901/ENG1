@@ -18,7 +18,7 @@
   * The reportFixture() method was modified from the original to check for a null in the input.
   */
 
- package com.devcharles.piazzapanic.utility.box2d;
+ package main.com.devcharles.piazzapanic.utility.box2d;
 
  import com.badlogic.gdx.ai.steer.Proximity;
  import com.badlogic.gdx.ai.steer.Steerable;

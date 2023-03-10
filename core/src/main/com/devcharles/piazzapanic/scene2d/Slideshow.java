@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic.scene2d;
+package main.com.devcharles.piazzapanic.scene2d;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
@@ -18,8 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
-import com.devcharles.piazzapanic.GameScreen;
-import com.devcharles.piazzapanic.PiazzaPanic;
+import main.com.devcharles.piazzapanic.GameScreen;
+import main.com.devcharles.piazzapanic.PiazzaPanic;
 
 /**
  * A screen that displays a slideshow of images.

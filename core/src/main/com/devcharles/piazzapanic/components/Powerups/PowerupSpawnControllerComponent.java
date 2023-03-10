@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic.components.Powerups;
+package main.com.devcharles.piazzapanic.components.Powerups;
 
 import com.badlogic.ashley.core.Component;
 

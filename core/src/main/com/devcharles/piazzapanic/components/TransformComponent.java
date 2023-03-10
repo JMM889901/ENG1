@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic.components;
+package main.com.devcharles.piazzapanic.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Vector2;

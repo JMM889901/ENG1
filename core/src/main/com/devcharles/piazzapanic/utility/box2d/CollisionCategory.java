@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic.utility.box2d;
+package main.com.devcharles.piazzapanic.utility.box2d;
 
 /**
  * Collision categories allow specifying which Box2D fixtures collide with each

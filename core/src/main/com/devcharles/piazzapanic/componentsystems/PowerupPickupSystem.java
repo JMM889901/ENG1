@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic.componentsystems;
+package main.com.devcharles.piazzapanic.componentsystems;
 
 import java.util.ArrayList;
 
@@ -9,16 +9,16 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.physics.box2d.World;
-import com.devcharles.piazzapanic.components.CustomerComponent;
-import com.devcharles.piazzapanic.components.Powerups.PowerupComponent;
-import com.devcharles.piazzapanic.components.Powerups.cookBoostComponent;
-import com.devcharles.piazzapanic.components.Powerups.cutBoostComponent;
-import com.devcharles.piazzapanic.components.Powerups.speedBoostComponent;
-import com.devcharles.piazzapanic.components.Powerups.timeFreezeBoostComponent;
-import com.devcharles.piazzapanic.components.Powerups.PowerupComponent.powerupType;
-import com.devcharles.piazzapanic.utility.Mappers;
-import com.devcharles.piazzapanic.componentsystems.CustomerAISystem;
-import com.devcharles.piazzapanic.scene2d.Hud;
+import main.com.devcharles.piazzapanic.components.CustomerComponent;
+import main.com.devcharles.piazzapanic.components.Powerups.PowerupComponent;
+import main.com.devcharles.piazzapanic.components.Powerups.cookBoostComponent;
+import main.com.devcharles.piazzapanic.components.Powerups.cutBoostComponent;
+import main.com.devcharles.piazzapanic.components.Powerups.speedBoostComponent;
+import main.com.devcharles.piazzapanic.components.Powerups.timeFreezeBoostComponent;
+import main.com.devcharles.piazzapanic.components.Powerups.PowerupComponent.powerupType;
+import main.com.devcharles.piazzapanic.utility.Mappers;
+import main.com.devcharles.piazzapanic.componentsystems.CustomerAISystem;
+import main.com.devcharles.piazzapanic.scene2d.Hud;
 
 public class PowerupPickupSystem extends IteratingSystem {
 

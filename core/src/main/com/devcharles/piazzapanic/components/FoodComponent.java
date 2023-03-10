@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic.components;
+package main.com.devcharles.piazzapanic.components;
 
 import java.util.HashMap;
 import java.util.Map;

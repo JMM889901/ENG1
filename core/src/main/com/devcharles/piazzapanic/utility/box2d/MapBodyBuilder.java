@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic.utility.box2d;
+package main.com.devcharles.piazzapanic.utility.box2d;
 
 import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.maps.MapObject;

@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic.scene2d;
+package main.com.devcharles.piazzapanic.scene2d;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
@@ -18,11 +18,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.devcharles.piazzapanic.GameScreen;
-import com.devcharles.piazzapanic.MainMenuScreen;
-import com.devcharles.piazzapanic.PiazzaPanic;
-import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
-import com.devcharles.piazzapanic.utility.EntityFactory;
+import main.com.devcharles.piazzapanic.GameScreen;
+import main.com.devcharles.piazzapanic.MainMenuScreen;
+import main.com.devcharles.piazzapanic.PiazzaPanic;
+import main.com.devcharles.piazzapanic.components.FoodComponent.FoodType;
+import main.com.devcharles.piazzapanic.utility.EntityFactory;
 
 /**
  * HUD user interface rendering for the game, also includes the win screen.

@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic.componentsystems;
+package main.com.devcharles.piazzapanic.componentsystems;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,11 +7,11 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.Vector3;
-import com.devcharles.piazzapanic.components.ItemComponent;
-import com.devcharles.piazzapanic.components.TransformComponent;
-import com.devcharles.piazzapanic.utility.Mappers;
-import com.devcharles.piazzapanic.utility.WalkAnimator;
-import com.devcharles.piazzapanic.utility.WalkAnimator.Direction;
+import main.com.devcharles.piazzapanic.components.ItemComponent;
+import main.com.devcharles.piazzapanic.components.TransformComponent;
+import main.com.devcharles.piazzapanic.utility.Mappers;
+import main.com.devcharles.piazzapanic.utility.WalkAnimator;
+import main.com.devcharles.piazzapanic.utility.WalkAnimator.Direction;
 
 public class CarryItemsSystem extends IteratingSystem {
 

@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic.utility;
+package main.com.devcharles.piazzapanic.utility;
 /**
  * Create a generic tuple.
  */

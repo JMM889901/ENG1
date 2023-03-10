@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic.utility;
+package main.com.devcharles.piazzapanic.utility;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,12 +19,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.devcharles.piazzapanic.components.PlayerComponent;
-import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
-import com.devcharles.piazzapanic.utility.Station.StationType;
-import com.devcharles.piazzapanic.utility.box2d.Box2dLocation;
-import com.devcharles.piazzapanic.utility.box2d.LightBuilder;
-import com.devcharles.piazzapanic.utility.box2d.MapBodyBuilder;
+import main.com.devcharles.piazzapanic.components.PlayerComponent;
+import main.com.devcharles.piazzapanic.components.FoodComponent.FoodType;
+import main.com.devcharles.piazzapanic.utility.Station.StationType;
+import main.com.devcharles.piazzapanic.utility.box2d.Box2dLocation;
+import main.com.devcharles.piazzapanic.utility.box2d.LightBuilder;
+import main.com.devcharles.piazzapanic.utility.box2d.MapBodyBuilder;
 
 import box2dLight.RayHandler;
 

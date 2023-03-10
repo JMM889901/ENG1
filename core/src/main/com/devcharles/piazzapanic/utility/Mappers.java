@@ -1,20 +1,20 @@
-package com.devcharles.piazzapanic.utility;
+package main.com.devcharles.piazzapanic.utility;
 
 import com.badlogic.ashley.core.ComponentMapper;
-import com.devcharles.piazzapanic.components.AIAgentComponent;
-import com.devcharles.piazzapanic.components.AnimationComponent;
-import com.devcharles.piazzapanic.components.B2dBodyComponent;
-import com.devcharles.piazzapanic.components.ControllableComponent;
-import com.devcharles.piazzapanic.components.CookingComponent;
-import com.devcharles.piazzapanic.components.CustomerComponent;
-import com.devcharles.piazzapanic.components.FoodComponent;
-import com.devcharles.piazzapanic.components.ItemComponent;
-import com.devcharles.piazzapanic.components.PlayerComponent;
-import com.devcharles.piazzapanic.components.StationComponent;
-import com.devcharles.piazzapanic.components.TextureComponent;
-import com.devcharles.piazzapanic.components.TintComponent;
-import com.devcharles.piazzapanic.components.TransformComponent;
-import com.devcharles.piazzapanic.components.WalkingAnimationComponent;
+import main.com.devcharles.piazzapanic.components.AIAgentComponent;
+import main.com.devcharles.piazzapanic.components.AnimationComponent;
+import main.com.devcharles.piazzapanic.components.B2dBodyComponent;
+import main.com.devcharles.piazzapanic.components.ControllableComponent;
+import main.com.devcharles.piazzapanic.components.CookingComponent;
+import main.com.devcharles.piazzapanic.components.CustomerComponent;
+import main.com.devcharles.piazzapanic.components.FoodComponent;
+import main.com.devcharles.piazzapanic.components.ItemComponent;
+import main.com.devcharles.piazzapanic.components.PlayerComponent;
+import main.com.devcharles.piazzapanic.components.StationComponent;
+import main.com.devcharles.piazzapanic.components.TextureComponent;
+import main.com.devcharles.piazzapanic.components.TintComponent;
+import main.com.devcharles.piazzapanic.components.TransformComponent;
+import main.com.devcharles.piazzapanic.components.WalkingAnimationComponent;
 
 /**
  * Static class, holds all the {@link ComponentMapper} instances we need, as

@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic;
+package main.com.devcharles.piazzapanic;
 
 import com.badlogic.ashley.core.Entity;
 //poggers. `
@@ -10,22 +10,22 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
-import com.devcharles.piazzapanic.componentsystems.StationSystem;
-import com.devcharles.piazzapanic.components.Powerups.PowerupSpawnControllerComponent;
-import com.devcharles.piazzapanic.componentsystems.CarryItemsSystem;
-import com.devcharles.piazzapanic.componentsystems.CustomerAISystem;
-import com.devcharles.piazzapanic.componentsystems.InventoryUpdateSystem;
-import com.devcharles.piazzapanic.componentsystems.LightingSystem;
-import com.devcharles.piazzapanic.componentsystems.PhysicsSystem;
-import com.devcharles.piazzapanic.componentsystems.PlayerControlSystem;
-import com.devcharles.piazzapanic.componentsystems.PowerupPickupSystem;
-import com.devcharles.piazzapanic.componentsystems.PowerupSpawnSystem;
-import com.devcharles.piazzapanic.componentsystems.RenderingSystem;
-import com.devcharles.piazzapanic.input.KeyboardInput;
-import com.devcharles.piazzapanic.utility.EntityFactory;
-import com.devcharles.piazzapanic.utility.MapLoader;
-import com.devcharles.piazzapanic.utility.box2d.WorldContactListener;
-import com.devcharles.piazzapanic.scene2d.Hud;
+import main.com.devcharles.piazzapanic.componentsystems.StationSystem;
+import main.com.devcharles.piazzapanic.components.Powerups.PowerupSpawnControllerComponent;
+import main.com.devcharles.piazzapanic.componentsystems.CarryItemsSystem;
+import main.com.devcharles.piazzapanic.componentsystems.CustomerAISystem;
+import main.com.devcharles.piazzapanic.componentsystems.InventoryUpdateSystem;
+import main.com.devcharles.piazzapanic.componentsystems.LightingSystem;
+import main.com.devcharles.piazzapanic.componentsystems.PhysicsSystem;
+import main.com.devcharles.piazzapanic.componentsystems.PlayerControlSystem;
+import main.com.devcharles.piazzapanic.componentsystems.PowerupPickupSystem;
+import main.com.devcharles.piazzapanic.componentsystems.PowerupSpawnSystem;
+import main.com.devcharles.piazzapanic.componentsystems.RenderingSystem;
+import main.com.devcharles.piazzapanic.input.KeyboardInput;
+import main.com.devcharles.piazzapanic.utility.EntityFactory;
+import main.com.devcharles.piazzapanic.utility.MapLoader;
+import main.com.devcharles.piazzapanic.utility.box2d.WorldContactListener;
+import main.com.devcharles.piazzapanic.scene2d.Hud;
 import box2dLight.RayHandler;
 
 public class GameScreen implements Screen {

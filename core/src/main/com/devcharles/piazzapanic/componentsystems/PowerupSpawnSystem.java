@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic.componentsystems;
+package main.com.devcharles.piazzapanic.componentsystems;
 
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
@@ -12,11 +12,11 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.physics.box2d.World;
-import com.devcharles.piazzapanic.components.B2dBodyComponent;
-import com.devcharles.piazzapanic.components.Powerups.PowerupSpawnControllerComponent;
-import com.devcharles.piazzapanic.components.Powerups.PowerupSpawnerComponent;
-import com.devcharles.piazzapanic.utility.EntityFactory;
-import com.devcharles.piazzapanic.utility.Mappers;
+import main.com.devcharles.piazzapanic.components.B2dBodyComponent;
+import main.com.devcharles.piazzapanic.components.Powerups.PowerupSpawnControllerComponent;
+import main.com.devcharles.piazzapanic.components.Powerups.PowerupSpawnerComponent;
+import main.com.devcharles.piazzapanic.utility.EntityFactory;
+import main.com.devcharles.piazzapanic.utility.Mappers;
 
 import box2dLight.RayHandler;
 

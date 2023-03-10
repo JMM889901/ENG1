@@ -1,4 +1,4 @@
-package com.devcharles.piazzapanic.input;
+package main.com.devcharles.piazzapanic.input;
 
 import com.badlogic.gdx.Gdx;
 

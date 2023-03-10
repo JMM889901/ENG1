@@ -1,7 +1,7 @@
 // Simple timer by @tedigc
 // https://gist.github.com/tedigc/fe28616706025b00c6c540af4d03c827
 
-package com.devcharles.piazzapanic.utility;
+package main.com.devcharles.piazzapanic.utility;
 
 /**
  * Simple timer class suitable for this project.
