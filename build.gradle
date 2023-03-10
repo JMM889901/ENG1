@@ -1,16 +1,10 @@
 buildscript {
-    
-
     repositories {
         mavenLocal()
         mavenCentral()
         gradlePluginPortal()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         google()
-    }
-    dependencies {
-        
-
     }
 }
 
@@ -23,13 +17,13 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
 
 test {
-    useJUnitPlatform()
+	useJUnitPlatform()
 }
-
 allprojects {
     apply plugin: "eclipse"
 
@@ -71,8 +65,6 @@ project(":desktop") {
 
 project(":core") {
     apply plugin: "java-library"
-
-
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
@@ -81,4 +73,3 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
     }
 }
-
