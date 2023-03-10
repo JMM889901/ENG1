@@ -64,7 +64,7 @@
  </tile>
  <tile id="11">
   <properties>
-   <property name="inventoryDirection" value="rightDown"/>
+   <property name="inventoryDirection" value="bottom"/>
    <property name="stationID" type="int" value="8"/>
   </properties>
  </tile>
