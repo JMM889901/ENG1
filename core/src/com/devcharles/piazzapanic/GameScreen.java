@@ -90,7 +90,7 @@ public class GameScreen implements Screen {
         powerupController.add(engine.createComponent(PowerupSpawnControllerComponent.class));
         engine.addEntity(powerupController);
         engine.addSystem(new PowerupSpawnSystem(engine, factory, world));
-        engine.addSystem(new PowerupPickupSystem(engine, world));
+        engine.addSystem(new PowerupPickupSystem(engine, world, hud));
 
         world.setContactListener(new WorldContactListener());
 

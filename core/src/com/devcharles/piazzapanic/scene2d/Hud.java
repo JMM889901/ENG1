@@ -31,6 +31,7 @@ public class Hud extends ApplicationAdapter {
     public Stage stage;
     private Viewport viewport;
     private Integer customerTimer = 000;
+    private Integer customerFreezeTimer = 0; // Using a time freeze powerup pauses the customer timer while this one counts down.
     private float timeCounter = 0;
     private Integer[] reputation;
     private Skin skin;
@@ -245,10 +246,22 @@ public class Hud extends ApplicationAdapter {
             stage.draw();
             return;
         }
-        timeCounter += won ? 0 : deltaTime;
+        
+        timeCounter += won ? 0 : deltaTime; // If won, don't count time.
+
+        // I (Joss) think the comment below was by the previous group implementing a really hacky
+        // solution to a performance problem:
+
         // Staggered once per second using timeCounter makes it way faster
         if (timeCounter >= 1) {
-            customerTimer++;
+            
+            // If the customer is not frozen, increment the timer.
+            if(customerFreezeTimer == 0) {
+                customerTimer++;
+            } else {
+                customerFreezeTimer--;
+            }
+
             timerLabel.setText(String.format("%03d", customerTimer));
             reputationLabel.setText(reputation[0]);
             if (triggerWin) {
@@ -298,6 +311,14 @@ public class Hud extends ApplicationAdapter {
         tablePause.setVisible(false);
 
         super.resume();
+    }
+
+    /**
+     * Freeze the customer timer for a given amount of time.
+     * @param freezeTime how many seconds to freeze the timer for.
+     */
+    public void freezeCustomers(int freezeTime) {
+        customerFreezeTimer += freezeTime;
     }
 
     public boolean won;

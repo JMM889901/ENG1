@@ -18,15 +18,20 @@ import com.devcharles.piazzapanic.components.Powerups.timeFreezeBoostComponent;
 import com.devcharles.piazzapanic.components.Powerups.PowerupComponent.powerupType;
 import com.devcharles.piazzapanic.utility.Mappers;
 import com.devcharles.piazzapanic.componentsystems.CustomerAISystem;
+import com.devcharles.piazzapanic.scene2d.Hud;
 
 public class PowerupPickupSystem extends IteratingSystem {
+
+    // These are just pointers to values in GameScreen.java (which calls this class' constructor directly).
     World world;
     Engine engine;
+    Hud hud;
 
-    public PowerupPickupSystem(Engine engine, World world) {
+    public PowerupPickupSystem(Engine engine, World world, Hud hud) {
         super(Family.all(PowerupComponent.class).get());
         this.world = world;
         this.engine = engine;
+        this.hud = hud;
     }
 
     @Override
@@ -75,8 +80,10 @@ public class PowerupPickupSystem extends IteratingSystem {
                 player.add(engine.createComponent(cutBoostComponent.class));
                 break;
             case timeFreezeBoost:
-                // Stuff can be changed in HUD.java for this.
-                player.add(engine.createComponent(timeFreezeBoostComponent.class));
+                // customerTimer in Hud.java is incremented by 1 every second, delaying that timer
+                // delays various customer related things (like how long they've waited for).
+                //player.add(engine.createComponent(timeFreezeBoostComponent.class));
+                hud.freezeCustomers(5);
                 break;
             case orderBoost: // Fulfil the order immediately
                 ImmutableArray<Entity> customers = engine.getEntitiesFor(Family.all(CustomerComponent.class).get());
