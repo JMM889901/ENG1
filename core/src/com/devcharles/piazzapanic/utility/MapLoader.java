@@ -1,5 +1,6 @@
 package com.devcharles.piazzapanic.utility;
 
+import java.beans.VetoableChangeSupport;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,8 +21,10 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.devcharles.piazzapanic.components.PlayerComponent;
+import com.devcharles.piazzapanic.components.StationComponent;
 import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
 import com.devcharles.piazzapanic.utility.Station.StationType;
+import com.devcharles.piazzapanic.utility.Station.itemDisplayDir;
 import com.devcharles.piazzapanic.utility.box2d.Box2dLocation;
 import com.devcharles.piazzapanic.utility.box2d.LightBuilder;
 import com.devcharles.piazzapanic.utility.box2d.MapBodyBuilder;
@@ -208,7 +211,13 @@ public class MapLoader {
                                     .from((Integer) currentCell.getTile().getProperties().get(ingredientTypeProperty));
                         }
                         System.out.println("Creating station at " + i + ", " + j + " of type " + stationType);
-                        factory.createStation(stationType, new Vector2((i * 2) + 1, (j * 2) + 1), ingredientType);
+                        Entity station = factory.createStation(stationType, new Vector2((i * 2) + 1, (j * 2) + 1),
+                                ingredientType);
+                        if (stationType == StationType.counter) {
+                            itemDisplayDir direction = itemDisplayDir.valueOf(
+                                    (String) currentCell.getTile().getProperties().get("inventoryDirection"));
+                            station.getComponent(StationComponent.class).direction = direction;
+                        }
                     }
                 }
             }
