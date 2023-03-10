@@ -14,7 +14,7 @@ import main.com.devcharles.piazzapanic.components.FoodComponent.FoodType;
 public class Station {
 
     public StationType type;
-
+    public itemDisplayDir direction;
     public static HashMap<FoodType, FoodType> grillRecipes = new HashMap<FoodType, FoodType>() {
         {
             put(FoodType.formedPatty, FoodType.grilledPatty);
@@ -93,6 +93,18 @@ public class Station {
     };
 
     /**
+     * Named enumeration of the item display directions.
+     * represents the starting positions and offsets of items displayed
+     */
+    public enum itemDisplayDir {
+        top,
+        bottom,
+        leftDown,
+        rightDown;
+
+    }
+
+    /**
      * Named enumeration of the station types.
      * The ids correspond to stationId in the TileMap object.
      */
@@ -104,7 +116,8 @@ public class Station {
         bin(5),
         ingredient(6),
         serve(7),
-        counter(8);
+        counter(8),
+        counterBack(9); // Used where food needs to be shifted down so it draws correctly
 
         private int value;
 

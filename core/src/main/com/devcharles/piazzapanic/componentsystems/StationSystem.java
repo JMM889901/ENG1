@@ -86,6 +86,7 @@ public class StationSystem extends IteratingSystem {
                         processServe(station.interactingCook);
                         break;
 
+                    case counterBack:
                     case counter:
                         processCounterTop(controllable, station);
                         break;

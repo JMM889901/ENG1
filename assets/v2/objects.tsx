@@ -28,57 +28,56 @@
  </tile>
  <tile id="5">
   <properties>
-   <property name="stationID" value="8"/>
+   <property name="inventoryDirection" value="top"/>
+   <property name="stationID" type="int" value="8"/>
   </properties>
  </tile>
  <tile id="6">
   <properties>
-   <property name="stationID" value="8"/>
+   <property name="inventoryDirection" value="top"/>
+   <property name="stationID" type="int" value="8"/>
   </properties>
  </tile>
  <tile id="7">
   <properties>
-   <property name="stationID" value="8"/>
+   <property name="inventoryDirection" value="top"/>
+   <property name="stationID" type="int" value="8"/>
   </properties>
  </tile>
  <tile id="8">
   <properties>
-   <property name="stationID" value="8"/>
+   <property name="inventoryDirection" value="top"/>
+   <property name="stationID" type="int" value="8"/>
   </properties>
  </tile>
  <tile id="9">
   <properties>
-   <property name="stationID" value="8"/>
+   <property name="inventoryDirection" value="leftDown"/>
+   <property name="stationID" type="int" value="8"/>
   </properties>
  </tile>
  <tile id="10">
   <properties>
-   <property name="stationID" value="8"/>
+   <property name="inventoryDirection" value="rightDown"/>
+   <property name="stationID" type="int" value="8"/>
   </properties>
  </tile>
  <tile id="11">
   <properties>
-   <property name="stationID" value="8"/>
+   <property name="inventoryDirection" value="bottom"/>
+   <property name="stationID" type="int" value="8"/>
   </properties>
  </tile>
  <tile id="12">
   <properties>
-   <property name="stationID" value="8"/>
+   <property name="inventoryDirection" value="bottom"/>
+   <property name="stationID" type="int" value="8"/>
   </properties>
  </tile>
  <tile id="13">
   <properties>
-   <property name="stationID" value="8"/>
-  </properties>
- </tile>
- <tile id="14">
-  <properties>
-   <property name="stationID" value="8"/>
-  </properties>
- </tile>
- <tile id="15">
-  <properties>
-   <property name="stationID" value="8"/>
+   <property name="inventoryDirection" value="bottom"/>
+   <property name="stationID" type="int" value="8"/>
   </properties>
  </tile>
  <tile id="16">

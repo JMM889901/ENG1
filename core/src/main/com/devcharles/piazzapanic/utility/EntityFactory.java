@@ -350,7 +350,9 @@ public class EntityFactory {
     }
 
     /**
-     * This gets run run by the component system. Given a location, this code chooses a powerup and places it.
+     * This gets run run by the component system. Given a location, this code
+     * chooses a powerup and places it.
+     * 
      * @param position Where the powerup will be placed.
      * @return The powerup (stored as an entity with various relevant components).
      */
@@ -365,10 +367,9 @@ public class EntityFactory {
 
         PowerupComponent boost = engine.createComponent(PowerupComponent.class);
 
-        String boostIconPath = "boosts/boostError.png";  // Initiaise it to display an error if something goes wrong.
+        String boostIconPath = "boosts/boostError.png"; // Initiaise it to display an error if something goes wrong.
 
         int newPowerupType = ThreadLocalRandom.current().nextInt(0, 5);
-        newPowerupType = 3;  // This is to make everything time freezes, this shouldn't make it into the final game!
         switch (newPowerupType) {
             case 0:
                 boost.type = powerupType.speedBoost;
@@ -405,11 +406,11 @@ public class EntityFactory {
 
         transform.isHidden = false;
 
-        entity.add(b2dBody);  // Attach a physics body to the entity.
-        entity.add(transform);  // Attach location data to the entity.
-        entity.add(texture);  // Give the powerup the relevant texture.
+        entity.add(b2dBody); // Attach a physics body to the entity.
+        entity.add(transform); // Attach location data to the entity.
+        entity.add(texture); // Give the powerup the relevant texture.
         // entity.add(an);
-        engine.addEntity(entity);  // Let the engine know about this powerup.
+        engine.addEntity(entity); // Let the engine know about this powerup.
         Gdx.app.log("PowerupSystem",
                 String.format("Powerup " + boost.type + " spawned at x:%.2f y:%.2f", position.x, position.y));
         return entity;
