@@ -40,6 +40,17 @@ public class Station {
             put(FoodType.cheese, FoodType.slicedCheese);
         }
     };
+    public static HashMap<Set<FoodType>, FoodType> combineRecipes = new HashMap<Set<FoodType>, FoodType>() {
+        {
+            put(new HashSet<FoodType>() {
+                {
+                    add(FoodType.pizzaBase);
+                    add(FoodType.tomatoSauce);
+                    add(FoodType.slicedCheese);
+                }
+            }, FoodType.rawPizza);
+        }
+    };
 
     public static HashMap<Set<FoodType>, FoodType> serveRecipes = new HashMap<Set<FoodType>, FoodType>() {
         {
@@ -58,11 +69,9 @@ public class Station {
             }, FoodType.salad);
             put(new HashSet<FoodType>() {
                 {
-                    add(FoodType.pizzaBase);
-                    add(FoodType.tomatoSauce);
-                    add(FoodType.slicedCheese);
+                    add(FoodType.pizza);
                 }
-            }, FoodType.rawPizza);
+            }, FoodType.pizza);
             put(new HashSet<FoodType>() {
                 {
                     add(FoodType.bakedPotatoPlain);

@@ -28,57 +28,57 @@
  </tile>
  <tile id="5">
   <properties>
-   <property name="stationID" type="int" value="8"/>
+   <property name="stationID" value="8"/>
   </properties>
  </tile>
  <tile id="6">
   <properties>
-   <property name="stationID" type="int" value="8"/>
+   <property name="stationID" value="8"/>
   </properties>
  </tile>
  <tile id="7">
   <properties>
-   <property name="stationID" type="int" value="8"/>
+   <property name="stationID" value="8"/>
   </properties>
  </tile>
  <tile id="8">
   <properties>
-   <property name="stationID" type="int" value="8"/>
+   <property name="stationID" value="8"/>
   </properties>
  </tile>
  <tile id="9">
   <properties>
-   <property name="stationID" type="int" value="8"/>
+   <property name="stationID" value="8"/>
   </properties>
  </tile>
  <tile id="10">
   <properties>
-   <property name="stationID" type="int" value="8"/>
+   <property name="stationID" value="8"/>
   </properties>
  </tile>
  <tile id="11">
   <properties>
-   <property name="stationID" type="int" value="8"/>
+   <property name="stationID" value="8"/>
   </properties>
  </tile>
  <tile id="12">
   <properties>
-   <property name="stationID" type="int" value="8"/>
+   <property name="stationID" value="8"/>
   </properties>
  </tile>
  <tile id="13">
   <properties>
-   <property name="stationID" type="int" value="8"/>
+   <property name="stationID" value="8"/>
   </properties>
  </tile>
  <tile id="14">
   <properties>
-   <property name="stationID" type="int" value="8"/>
+   <property name="stationID" value="8"/>
   </properties>
  </tile>
  <tile id="15">
   <properties>
-   <property name="stationID" type="int" value="8"/>
+   <property name="stationID" value="8"/>
   </properties>
  </tile>
  <tile id="16">
@@ -169,6 +169,30 @@
  <tile id="35">
   <properties>
    <property name="stationID" value="8"/>
+  </properties>
+ </tile>
+ <tile id="36">
+  <properties>
+   <property name="ingredientType" type="int" value="14"/>
+   <property name="stationID" type="int" value="6"/>
+  </properties>
+ </tile>
+ <tile id="37">
+  <properties>
+   <property name="ingredientType" type="int" value="17"/>
+   <property name="stationID" type="int" value="6"/>
+  </properties>
+ </tile>
+ <tile id="39">
+  <properties>
+   <property name="ingredientType" type="int" value="24"/>
+   <property name="stationID" type="int" value="6"/>
+  </properties>
+ </tile>
+ <tile id="40">
+  <properties>
+   <property name="ingredientType" type="int" value="18"/>
+   <property name="stationID" type="int" value="6"/>
   </properties>
  </tile>
 </tileset>
