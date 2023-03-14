@@ -6,6 +6,7 @@ import org.junit.*;
 //import com.devcharles.piazzapanic.DesktopLauncher;
 import com.devcharles.piazzapanic.PiazzaPanic;
 
+import com.devcharles.piazzapanic.GameScreen;
 public class testTests {
    @Test
    public void test() {
@@ -13,5 +14,13 @@ public class testTests {
 
        PiazzaPanic piazzaPanic = new PiazzaPanic();
        Assert.assertEquals(piazzaPanic.VIRTUAL_HEIGHT, 20f, 0.01);  // Use the delta to specify an acceptable error margin.
+   }
+   @Test
+   /**
+    * 
+    */
+   public void virtualHeightTest() {
+        PiazzaPanic panic = new PiazzaPanic();
+        Assert.assertTrue(panic.VIRTUAL_HEIGHT == 20f);
    }
 }
