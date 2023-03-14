@@ -71,6 +71,7 @@ public class WorldContactListener implements ContactListener {
 
             PlayerComponent player = Mappers.player.get(cook);
 
+            // Reset the player after a physical interaction.
             if (cook != null && player != null) {
                 player.putDown = false;
                 player.pickUp = false;
