@@ -75,6 +75,7 @@ public class StationSystem extends IteratingSystem {
 
                 switch (station.type) {
                     case ingredient:
+                        // Using the put down key on an ingredient station will also pick up food.
                         controllable.currentFood.pushItem(factory.createFood(station.ingredient),
                                 station.interactingCook);
                         break;
@@ -101,11 +102,16 @@ public class StationSystem extends IteratingSystem {
                 ControllableComponent controllable = Mappers.controllable.get(station.interactingCook);
 
                 switch (station.type) {
+                    // Ingredient station: pick up food
                     case ingredient:
                         controllable.currentFood.pushItem(factory.createFood(station.ingredient),
                                 station.interactingCook);
                         break;
+                    
+                    // Bin: do nothing (can't take out of bin).
                     case bin:
+
+                    // Serve: do nothing (can't take out of serving station).
                     case serve:
                         break;
                     default:
