@@ -1,7 +1,6 @@
 package main.com.devcharles.piazzapanic;
 
 import com.badlogic.ashley.core.Entity;
-//poggers. `
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;

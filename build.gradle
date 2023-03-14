@@ -3,30 +3,10 @@ buildscript {
         mavenLocal()
         mavenCentral()
         gradlePluginPortal()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        google()
     }
-}
-
-plugins {
-    id 'java'
-}
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-}
-
-test {
-	useJUnitPlatform()
 }
 allprojects {
     apply plugin: "eclipse"
-
     version = '1.0'
     ext {
         appName = "piazzaPanic"
@@ -37,29 +17,21 @@ allprojects {
         aiVersion = '1.8.2'
         gdxControllersVersion = '2.2.1'
     }
-
     repositories {
         mavenLocal()
         mavenCentral()
         google()
-        gradlePluginPortal()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-        maven { url "https://jitpack.io" }
-        maven { url "https://oss.sonatype.org/content/repositories/releases"}
     }
 }
 
 project(":desktop") {
     apply plugin: "java-library"
-
-
     dependencies {
         implementation project(":core")
         api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
-
+        
     }
 }
 
@@ -71,5 +43,28 @@ project(":core") {
         api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
         api "com.badlogicgames.ashley:ashley:$ashleyVersion"
         api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+    }
+}
+
+/**
+This test instruction setup follows an excellent guide written by 
+Tom Grill on GitHub, which can be found HERE:
+https://github.com/TomGrill/gdx-testing
+ */
+project(":tests") {
+    apply plugin: "java"
+    sourceSets.test.java.srcDirs = ["src/"]
+    dependencies {
+        implementation project(":core")
+        implementation  "junit:junit:4.+"
+        implementation  "org.mockito:mockito-all:1.10.19"
+        implementation  "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        implementation  "com.badlogicgames.gdx:gdx:$gdxVersion"
+        testImplementation 'junit:junit:4.+'
+        testImplementation "org.mockito:mockito-all:1.10.19"
+        testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        testImplementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
     }
 }

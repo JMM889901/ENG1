@@ -35,10 +35,6 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
     private BitmapFont gamesFont;
     private Label title;
 
-    /**
-     * creates main menu stage
-     * @param game
-     */
     public MainMenuScreen(final PiazzaPanic game) {
 
         this.game = game;
@@ -64,22 +60,11 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
 
         root.add(title).expandX().padBottom(120);
         root.row();
-        TextButton scenarioModeButton = new TextButton("Scenario Mode", skin);
-        root.add(scenarioModeButton);
+        TextButton startGameButton = new TextButton("Start game", skin);
+        root.add(startGameButton);
 
-        // Checks if button is clicked and if clicked goes onto the tutorial set game to endless mode
-        scenarioModeButton.addListener(new ClickListener() {
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new Slideshow(game, Slideshow.Type.tutorial));
-                dispose();
-            }
-        });
-
-        TextButton endlessModeButton = new TextButton("Endless Mode", skin);
-        root.add(endlessModeButton);
-
-        // Checks if button is clicked and if clicked goes onto the tutorial set game to scenario mode
-        endlessModeButton.addListener(new ClickListener() {
+        // Checks if button is clicked and if clicked goes onto the tutorial
+        startGameButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new Slideshow(game, Slideshow.Type.tutorial));
                 dispose();
