@@ -87,7 +87,8 @@ public class EntityFactory {
 
     /**
      * Creates cook entity, and adds it to the engine.
-     * 
+     * @param x X position of the chef (in weird tile units).
+     * @param y Y position of the chef (in weird tile units).
      * @return Reference to the entity.
      */
     public Entity createCook(int x, int y) {

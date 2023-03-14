@@ -17,16 +17,22 @@ import com.badlogic.gdx.math.Vector2;
 public class testPlayerControlSystem {
     @Test
     public void testPlayerPickUpItem(){
+        // Initialise wider systems.
         PlayerControlSystem testPlayerControlSystem = new PlayerControlSystem(new KeyboardInput(), null); // Do I need to add a new Pooledengine here?
         PlayerComponent testPlayerComponent = new PlayerComponent();
         PooledEngine engine = new PooledEngine();
         World world = new World(new Vector2(0, 0), true);
 
+        // Initialise foods (and the entity factory to make said food).
         EntityFactory testEntityFactory = new EntityFactory(engine, world);
-        
         FoodComponent testFoodType = new FoodComponent();
         testFoodType.type = FoodType.unformedPatty; // From the FoodType: unformedPatty(1)
         Entity testFoodEntity = testEntityFactory.createFood(testFoodType.type);
+
+        // Initialise a chef.
+        Entity chef = testEntityFactory.createCook(0, 0);
+
+        testPlayerControlSystem.processEntity_test(chef, 0);
         testPlayerControlSystem.playerComponent.pickUp = false; // Set the pickUp flag to false so it can pick something up
         testPlayerControlSystem.processEntity(testFoodEntity, 0);
         ControllableComponent testControllableComponent = new ControllableComponent();

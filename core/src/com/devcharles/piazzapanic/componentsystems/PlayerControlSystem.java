@@ -18,6 +18,7 @@ import com.devcharles.piazzapanic.utility.Mappers;
  */
 public class PlayerControlSystem extends IteratingSystem {    
 
+    /** Given that there is only one instance of PlayerControlSystem, this kind of acts like a static value. */
     boolean hasInitComponent = false;
 
     KeyboardInput input;
@@ -32,6 +33,22 @@ public class PlayerControlSystem extends IteratingSystem {
         this.input = input;
     }
 
+    /**
+     * Expose processEntity to a public interface for testing purposes.
+     * This is very cursed, never do this, bad idea, never do this.
+     * I have a feeling such code will become quite common in this codebase ;).
+     * @param entity a chef, this loops through and processes chefs.
+     * @param deltaTime duration of last tick.
+     */
+    public void processEntity_test(Entity entity, float deltaTime) {
+        processEntity(entity, deltaTime);
+    }
+
+    /**
+     * Process inputs and direct player actions on a chef which has playerComponent.
+     * @param entity a chef, this loops through and processes chefs.
+     * @param deltaTime duration of last tick.
+     */
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         // Remember what playerComponent is, regardless of cook (just do this once at the start).
