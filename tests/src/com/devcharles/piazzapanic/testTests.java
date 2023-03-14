@@ -8,10 +8,10 @@ public class testTests {
    }
    @Test
    /**
-    * 
+    * Checks the VIRTUAL_HEIGHT attribute in the PiazzaPanic object is as it should be
     */
    public void virtualHeightTest() {
         PiazzaPanic panic = new PiazzaPanic();
-        Assert.assertTrue(panic.VIRTUAL_HEIGHT == 20f);
+        Assert.assertEquals(panic.VIRTUAL_HEIGHT, 20f, 0.01d);
    }
 }
