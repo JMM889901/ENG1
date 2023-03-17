@@ -21,7 +21,9 @@ public class testPlayerControlSystem {
 
         new HeadlessApplication(null);
         // Initialise wider systems.
-        PlayerControlSystem testPlayerControlSystem = new PlayerControlSystem(new KeyboardInput(), null);// Do I need to
+        KeyboardInput testInput = new KeyboardInput();
+        testInput.pickUp = true;
+        PlayerControlSystem testPlayerControlSystem = new PlayerControlSystem(testInput, null);// Do I need to
         // add a new PooledEngine here?
         PlayerComponent testPlayerComponent = new PlayerComponent();
         PooledEngine engine = new PooledEngine();
