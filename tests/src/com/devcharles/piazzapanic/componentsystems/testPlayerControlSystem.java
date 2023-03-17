@@ -1,4 +1,5 @@
 package com.devcharles.piazzapanic.componentsystems;
+
 import org.junit.*;
 
 import com.devcharles.piazzapanic.components.ControllableComponent;
@@ -11,14 +12,17 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.math.Vector2;
-
-
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.backends.headless.HeadlessApplication;
 
 public class testPlayerControlSystem {
     @Test
-    public void testPlayerPickUpItem(){
+    public void testPlayerPickUpItem() {
+
+        new HeadlessApplication(null);
         // Initialise wider systems.
-        PlayerControlSystem testPlayerControlSystem = new PlayerControlSystem(new KeyboardInput(), null); // Do I need to add a new Pooledengine here?
+        PlayerControlSystem testPlayerControlSystem = new PlayerControlSystem(new KeyboardInput(), null);// Do I need to
+        // add a new Pooledengine here?
         PlayerComponent testPlayerComponent = new PlayerComponent();
         PooledEngine engine = new PooledEngine();
         World world = new World(new Vector2(0, 0), true);
@@ -33,7 +37,8 @@ public class testPlayerControlSystem {
         Entity chef = testEntityFactory.createCook(0, 0);
 
         testPlayerControlSystem.processEntity_test(chef, 0);
-        testPlayerControlSystem.playerComponent.pickUp = false; // Set the pickUp flag to false so it can pick something up
+        testPlayerControlSystem.playerComponent.pickUp = false; // Set the pickUp flag to false so it can pick something
+                                                                // up
         testPlayerControlSystem.processEntity(testFoodEntity, 0);
         ControllableComponent testControllableComponent = new ControllableComponent();
         Assert.assertEquals(testControllableComponent.currentFood.pop(), testFoodType);

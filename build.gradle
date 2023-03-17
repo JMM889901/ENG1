@@ -53,6 +53,7 @@ https://github.com/TomGrill/gdx-testing
  */
 project(":tests") {
     apply plugin: "java"
+    apply plugin: "java-library"
     sourceSets.test.java.srcDirs = ["src/"]
     dependencies {
         implementation project(":core")
