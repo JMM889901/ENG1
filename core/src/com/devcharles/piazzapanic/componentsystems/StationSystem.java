@@ -36,6 +36,7 @@ public class StationSystem extends IteratingSystem {
 
     EntityFactory factory;
 
+    // This is the colour that an ingredient flashes with when it needs to be flipped/turned over/etc.
     private TintComponent readyTint;
     private float tickAccumulator = 0;
 
@@ -102,7 +103,7 @@ public class StationSystem extends IteratingSystem {
                 ControllableComponent controllable = Mappers.controllable.get(station.interactingCook);
 
                 switch (station.type) {
-                    // Ingredient station: pick up food
+                    // Ingredient station: create the food first, then give it to the player.
                     case ingredient:
                         controllable.currentFood.pushItem(factory.createFood(station.ingredient),
                                 station.interactingCook);
@@ -110,10 +111,13 @@ public class StationSystem extends IteratingSystem {
                     
                     // Bin: do nothing (can't take out of bin).
                     case bin:
+                        break;
 
                     // Serve: do nothing (can't take out of serving station).
                     case serve:
                         break;
+
+                    // Default (counter, chopping board etc): take the food from the station if it allows.
                     default:
                         stationPickup(station, controllable);
                         break;
@@ -305,8 +309,15 @@ public class StationSystem extends IteratingSystem {
      * Pick up ready food from a station
      */
     private void stationPickup(StationComponent station, ControllableComponent controllable) {
+        // For each food item stored in a station:...
         for (Entity foodEntity : station.food) {
+
+            // Check first the food is actual food (ie not null) and that it is ready (ie no longer
+            // cooking, so no longer has the cooking component).
             if (foodEntity != null && !Mappers.cooking.has(foodEntity)) {
+
+                // "Push" the food into the player's inventory, if this succeeds (ie the player's
+                // inventory is not full), then remove the food from the station.
                 if (controllable.currentFood.pushItem(foodEntity, station.interactingCook)) {
                     station.food.set(station.food.indexOf(foodEntity), null);
                     Mappers.transform.get(foodEntity).scale.set(1, 1);
