@@ -55,6 +55,12 @@ public class StationSystem extends IteratingSystem {
         }
     }
 
+    /**
+     * Process a station in a tick, i.e. picking up and putting down to a station.
+     * <p>
+     * This interacts with the currently playing/active cook by grabbing it
+     * from the various engines/systems running.
+     */
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         StationComponent station = Mappers.station.get(entity);
@@ -123,13 +129,16 @@ public class StationSystem extends IteratingSystem {
                         break;
                 }
             } else if (player.interact) {
+                // Interacting with a station is basically setting a flag that a station has been
+                // interacted with.
                 player.interact = false;
                 interactStation(station);
+
             } else if (player.compileMeal) {
                 player.compileMeal = false;
 
                 // If the player tries to compile a meal while not at a serving station, it
-                // doesn't matter, the code doesn't need to handle that here.
+                // doesn't matter, the code doesn't need to handle that.
                 if (station.type == StationType.serve) {
                     processServe(station.interactingCook);
                 }
@@ -245,10 +254,13 @@ public class StationSystem extends IteratingSystem {
     private void processServe(Entity cook) {
         ControllableComponent controllable = Mappers.controllable.get(cook);
 
+        // If there is only one (or zero) ingredient[s], this is a premature optimisation.
         if (controllable.currentFood.size() < 2) {
             return;
         }
 
+        // Assume that the player is trying to make a meal with the first 2 ingredients, so if you
+        // have 3 ingredients but the first 2 make a baked potato, ignore the third.
         int count = 2;
         FoodType result = tryServe(controllable, count);
 
