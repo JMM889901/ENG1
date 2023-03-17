@@ -16,9 +16,9 @@ public class CookAnimator extends WalkAnimator {
         int randomNum = ThreadLocalRandom.current().nextInt(1, 3);
 
         // Load the sprite sheet as a Texture
-        Texture walkSheet = new Texture("v2/chef/" + randomNum + ".png");
-        Texture holdOneSheet = new Texture("v2/chef/" + randomNum + "_holding.png");
-        Texture holdManySheet = new Texture("v2/chef/" + randomNum + "_crate.png");
+        Texture walkSheet = new Texture("/assets/v2/chef/" + randomNum + ".png");
+        Texture holdOneSheet = new Texture("/assets/v2/chef/" + randomNum + "_holding.png");
+        Texture holdManySheet = new Texture("/assets/v2/chef/" + randomNum + "_crate.png");
 
         addTextures(walkSheet, 0);
         addTextures(holdOneSheet, 1);

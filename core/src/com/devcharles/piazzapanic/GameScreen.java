@@ -27,6 +27,7 @@ import com.devcharles.piazzapanic.utility.box2d.WorldContactListener;
 import com.devcharles.piazzapanic.scene2d.Hud;
 import box2dLight.RayHandler;
 
+
 public class GameScreen implements Screen {
 
     private PooledEngine engine;
@@ -49,6 +50,8 @@ public class GameScreen implements Screen {
 
     private Integer[] reputationPoints = { 3 };
 
+    private Integer[] money = { 0 };
+
     public GameScreen(PiazzaPanic game) {
         this.game = game;
 
@@ -67,7 +70,7 @@ public class GameScreen implements Screen {
         EntityFactory factory = new EntityFactory(engine, world);
         EntityFactory.cutFood(null);
 
-        hud = new Hud(game.batch, this, game, reputationPoints);
+        hud = new Hud(game.batch, this, game, reputationPoints, money);
 
         mapLoader = new MapLoader(null, null, factory);
         mapLoader.buildCollisions(world);
