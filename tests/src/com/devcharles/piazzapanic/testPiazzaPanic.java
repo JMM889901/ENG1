@@ -2,8 +2,6 @@ package com.devcharles.piazzapanic;
 
 import org.junit.*;
 
-// Import libgdx desktop to test that.
-//import com.devcharles.piazzapanic.DesktopLauncher;
 import com.devcharles.piazzapanic.PiazzaPanic;
 
 import com.devcharles.piazzapanic.GameScreen;
