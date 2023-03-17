@@ -34,6 +34,7 @@ public class Hud extends ApplicationAdapter {
     private Integer customerFreezeTimer = 0; // Using a time freeze powerup pauses the customer timer while this one counts down.
     private float timeCounter = 0;
     private Integer[] reputation;
+    private Integer[] money;
     private Skin skin;
 
     private final float fontScale = 0.6f;
@@ -46,6 +47,8 @@ public class Hud extends ApplicationAdapter {
     Label reputationLabel;
     Label reputationNameLabel;
     Label pausedNameLabel;
+    Label moneyLabel;
+    Label moneyNameLabel;
     BitmapFont uiFont, uiTitleFont;
     // an image used as the background of recipe book and tutorial
     private Image photo;
@@ -68,10 +71,11 @@ public class Hud extends ApplicationAdapter {
      * @param reputationPoints Must be an object to pass by reference, see
      *                         https://stackoverflow.com/questions/3326112/java-best-way-to-pass-int-by-reference
      */
-    public Hud(SpriteBatch spriteBatch, final GameScreen savedGame, final Game game, Integer[] reputationPoints) {
+    public Hud(SpriteBatch spriteBatch, final GameScreen savedGame, final Game game, Integer[] reputationPoints, Integer[] money) {
         this.game = game;
         this.reputation = reputationPoints;
         this.gameScreen = savedGame;
+        this.money = money;
 
         // Setup the viewport
         viewport = new ScreenViewport(new OrthographicCamera(1280, 720));
@@ -116,24 +120,30 @@ public class Hud extends ApplicationAdapter {
 
         timerLabel = new Label(String.format("%03d", customerTimer), hudLabelStyle);
         reputationLabel = new Label(String.format("%01d", reputation[0]), hudLabelStyle);
+        moneyLabel = new Label(String.format("%01d", money[0]), hudLabelStyle);
         timeNameLabel = new Label("Time", hudLabelStyle);
         reputationNameLabel = new Label("Reputation", hudLabelStyle);
+        moneyNameLabel  = new Label("$", hudLabelStyle);
         // Creates a bunch of labels and sets the fontsize
         reputationLabel.setFontScale(fontScale + 0.1f);
         timerLabel.setFontScale(fontScale + 0.1f);
+        moneyLabel.setFontScale(fontScale + 0.1f);
         timeNameLabel.setFontScale(fontScale + 0.1f);
         reputationNameLabel.setFontScale(fontScale + 0.1f);
-        // lays out timer and reputation
+        moneyNameLabel.setFontScale(fontScale + 0.1f);
+        // lays out timer, money and reputation
         tableTop = new Table();
         tableTop.top();
         tableTop.setFillParent(true);
 
         tableTop.add(timeNameLabel).expandX().padTop(10);
         tableTop.add(reputationNameLabel).expandX().padTop(10);
+        tableTop.add(moneyNameLabel).expandX().padTop(10);
 
         tableTop.row();
         tableTop.add(timerLabel).expandX();
         tableTop.add(reputationLabel).expandX();
+        tableTop.add(moneyLabel).expandX();
 
         tableBottomLabel = new Table();
         tableBottomLabel.bottom();
@@ -264,6 +274,7 @@ public class Hud extends ApplicationAdapter {
 
             timerLabel.setText(String.format("%03d", customerTimer));
             reputationLabel.setText(reputation[0]);
+            moneyLabel.setText(money[0]);
             if (triggerWin) {
                 triggerWin = false;
                 win();
