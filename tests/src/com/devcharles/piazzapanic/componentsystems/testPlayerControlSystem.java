@@ -55,6 +55,8 @@ public class testPlayerControlSystem {
         ControllableComponent testControllableComponent = new ControllableComponent();
         // We need to make the chef actually pick something up! the testFoodEntity we created earlier. 
         testPlayerControlSystem.processEntity_test(testFoodEntity, 0);
+        testControllableComponent.currentFood.init(engine);
+        testControllableComponent.currentFood.pushItem(testFoodEntity, chef);
         Assert.assertEquals(testControllableComponent.currentFood.pop(), testFoodType);
     }
 }
