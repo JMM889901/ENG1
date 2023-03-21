@@ -77,6 +77,7 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
         });
 
         TextButton endlessModeButton = new TextButton("Endless Mode", skin);
+        endlessModeButton.setPosition(200, 200);
         root.add(endlessModeButton);
 
         // Checks if button is clicked and if clicked goes onto the tutorial set game to
