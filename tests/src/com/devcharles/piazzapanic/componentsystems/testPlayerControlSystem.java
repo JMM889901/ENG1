@@ -57,6 +57,6 @@ public class testPlayerControlSystem {
         testPlayerControlSystem.processEntity_test(testFoodEntity, 0);
         testControllableComponent.currentFood.init(engine);
         testControllableComponent.currentFood.pushItem(testFoodEntity, chef);
-        Assert.assertEquals(testControllableComponent.currentFood.pop(), testFoodType);
+        Assert.assertEquals(testControllableComponent.currentFood.pop(), testFoodEntity);
     }
 }
