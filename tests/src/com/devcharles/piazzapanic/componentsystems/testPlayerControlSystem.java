@@ -6,6 +6,7 @@ import org.junit.*;
 
 import com.devcharles.piazzapanic.PiazzaPanic;
 import com.devcharles.piazzapanic.emptyGL20;
+import com.devcharles.piazzapanic.testEnvironment;
 import com.devcharles.piazzapanic.components.ControllableComponent;
 import com.devcharles.piazzapanic.components.FoodComponent;
 import com.devcharles.piazzapanic.components.PlayerComponent;
@@ -24,6 +25,7 @@ import com.badlogic.gdx.graphics.GL20;
 public class testPlayerControlSystem {
     @Test
     public void testPlayerPickUpItem() {
+        new testEnvironment();
 
         // Initialise wider systems.
         PlayerControlSystem testPlayerControlSystem = new PlayerControlSystem(new KeyboardInput(), null);// Do I need to
@@ -51,6 +53,8 @@ public class testPlayerControlSystem {
                                                                // up
 
         ControllableComponent testControllableComponent = new ControllableComponent();
+        // We need to make the chef actually pick something up! the testFoodEntity we created earlier. 
+        testPlayerControlSystem.processEntity_test(testFoodEntity, 0);
         Assert.assertEquals(testControllableComponent.currentFood.pop(), testFoodType);
     }
 }
