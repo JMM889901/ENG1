@@ -43,7 +43,7 @@ public class CustomerAISystem extends IteratingSystem {
     private int numOfCustomerTotal = 0;
     private final Hud hud;
     private final Integer[] reputationPoints;
-    private final int CUSTOMER = 5;
+    private  int maxCustomers = (int)Double.POSITIVE_INFINITY;
     private boolean firstSpawn = true;
 
     // List of customers, on removal we move the other customers up a place (queueing).
@@ -93,7 +93,7 @@ public class CustomerAISystem extends IteratingSystem {
 
     @Override
     public void update(float deltaTime) {
-        if (firstSpawn || (spawnTimer.tick(deltaTime) && numOfCustomerTotal < CUSTOMER)) {
+        if (firstSpawn || (spawnTimer.tick(deltaTime) && numOfCustomerTotal < maxCustomers)) {
             firstSpawn = false;
             Entity newCustomer = factory.createCustomer(objectives.get(-2).getPosition());
             customers.add(newCustomer);
@@ -108,7 +108,7 @@ public class CustomerAISystem extends IteratingSystem {
             i++;
         }
 
-        if (!hud.won && customers.size() == 0 && numOfCustomerTotal == CUSTOMER) {
+        if (!hud.won && customers.size() == 0 && numOfCustomerTotal == maxCustomers) {
             hud.triggerWin = true;
         }
 
