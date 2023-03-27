@@ -46,16 +46,30 @@ public class CustomerAISystem extends IteratingSystem {
     private final int CUSTOMER = 5;
     private boolean firstSpawn = true;
 
+    // https://stackoverflow.com/questions/33997169/when-to-use-anonymous-classes
+    // https://www.baeldung.com/java-anonymous-classes
+    // Anonymous classes are weird, I've added a whole bunch more comments, hopefully it's more clear now. - Joss
+
     // List of customers, on removal we move the other customers up a place (queueing).
     private final ArrayList<Entity> customers = new ArrayList<Entity>() {
+        // Just list of customers apart from it does extra things when you remove a customer off the list. - Joss
         @Override
         public boolean remove(Object o) {
+            // For every customer other than "this" one, get it's AI agent controller and tell it
+            // to shuffle up the queue.
             for (Entity entity : customers) {
                 if (entity != o) {
+                    // Get the AIAgentComponent of each customer in the queue (apart from the one getting removed).
                     AIAgentComponent aiAgent = Mappers.aiAgent.get(entity);
 
+                    // If the customer is not at the front of the queue...
                     if (aiAgent.currentObjective - 1 >= 0) {
+
+                        // ... and that space in the queue is not taken (objectiveTaken is a map of
+                        // queue indeces to booleans noting whether there is something in that queue
+                        // index)
                         if (!objectiveTaken.get(aiAgent.currentObjective - 1)) {
+                            // ... then move the customer up the queue.
                             makeItGoThere(aiAgent, aiAgent.currentObjective - 1);
                         }
                     }
