@@ -21,6 +21,7 @@ import com.devcharles.piazzapanic.components.WalkingAnimationComponent;
  * there is no reason to have multiple instaces of a {@link ComponentMapper}.
  */
 public class Mappers {
+        // I have no idea what Mappers does, they seem to be dictionary like but somehow they only refer to one type.
         public static final ComponentMapper<B2dBodyComponent> b2body = ComponentMapper.getFor(B2dBodyComponent.class);
         public static final ComponentMapper<TransformComponent> transform = ComponentMapper
                         .getFor(TransformComponent.class);

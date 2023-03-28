@@ -254,7 +254,8 @@ public class StationSystem extends IteratingSystem {
     private void processServe(Entity cook) {
         ControllableComponent controllable = Mappers.controllable.get(cook);
 
-        // If there is only one (or zero) ingredient[s], this is a premature optimisation.
+        // If there is only one (or zero) ingredient[s] then skip testing for recipes.
+        // (This is a premature optimisation.)
         if (controllable.currentFood.size() < 2) {
             return;
         }

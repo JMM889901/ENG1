@@ -10,10 +10,10 @@ package com.devcharles.piazzapanic.utility;
  */
 public class GdxTimer {
 
-    private int delay;
-    private int elapsed;
-    private boolean running;
-    private boolean looping;
+    private int delay;  // How long the timer "can" run for. - Joss
+    private int elapsed;  // A counter starting from 0 that increases up to the value in delay. - Joss
+    private boolean running;  // Whether the timer is currently advancing the value in elapsed upon calling tick(). - Joss
+    private boolean looping;  // Whether the timer keeps going (subtracting delay from elapsed) after it reaches the "end" (ie delay). - Joss
 
     /**
      * Create a timer.
@@ -38,8 +38,8 @@ public class GdxTimer {
         if (running) {
             elapsed += delta * 1000;
             if (elapsed > delay) {
-                elapsed -= looping ? delay : 0;
-                return true;
+                elapsed -= looping ? delay : 0;  // If looping, decrease by the length of the timer. - Joss
+                return true;  // When looping, this will return true once, then keep returning false for a bit. - Joss
             }
         }
         return false;

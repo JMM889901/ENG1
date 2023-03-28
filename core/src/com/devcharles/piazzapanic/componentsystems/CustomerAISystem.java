@@ -137,7 +137,7 @@ public class CustomerAISystem extends IteratingSystem {
         CustomerComponent customer = Mappers.customer.get(entity);
         TransformComponent transform = Mappers.transform.get(entity);
 
-        // Once the customer has got their food (ironically setting their food to null), they
+        // Once the customer has got their food (setting customer.food to a non-null value), they
         // wander off to the right. This code destroys the customer once they have gone far enough.
         if (customer.food != null && transform.position.x >= (objectives.get(-1).getPosition().x - 2)) {
             destroyCustomer(entity);
