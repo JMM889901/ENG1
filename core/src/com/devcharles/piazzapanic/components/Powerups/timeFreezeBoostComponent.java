@@ -3,8 +3,8 @@ package com.devcharles.piazzapanic.components.Powerups;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
-/*
- * Searched for in Unimplemented
+/**
+ * Given to players while the rest of time stops ticking around them.
  * Given in {@link componentsystems.PowerupSpawnSystem}
  */
 public class timeFreezeBoostComponent implements Component, Poolable {

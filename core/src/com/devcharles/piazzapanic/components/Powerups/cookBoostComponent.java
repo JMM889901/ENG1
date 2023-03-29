@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 /**
+ * Given to players while they are under the effect of a cook boost powerup.
  * Searched for in {@link componentsystems.StationSystem}
  * <p>
  * Given in {@link componentsystems.PowerupSpawnSystem}
