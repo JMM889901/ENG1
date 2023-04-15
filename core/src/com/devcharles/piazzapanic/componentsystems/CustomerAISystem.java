@@ -49,6 +49,8 @@ public class CustomerAISystem extends IteratingSystem {
     // https://stackoverflow.com/questions/33997169/when-to-use-anonymous-classes
     // https://www.baeldung.com/java-anonymous-classes
     // Anonymous classes are weird, I've added a whole bunch more comments, hopefully it's more clear now. - Joss
+    // `customers` is an anonymous class, based of ArrayList<Entity> but it does fancy stuff when
+    // .remove() is called.
 
     // List of customers, on removal we move the other customers up a place (queueing).
     private final ArrayList<Entity> customers = new ArrayList<Entity>() {

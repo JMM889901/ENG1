@@ -207,8 +207,10 @@ public class StationSystem extends IteratingSystem {
 
         // success
 
+        // Cooking timer is set here by default when initialising CookingComponent.
         CookingComponent cooking = getEngine().createComponent(CookingComponent.class);
 
+        // If the cook is currently boosted, we overwrite the default timer.
         if (station.interactingCook.getComponent(cookBoostComponent.class) != null) {
             cooking.timer = new GdxTimer(cookBoostComponent.boostTime, false, false);
         }

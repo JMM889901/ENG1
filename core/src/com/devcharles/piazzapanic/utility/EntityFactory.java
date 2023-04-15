@@ -371,6 +371,10 @@ public class EntityFactory {
         String boostIconPath = "boosts/boostError.png"; // Initiaise it to display an error if something goes wrong.
 
         int newPowerupType = ThreadLocalRandom.current().nextInt(0, 5);
+        
+        newPowerupType = 0;
+        System.out.println("!!! THIS HAS BEEN TEMPORARILY CHANGED FOR TESTING PURPOSES, IF YOU SEE THIS, PLEASE CHANGE IT BACK. (entity factory.java)");
+        
         switch (newPowerupType) {
             case 0:
                 boost.type = powerupType.speedBoost;
