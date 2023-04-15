@@ -9,12 +9,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.devcharles.piazzapanic.components.B2dBodyComponent;
 import com.devcharles.piazzapanic.components.ControllableComponent;
 import com.devcharles.piazzapanic.components.PlayerComponent;
+import com.devcharles.piazzapanic.components.Powerups.cookBoostComponent;
+import com.devcharles.piazzapanic.components.Powerups.cutBoostComponent;
 import com.devcharles.piazzapanic.components.Powerups.speedBoostComponent;
+import com.devcharles.piazzapanic.components.Powerups.timeFreezeBoostComponent;
 import com.devcharles.piazzapanic.input.KeyboardInput;
 import com.devcharles.piazzapanic.utility.Mappers;
 
 /**
- * Controls the one cook that has the PlayerComponent
+ * Controls whichever one cook has the PlayerComponent
  */
 public class PlayerControlSystem extends IteratingSystem {    
 
@@ -147,14 +150,11 @@ public class PlayerControlSystem extends IteratingSystem {
         // and length (speed) is sqrt(2)
         // but we need length to be 1
         direction.nor();
-        int moveSpeed = 2000;
+        int moveSpeed = 2000; // Default speed.
         if (entity.getComponent(speedBoostComponent.class) != null) {
-            moveSpeed = speedBoostComponent.boostSpeed;
-            if (entity.getComponent(speedBoostComponent.class).timeHad > speedBoostComponent.timeMax) {
-                entity.remove(speedBoostComponent.class);
-            } else {
-                entity.getComponent(speedBoostComponent.class).timeHad += deltaTime;
-            }
+            moveSpeed = speedBoostComponent.boostSpeed; // Boosted speed.
+
+            // Stop boosting after a certain time.
         }
         Vector2 finalV = direction.cpy().scl(moveSpeed * deltaTime);
 
@@ -162,6 +162,43 @@ public class PlayerControlSystem extends IteratingSystem {
         if (!direction.isZero(0.7f)) {
             b2body.body.setTransform(b2body.body.getPosition(), direction.angleRad());
             b2body.body.applyLinearImpulse(finalV, b2body.body.getPosition(), true);
+        }
+
+
+        // Tick the timers forwards here.
+
+        if (entity.getComponent(cookBoostComponent.class) != null) {
+            if (entity.getComponent(speedBoostComponent.class).timeHad > speedBoostComponent.timeMax) {
+                entity.remove(speedBoostComponent.class);
+            } else {
+                entity.getComponent(speedBoostComponent.class).timeHad += deltaTime;
+            }
+        }
+
+        if (entity.getComponent(cutBoostComponent.class) != null) {
+            if (entity.getComponent(cutBoostComponent.class).timeHad > cutBoostComponent.timeMax) {
+                entity.remove(cutBoostComponent.class);
+            } else {
+                entity.getComponent(cutBoostComponent.class).timeHad += deltaTime;
+            }
+        }
+
+        // OrderBoost doesn't have a timer, skip that one here.
+        
+        if (entity.getComponent(speedBoostComponent.class) != null) {
+            if (entity.getComponent(speedBoostComponent.class).timeHad > speedBoostComponent.timeMax) {
+                entity.remove(speedBoostComponent.class);
+            } else {
+                entity.getComponent(speedBoostComponent.class).timeHad += deltaTime;
+            }
+        }
+
+        if (entity.getComponent(timeFreezeBoostComponent.class) != null) {
+            if (entity.getComponent(timeFreezeBoostComponent.class).timeHad > timeFreezeBoostComponent.timeMax) {
+                entity.remove(timeFreezeBoostComponent.class);
+            } else {
+                entity.getComponent(timeFreezeBoostComponent.class).timeHad += deltaTime;
+            }
         }
     }
 
