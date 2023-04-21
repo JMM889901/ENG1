@@ -20,6 +20,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.devcharles.piazzapanic.components.LockedComponent;
 import com.devcharles.piazzapanic.components.PlayerComponent;
 import com.devcharles.piazzapanic.components.StationComponent;
 import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
@@ -62,6 +63,10 @@ public class MapLoader {
     static final String ingredientTypeProperty = "ingredientType";
 
     private Map<Integer, Box2dLocation> aiObjectives;
+
+    boolean lockedCookMade = false;
+    boolean lockedCutMade = false;
+    boolean lockedGrillMade = false;
 
     /**
      * Load the {@link TiledMap} from a {@code .tmx} file.
@@ -205,19 +210,45 @@ public class MapLoader {
                         StationType stationType = StationType.from((int) object);
 
                         FoodType ingredientType = null;
-
                         if (stationType == StationType.ingredient) {
                             ingredientType = FoodType
                                     .from((Integer) currentCell.getTile().getProperties().get(ingredientTypeProperty));
                         }
                         System.out.println("Creating station at " + i + ", " + j + " of type " + stationType);
+                        Boolean locked = false;
+                        switch (stationType) {
+                            case cutting_board:
+                                if (lockedCutMade)
+                                    break;
+                                lockedCutMade = true;
+                                locked = true;
+                                break;
+                            case grill:
+                                if (lockedGrillMade)
+                                    break;
+                                lockedGrillMade = true;
+                                locked = true;
+                                break;
+                            case oven:
+                                if (lockedCookMade)
+                                    break;
+                                lockedCookMade = true;
+                                locked = true;
+                                break;
+                            default:
+                                break;
+                        }
                         Entity station = factory.createStation(stationType, new Vector2((i * 2) + 1, (j * 2) + 1),
-                                ingredientType);
+                                ingredientType, locked);
                         if (stationType == StationType.counter) {
                             itemDisplayDir direction = itemDisplayDir.valueOf(
                                     (String) currentCell.getTile().getProperties().get("inventoryDirection"));
                             station.getComponent(StationComponent.class).direction = direction;
                         }
+                        if (stationType == StationType.UnlockStation) {
+                            // TODO: Do this or dont
+                        }
+
                     }
                 }
             }

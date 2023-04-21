@@ -117,7 +117,8 @@ public class Station {
         ingredient(6),
         serve(7),
         counter(8),
-        counterBack(9); // Used where food needs to be shifted down so it draws correctly
+        counterBack(9), // Used where food needs to be shifted down so it draws correctly
+        UnlockStation(10);
 
         private int value;
 

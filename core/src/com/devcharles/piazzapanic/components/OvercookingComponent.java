@@ -13,11 +13,10 @@ import com.devcharles.piazzapanic.utility.GdxTimer;
  * {@link com.devcharles.piazzapanic.componentsystems.StationSystem#stationTick(StationComponent,
  * float) StationSystem.java} for details.
  */
-public class CookingComponent implements Component, Poolable {
-    public static int COOKING_TIME_BASE = 5000;
-    public GdxTimer timer = new GdxTimer(COOKING_TIME_BASE, false, false); // We may want to tweak this number for
-                                                                           // difficulty levels.
-    public float debugPrintableTimer = 0;
+public class OvercookingComponent implements Component, Poolable {
+    public static int OVERCOOK_TIME_BASE = 3000;
+    public GdxTimer timer = new GdxTimer(OVERCOOK_TIME_BASE, false, false); // We may want to tweak this number for
+                                                                            // difficulty levels.
     /**
      * If patty is flipped, onion is chopped, etc.
      */
@@ -25,8 +24,8 @@ public class CookingComponent implements Component, Poolable {
 
     @Override
     public void reset() {
-        timer = new GdxTimer(COOKING_TIME_BASE, false, false);// HACK: This potentially creates 2 timers but that
-                                                              // shouldnt cause any issues
+        timer = new GdxTimer(OVERCOOK_TIME_BASE, false, false);// HACK: This potentially creates 2 timers but that
+                                                               // shouldnt cause any issues
         processed = false;
     }
 }

@@ -31,7 +31,8 @@ public class Hud extends ApplicationAdapter {
     public Stage stage;
     private Viewport viewport;
     private Integer customerTimer = 000;
-    private Integer customerFreezeTimer = 0; // Using a time freeze powerup pauses the customer timer while this one counts down.
+    private Integer customerFreezeTimer = 0; // Using a time freeze powerup pauses the customer timer while this one
+                                             // counts down.
     private float timeCounter = 0;
     private Integer[] reputation;
     private Integer[] money;
@@ -71,7 +72,8 @@ public class Hud extends ApplicationAdapter {
      * @param reputationPoints Must be an object to pass by reference, see
      *                         https://stackoverflow.com/questions/3326112/java-best-way-to-pass-int-by-reference
      */
-    public Hud(SpriteBatch spriteBatch, final GameScreen savedGame, final Game game, Integer[] reputationPoints, Integer[] money) {
+    public Hud(SpriteBatch spriteBatch, final GameScreen savedGame, final Game game, Integer[] reputationPoints,
+            Integer[] money) {
         this.game = game;
         this.reputation = reputationPoints;
         this.gameScreen = savedGame;
@@ -123,7 +125,7 @@ public class Hud extends ApplicationAdapter {
         moneyLabel = new Label(String.format("%01d", money[0]), hudLabelStyle);
         timeNameLabel = new Label("Time", hudLabelStyle);
         reputationNameLabel = new Label("Reputation", hudLabelStyle);
-        moneyNameLabel  = new Label("$", hudLabelStyle);
+        moneyNameLabel = new Label("$", hudLabelStyle);
         // Creates a bunch of labels and sets the fontsize
         reputationLabel.setFontScale(fontScale + 0.1f);
         timerLabel.setFontScale(fontScale + 0.1f);
@@ -165,6 +167,7 @@ public class Hud extends ApplicationAdapter {
         TextButton resumeButton = new TextButton("Resume", skin);
         TextButton recipeBookButton = new TextButton("Recipe Book", skin);
         TextButton tutorialButton = new TextButton("Tutorial", skin);
+        TextButton storeButton = new TextButton("Store", skin);
 
         resumeButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
@@ -174,6 +177,7 @@ public class Hud extends ApplicationAdapter {
         recipeBookButton.addListener(createListener(new Slideshow(game, Slideshow.Type.recipe, gameScreen)));
         tutorialButton.addListener(createListener(new Slideshow(game, Slideshow.Type.tutorial, gameScreen)));
 
+        storeButton.addListener(createListener(new StoreScreen(game, gameScreen)));
         tablePause.add(resumeButton).width(240).height(70).padBottom(30);
 
         tablePause.row();
@@ -181,7 +185,8 @@ public class Hud extends ApplicationAdapter {
         tablePause.add(recipeBookButton).width(240).height(70).padBottom(30);
         tablePause.row();
         tablePause.add(tutorialButton).width(240).height(70);
-
+        tablePause.row();
+        tablePause.add(storeButton).width(240).height(70);
         this.tableRight = new Table();
         this.tableBottom = new Table();
 
@@ -256,17 +261,18 @@ public class Hud extends ApplicationAdapter {
             stage.draw();
             return;
         }
-        
+
         timeCounter += won ? 0 : deltaTime; // If won, don't count time.
 
-        // I (Joss) think the comment below was by the previous group implementing a really hacky
+        // I (Joss) think the comment below was by the previous group implementing a
+        // really hacky
         // solution to a performance problem:
 
         // Staggered once per second using timeCounter makes it way faster
         if (timeCounter >= 1) {
-            
+
             // If the customer is not frozen, increment the timer.
-            if(customerFreezeTimer == 0) {
+            if (customerFreezeTimer == 0) {
                 customerTimer++;
             } else {
                 customerFreezeTimer--;
@@ -326,6 +332,7 @@ public class Hud extends ApplicationAdapter {
 
     /**
      * Freeze the customer timer for a given amount of time.
+     * 
      * @param freezeTime how many seconds to freeze the timer for.
      */
     public void freezeCustomers(int freezeTime) {
