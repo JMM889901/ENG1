@@ -101,7 +101,7 @@ public class CustomerAISystem extends IteratingSystem {
      * @param factory          {@link EntityFactory} for creating new customers
      * @param hud              Hud for updating orders, reputation
      * @param reputationPoints array-wrapped integer reputation passed by-reference
-     *                         
+     * 
      */
     public CustomerAISystem(Map<Integer, Box2dLocation> objectives, World world, EntityFactory factory, Hud hud,
             Integer[] reputationPoints) {
@@ -228,6 +228,8 @@ public class CustomerAISystem extends IteratingSystem {
     private void makeItGoThere(AIAgentComponent aiAgent, int locationID) {
         objectiveTaken.put(aiAgent.currentObjective, false);
 
+        if (objectives == null)
+            return;// Hack for testing
         Box2dLocation there = objectives.get(locationID);
 
         Arrive<Vector2> arrive = new Arrive<Vector2>(aiAgent.steeringBody)
@@ -289,7 +291,7 @@ public class CustomerAISystem extends IteratingSystem {
      * Fulfill the order as above, but determine the food type from the customer's
      * order.
      * 
-     * @param entity   The actual customer that walks about.
+     * @param entity The actual customer that walks about.
      */
     public void autoFulfillOrder(Entity entity) {
         CustomerComponent customer = entity.getComponent(CustomerComponent.class);
