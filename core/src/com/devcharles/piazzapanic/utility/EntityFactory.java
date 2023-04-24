@@ -55,6 +55,11 @@ public class EntityFactory {
         createDefinitions();
     }
 
+    public EntityFactory(PooledEngine engine) {// Test factory
+        this.engine = engine;
+        this.world = null;
+    }
+
     private static final Map<FoodType, TextureRegion> foodTextures = new HashMap<FoodType, TextureRegion>();
 
     /**
