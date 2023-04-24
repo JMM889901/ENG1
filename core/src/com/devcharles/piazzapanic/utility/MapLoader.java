@@ -177,7 +177,7 @@ public class MapLoader {
 
     /**
      * Create station entities from map metadata. Metadata is given to the tile in
-     * Edit Tileset -> Tile Properties.
+     * Edit Tileset, Tile Properties.
      * 
      * @param engine Ashley {@link Engine} instance.
      * @param world  The Box2D world instance to add sensor bodies to.

@@ -97,8 +97,8 @@ public abstract class WalkAnimator {
      * 
      * @param currentSheet The {@link Texture} containing all the frames of the
      *                     animation.
-     * @param value        Variant of the spritesheet (0 -> walk, 1 -> hold one
-     *                     item, 2 -> hold crate)
+     * @param value        Variant of the spritesheet (0: walk, 1: hold one
+     *                     item, 2: hold crate)
      */
     protected void addTextures(Texture currentSheet, int value) {
         // Split the spritesheet into separate textureregions

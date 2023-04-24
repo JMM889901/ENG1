@@ -10,11 +10,10 @@ import com.devcharles.piazzapanic.utility.GdxTimer;
  * Inventory-storing component for customers.
  * <p>
  * It stores
- * <ul>
- * <li>order - What the customer wants.</li>
- * <li>interactingCook - What chef entity is bumping into the customer.</li>
- * <li>food - Food entity which has been given to the customer.</li>
- * <li>timer - A timer indicating how long the customer has been waiting (when this loops past the time limit, lose a reputation point).</li>
+ * order - What the customer wants.
+ * interactingCook - What chef entity is bumping into the customer.
+ * food - Food entity which has been given to the customer.
+ * timer - A timer indicating how long the customer has been waiting (when this loops past the time limit, lose a reputation point).
  */
 public class CustomerComponent implements Component, Poolable {
     public FoodType order = null;
