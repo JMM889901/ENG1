@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 
 /**
  * Given to players while the rest of time stops ticking around them.
- * Given in {@link componentsystems.PowerupSpawnSystem}
+ * Given in componentsystems.PowerupSpawnSystem
  */
 public class timeFreezeBoostComponent implements Component, Poolable {
     public static float timeMax = 5;

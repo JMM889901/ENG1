@@ -88,6 +88,10 @@ public class CustomerAISystem extends IteratingSystem {
         }
     };
 
+    public void forceTick(Entity entity, Float deltaTime) {
+        tickCustomerTimer(entity, entity.getComponent(CustomerComponent.class), deltaTime);
+    }
+
     /**
      * Instantiate the system.
      * 
@@ -95,9 +99,9 @@ public class CustomerAISystem extends IteratingSystem {
      * @param world            Box2D {@link World} for AI and disposing of customer
      *                         entities.
      * @param factory          {@link EntityFactory} for creating new customers
-     * @param hud              {@link HUD} for updating orders, reputation
+     * @param hud              Hud for updating orders, reputation
      * @param reputationPoints array-wrapped integer reputation passed by-reference
-     *                         See {@link Hud}
+     * 
      */
     public CustomerAISystem(Map<Integer, Box2dLocation> objectives, World world, EntityFactory factory, Hud hud,
             Integer[] reputationPoints) {
@@ -166,12 +170,7 @@ public class CustomerAISystem extends IteratingSystem {
         aiAgent.steeringBody.update(deltaTime);
 
         // lower reputation points if they have waited longer than time alloted (1 min)
-        if (customer.timer.tick(deltaTime)) {
-            if (reputationPoints[0] > 0) {
-                reputationPoints[0]--;
-            }
-            customer.timer.stop();
-        }
+        tickCustomerTimer(entity, customer, deltaTime);
 
         if (customer.interactingCook != null) {
             PlayerComponent player = Mappers.player.get(customer.interactingCook);
@@ -203,6 +202,15 @@ public class CustomerAISystem extends IteratingSystem {
         }
     }
 
+    void tickCustomerTimer(Entity entity, CustomerComponent customer, float deltaTime) {
+        if (customer.timer.tick(deltaTime)) {
+            if (reputationPoints[0] > 0) {
+                reputationPoints[0]--;
+            }
+            customer.timer.stop();
+        }
+    }
+
     /**
      * Remove the customer from the {@link World} and remove their entity.
      */
@@ -220,6 +228,8 @@ public class CustomerAISystem extends IteratingSystem {
     private void makeItGoThere(AIAgentComponent aiAgent, int locationID) {
         objectiveTaken.put(aiAgent.currentObjective, false);
 
+        if (objectives == null)
+            return;// Hack for testing
         Box2dLocation there = objectives.get(locationID);
 
         Arrive<Vector2> arrive = new Arrive<Vector2>(aiAgent.steeringBody)
@@ -281,8 +291,7 @@ public class CustomerAISystem extends IteratingSystem {
      * Fulfill the order as above, but determine the food type from the customer's
      * order.
      * 
-     * @param entity   The actual customer that walks about.
-     * @param customer The component properties of the customer.
+     * @param entity The actual customer that walks about.
      */
     public void autoFulfillOrder(Entity entity) {
         CustomerComponent customer = entity.getComponent(CustomerComponent.class);
