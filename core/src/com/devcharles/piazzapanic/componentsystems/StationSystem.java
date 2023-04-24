@@ -89,6 +89,10 @@ public class StationSystem extends IteratingSystem {
 
                 ControllableComponent controllable = Mappers.controllable.get(station.interactingCook);
 
+                // AFTER YOU PUT DOWN FOOD, THE LOCATION OF THE FOOD IS LATER DETERMINED BY THE RENDERING SYSTEM.
+                // In: `renderEntity(Entity entity)`, because the food does not exist in it's own right, it is
+                // stored in a list by the station, not recorded by the entity system directly.
+
                 switch (station.type) {
                     case ingredient:
                         // Using the put down key on an ingredient station will also pick up food.
