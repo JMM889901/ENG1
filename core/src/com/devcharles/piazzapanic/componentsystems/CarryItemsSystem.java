@@ -42,7 +42,7 @@ public class CarryItemsSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         // We have an item being carried around (ie entity).
         
-        ItemComponent item = Mappers.item.get(entity);  // Get the item-y stuff (including data on who's carrying it).
+        ItemComponent item = Mappers.item.get(entity);  // Get the itemy stuff (including data on who's carrying it).
         TransformComponent transform = Mappers.transform.get(entity);
 
         // item.holderTransform is the transform data about the holder (ie holder's location and rotation).
