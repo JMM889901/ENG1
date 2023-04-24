@@ -21,7 +21,6 @@ public class CustomerComponent implements Component, Poolable {
     public Entity interactingCook = null;
     public Entity food = null;
     public GdxTimer timer = new GdxTimer(90000, false, true); // This is set to loop but I don't think it should. - Joss
-
     @Override
     public void reset() {
         order = null;
