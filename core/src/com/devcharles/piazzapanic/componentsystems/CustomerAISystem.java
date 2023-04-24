@@ -88,9 +88,10 @@ public class CustomerAISystem extends IteratingSystem {
         }
     };
 
-    public void forceTick(Entity entity, Float deltaTime){
-        processEntity(entity, deltaTime);
+    public void forceTick(Entity entity, Float deltaTime) {
+        tickCustomerTimer(entity, entity.getComponent(CustomerComponent.class), deltaTime);
     }
+
     /**
      * Instantiate the system.
      * 
@@ -169,12 +170,7 @@ public class CustomerAISystem extends IteratingSystem {
         aiAgent.steeringBody.update(deltaTime);
 
         // lower reputation points if they have waited longer than time alloted (1 min)
-        if (customer.timer.tick(deltaTime)) {
-            if (reputationPoints[0] > 0) {
-                reputationPoints[0]--;
-            }
-            customer.timer.stop();
-        }
+        tickCustomerTimer(entity, customer, deltaTime);
 
         if (customer.interactingCook != null) {
             PlayerComponent player = Mappers.player.get(customer.interactingCook);
@@ -203,6 +199,15 @@ public class CustomerAISystem extends IteratingSystem {
                 getEngine().removeEntity(food);
             }
 
+        }
+    }
+
+    void tickCustomerTimer(Entity entity, CustomerComponent customer, float deltaTime) {
+        if (customer.timer.tick(deltaTime)) {
+            if (reputationPoints[0] > 0) {
+                reputationPoints[0]--;
+            }
+            customer.timer.stop();
         }
     }
 
