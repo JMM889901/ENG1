@@ -14,6 +14,10 @@ import com.devcharles.piazzapanic.testEnvironment;
 
 public class testCustomerAISystem {
     @Test
+    /** 
+     * Test that when an order isn't fulfilled within the time limit
+     * the reputation decreases by 1
+     */
     public void testReputationDamage() {
         new testEnvironment();
         Engine engine = new PooledEngine();
