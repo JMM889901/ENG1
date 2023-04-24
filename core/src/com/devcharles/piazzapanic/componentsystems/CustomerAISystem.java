@@ -88,6 +88,9 @@ public class CustomerAISystem extends IteratingSystem {
         }
     };
 
+    public void forceTick(Entity entity, Float deltaTime){
+        processEntity(entity, deltaTime);
+    }
     /**
      * Instantiate the system.
      * 
