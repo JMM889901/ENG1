@@ -35,7 +35,8 @@ public class Hud extends ApplicationAdapter {
                                              // counts down.
     private float timeCounter = 0;
     private Integer[] reputation;
-    private Integer[] money;
+    public static Integer[] money; // This is static purely for the sake of simplicity, yes its bad practice but
+                                   // cry about it
     private Skin skin;
 
     private final float fontScale = 0.6f;
@@ -77,7 +78,7 @@ public class Hud extends ApplicationAdapter {
         this.game = game;
         this.reputation = reputationPoints;
         this.gameScreen = savedGame;
-        this.money = money;
+        this.money = money; // Yes player money is handled here, cope and seethe bozo
 
         // Setup the viewport
         viewport = new ScreenViewport(new OrthographicCamera(1280, 720));

@@ -240,15 +240,13 @@ public class MapLoader {
                         }
                         Entity station = factory.createStation(stationType, new Vector2((i * 2) + 1, (j * 2) + 1),
                                 ingredientType, locked);
+                        if (locked)
+                            LockedComponent.lockedStations.add(station);
                         if (stationType == StationType.counter) {
                             itemDisplayDir direction = itemDisplayDir.valueOf(
                                     (String) currentCell.getTile().getProperties().get("inventoryDirection"));
                             station.getComponent(StationComponent.class).direction = direction;
                         }
-                        if (stationType == StationType.UnlockStation) {
-                            // TODO: Do this or dont
-                        }
-
                     }
                 }
             }

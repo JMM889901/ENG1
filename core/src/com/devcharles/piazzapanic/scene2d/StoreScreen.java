@@ -1,5 +1,6 @@
 package com.devcharles.piazzapanic.scene2d;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -20,6 +21,10 @@ import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.devcharles.piazzapanic.GameScreen;
 import com.devcharles.piazzapanic.PiazzaPanic;
 import com.devcharles.piazzapanic.components.CookingComponent;
+import com.devcharles.piazzapanic.components.LockedComponent;
+import com.devcharles.piazzapanic.components.StationComponent;
+import com.devcharles.piazzapanic.components.TextureComponent;
+import com.devcharles.piazzapanic.utility.Station.StationType;
 
 public class StoreScreen extends ApplicationAdapter implements Screen {
 
@@ -52,15 +57,59 @@ public class StoreScreen extends ApplicationAdapter implements Screen {
         });
         table.add(exit).width(200).height(50);
         table.row();
-        TextButton cookSpeed = new TextButton("cookSpeed boost", skin);
+        TextButton cookSpeed = new TextButton("cookSpeed boost(10)", skin);
         cookSpeed.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                if (CookingComponent.COOKING_TIME_BASE > 600)
+                if (CookingComponent.COOKING_TIME_BASE > 600 && Hud.money[0] >= 10) {
                     CookingComponent.COOKING_TIME_BASE -= 300f;
+                    Hud.money[0] -= 10;
+                }
+
             }
         });
         table.add(cookSpeed);
+        table.row();
+
+        TextButton extraOven = new TextButton("extra oven(15)", skin);
+        extraOven.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                unlockStationOfType(StationType.oven, 15);
+            }
+        });
+        table.add(extraOven);
+        table.row();
+
+        TextButton extraKnife = new TextButton("extra knife(15)", skin);
+        extraKnife.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                unlockStationOfType(StationType.cutting_board, 15);
+            }
+        });
+        table.add(extraKnife);
+        table.row();
+
+        TextButton extraGrill = new TextButton("extra grill(15)", skin);
+        extraGrill.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                unlockStationOfType(StationType.grill, 15);
+            }
+        });
+        table.add(extraGrill);
         stage.addActor(table);
+    }
+
+    static void unlockStationOfType(StationType type, int cost) {
+        if (Hud.money[0] < cost)
+            return;
+        for (Entity station : LockedComponent.lockedStations) {
+            StationComponent component = station.getComponent(StationComponent.class);
+            if (component.type == type) {
+                station.remove(LockedComponent.class);
+                station.getComponent(TextureComponent.class).region = null;
+                break;
+            }
+        }
+        Hud.money[0] -= cost;
     }
 
     @Override
