@@ -98,9 +98,9 @@ public class CustomerAISystem extends IteratingSystem {
      * @param world            Box2D {@link World} for AI and disposing of customer
      *                         entities.
      * @param factory          {@link EntityFactory} for creating new customers
-     * @param hud              {@link HUD} for updating orders, reputation
+     * @param hud              Hud for updating orders, reputation
      * @param reputationPoints array-wrapped integer reputation passed by-reference
-     *                         See {@link Hud}
+     *                         
      */
     public CustomerAISystem(Map<Integer, Box2dLocation> objectives, World world, EntityFactory factory, Hud hud,
             Integer[] reputationPoints) {
@@ -285,7 +285,6 @@ public class CustomerAISystem extends IteratingSystem {
      * order.
      * 
      * @param entity   The actual customer that walks about.
-     * @param customer The component properties of the customer.
      */
     public void autoFulfillOrder(Entity entity) {
         CustomerComponent customer = entity.getComponent(CustomerComponent.class);
