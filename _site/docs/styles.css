@@ -1,0 +1,13 @@
+@import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css";
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+body {
+    font-family: Inter, sans-serif;
+}
+
+.navbar-item .logo {
+    width: auto;
+    height: 60px;
+    max-height: 5rem;
+}

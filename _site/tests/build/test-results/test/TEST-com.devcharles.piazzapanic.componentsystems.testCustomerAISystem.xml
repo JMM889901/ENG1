@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.devcharles.piazzapanic.componentsystems.testCustomerAISystem" tests="2" skipped="0" failures="0" errors="0" timestamp="2023-04-24T14:54:04" hostname="THONKPAD" time="0.032">
+  <properties/>
+  <testcase name="testReputationDamage" classname="com.devcharles.piazzapanic.componentsystems.testCustomerAISystem" time="0.008"/>
+  <testcase name="testMoneyReward" classname="com.devcharles.piazzapanic.componentsystems.testCustomerAISystem" time="0.024"/>
+  <system-out><![CDATA[[Order automatically resolved] pizza
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
