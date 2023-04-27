@@ -225,7 +225,7 @@ public class CustomerAISystem extends IteratingSystem {
      * 
      * @param locationID and id from {@link CustomerAISystem.objectives}
      */
-    private void makeItGoThere(AIAgentComponent aiAgent, int locationID) {
+    public void makeItGoThere(AIAgentComponent aiAgent, int locationID) {
         objectiveTaken.put(aiAgent.currentObjective, false);
 
         if (objectives == null)

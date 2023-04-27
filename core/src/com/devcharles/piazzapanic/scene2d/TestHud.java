@@ -32,15 +32,14 @@ import com.devcharles.piazzapanic.utility.EntityFactory;
  * HUD user interface rendering for the game, also includes the win screen.
  */
 public class TestHud extends Hud {
+    public boolean won;
+    public boolean triggerWin = false;
+
     /**
      * Create a dud Hud.
      */
     public TestHud() {
-        super(null, null, null, null, null);
-    }
-
-    private void createTables() {
-
+        super(null, null, null, new Integer[] {3}, new Integer[] {1});
     }
 
     /**
