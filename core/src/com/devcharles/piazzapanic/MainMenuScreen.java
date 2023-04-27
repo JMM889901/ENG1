@@ -63,10 +63,10 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
         root.setFillParent(true);
         stage.addActor(root);
 
-        root.add(title).expandX().padBottom(120);
+        root.add(title).expandX().padBottom(100);
         root.row();
         TextButton scenarioModeButton = new TextButton("Scenario Mode", skin);
-        root.add(scenarioModeButton);
+        root.add(scenarioModeButton).expandX().padBottom(20);
         // Checks if button is clicked and if clicked goes onto the tutorial set game to
         // endless mode
         scenarioModeButton.addListener(new ClickListener() {
@@ -76,9 +76,10 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
             }
         });
 
+        root.row();
+        
         TextButton endlessModeButton = new TextButton("Endless Mode", skin);
-        endlessModeButton.setPosition(200, 200);
-        root.add(endlessModeButton);
+        root.add(endlessModeButton).expandX().padBottom(20);
 
         // Checks if button is clicked and if clicked goes onto the tutorial set game to
         // scenario mode
@@ -86,6 +87,19 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new Slideshow(game, Slideshow.Type.tutorial));
                 dispose();
+            }
+        });
+
+        root.row();
+        
+        TextButton quitButton = new TextButton("Quit", skin);
+        root.add(quitButton).expandX().padBottom(20);
+
+        // Checks if button is clicked and if clicked goes onto the tutorial set game to
+        // scenario mode
+        quitButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
             }
         });
     }
