@@ -43,7 +43,7 @@ public class CustomerAISystem extends IteratingSystem {
     private int numOfCustomerTotal = 0;
     private final Hud hud;
     private final Integer[] reputationPoints;
-    private  int maxCustomers = (int)Double.POSITIVE_INFINITY;
+    private int maxCustomers = (int) Double.POSITIVE_INFINITY;
     private boolean firstSpawn = true;
 
     // https://stackoverflow.com/questions/33997169/when-to-use-anonymous-classes
@@ -225,7 +225,7 @@ public class CustomerAISystem extends IteratingSystem {
      * 
      * @param locationID and id from {@link CustomerAISystem.objectives}
      */
-    private void makeItGoThere(AIAgentComponent aiAgent, int locationID) {
+    public void makeItGoThere(AIAgentComponent aiAgent, int locationID) {
         objectiveTaken.put(aiAgent.currentObjective, false);
 
         if (objectives == null)
@@ -323,7 +323,7 @@ public class CustomerAISystem extends IteratingSystem {
         customers.remove(entity);
     }
 
-    public void setMaxCustomers(int maxCustomers){
+    public void setMaxCustomers(int maxCustomers) {
         this.maxCustomers = maxCustomers;
     }
 
