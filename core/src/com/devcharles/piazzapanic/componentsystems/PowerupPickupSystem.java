@@ -2,7 +2,6 @@ package com.devcharles.piazzapanic.componentsystems;
 
 import java.util.ArrayList;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -14,12 +13,13 @@ import com.devcharles.piazzapanic.components.Powerups.PowerupComponent;
 import com.devcharles.piazzapanic.components.Powerups.cookBoostComponent;
 import com.devcharles.piazzapanic.components.Powerups.cutBoostComponent;
 import com.devcharles.piazzapanic.components.Powerups.speedBoostComponent;
-import com.devcharles.piazzapanic.components.Powerups.timeFreezeBoostComponent;
 import com.devcharles.piazzapanic.components.Powerups.PowerupComponent.powerupType;
 import com.devcharles.piazzapanic.utility.Mappers;
-import com.devcharles.piazzapanic.componentsystems.CustomerAISystem;
 import com.devcharles.piazzapanic.scene2d.Hud;
 
+/**
+ * A system that runs constantly, proactively checking if powerups have been collided with, marked for deletion etc.
+ */
 public class PowerupPickupSystem extends IteratingSystem {
 
     // These are just pointers to values in GameScreen.java (which calls this class' constructor directly).
@@ -52,16 +52,13 @@ public class PowerupPickupSystem extends IteratingSystem {
 
     /**
      * What happens when a player walks over a powerup.
-     * <<<<<<< HEAD
      * 
      * @param player
      * @param type
-     *               =======
      * @param player The chef/entity being controlled by the user.
      * @param type   The type of powerup picked up (eg cook boost, time freeze
      *               etc.).
      * @return Whether the powerup was used.
-     *         >>>>>>> 3f4b4aec75666f83d7dbd5b21e30908f1f45328d
      */
     public boolean givePowerup(Entity player, powerupType type) {
         System.out.print("Given powerup: ");

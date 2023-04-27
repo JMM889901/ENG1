@@ -46,16 +46,38 @@ public class CustomerAISystem extends IteratingSystem {
     private  int maxCustomers = (int)Double.POSITIVE_INFINITY;
     private boolean firstSpawn = true;
 
-    // List of customers, on removal we move the other customers up a place (queueing).
+    // https://stackoverflow.com/questions/33997169/when-to-use-anonymous-classes
+    // https://www.baeldung.com/java-anonymous-classes
+    // Anonymous classes are weird, I've added a whole bunch more comments,
+    // hopefully it's more clear now. - Joss
+    // `customers` is an anonymous class, based of ArrayList<Entity> but it does
+    // fancy stuff when
+    // .remove() is called.
+
+    // List of customers, on removal we move the other customers up a place
+    // (queueing).
     private final ArrayList<Entity> customers = new ArrayList<Entity>() {
+        // Just list of customers apart from it does extra things when you remove a
+        // customer off the list. - Joss
         @Override
         public boolean remove(Object o) {
+            // For every customer other than "this" one, get it's AI agent controller and
+            // tell it
+            // to shuffle up the queue.
             for (Entity entity : customers) {
                 if (entity != o) {
+                    // Get the AIAgentComponent of each customer in the queue (apart from the one
+                    // getting removed).
                     AIAgentComponent aiAgent = Mappers.aiAgent.get(entity);
 
+                    // If the customer is not at the front of the queue...
                     if (aiAgent.currentObjective - 1 >= 0) {
+
+                        // ... and that space in the queue is not taken (objectiveTaken is a map of
+                        // queue indeces to booleans noting whether there is something in that queue
+                        // index)
                         if (!objectiveTaken.get(aiAgent.currentObjective - 1)) {
+                            // ... then move the customer up the queue.
                             makeItGoThere(aiAgent, aiAgent.currentObjective - 1);
                         }
                     }
@@ -66,13 +88,20 @@ public class CustomerAISystem extends IteratingSystem {
         }
     };
 
+    public void forceTick(Entity entity, Float deltaTime) {
+        tickCustomerTimer(entity, entity.getComponent(CustomerComponent.class), deltaTime);
+    }
+
     /**
      * Instantiate the system.
-     * @param objectives Map of objectives available
-     * @param world Box2D {@link World} for AI and disposing of customer entities.
-     * @param factory {@link EntityFactory} for creating new customers
-     * @param hud {@link HUD} for updating orders, reputation
-     * @param reputationPoints array-wrapped integer reputation passed by-reference See {@link Hud}
+     * 
+     * @param objectives       Map of objectives available
+     * @param world            Box2D {@link World} for AI and disposing of customer
+     *                         entities.
+     * @param factory          {@link EntityFactory} for creating new customers
+     * @param hud              Hud for updating orders, reputation
+     * @param reputationPoints array-wrapped integer reputation passed by-reference
+     * 
      */
     public CustomerAISystem(Map<Integer, Box2dLocation> objectives, World world, EntityFactory factory, Hud hud,
             Integer[] reputationPoints) {
@@ -123,8 +152,10 @@ public class CustomerAISystem extends IteratingSystem {
         CustomerComponent customer = Mappers.customer.get(entity);
         TransformComponent transform = Mappers.transform.get(entity);
 
-        // Once the customer has got their food (ironically setting their food to null), they
-        // wander off to the right. This code destroys the customer once they have gone far enough.
+        // Once the customer has got their food (setting customer.food to a non-null
+        // value), they
+        // wander off to the right. This code destroys the customer once they have gone
+        // far enough.
         if (customer.food != null && transform.position.x >= (objectives.get(-1).getPosition().x - 2)) {
             destroyCustomer(entity);
             return;
@@ -139,12 +170,7 @@ public class CustomerAISystem extends IteratingSystem {
         aiAgent.steeringBody.update(deltaTime);
 
         // lower reputation points if they have waited longer than time alloted (1 min)
-        if (customer.timer.tick(deltaTime)) {
-            if (reputationPoints[0] > 0) {
-                reputationPoints[0]--;
-            }
-            customer.timer.stop();
-        }
+        tickCustomerTimer(entity, customer, deltaTime);
 
         if (customer.interactingCook != null) {
             PlayerComponent player = Mappers.player.get(customer.interactingCook);
@@ -176,6 +202,15 @@ public class CustomerAISystem extends IteratingSystem {
         }
     }
 
+    void tickCustomerTimer(Entity entity, CustomerComponent customer, float deltaTime) {
+        if (customer.timer.tick(deltaTime)) {
+            if (reputationPoints[0] > 0) {
+                reputationPoints[0]--;
+            }
+            customer.timer.stop();
+        }
+    }
+
     /**
      * Remove the customer from the {@link World} and remove their entity.
      */
@@ -187,11 +222,14 @@ public class CustomerAISystem extends IteratingSystem {
 
     /**
      * Give the customer an objetive to go to.
+     * 
      * @param locationID and id from {@link CustomerAISystem.objectives}
      */
     private void makeItGoThere(AIAgentComponent aiAgent, int locationID) {
         objectiveTaken.put(aiAgent.currentObjective, false);
 
+        if (objectives == null)
+            return;// Hack for testing
         Box2dLocation there = objectives.get(locationID);
 
         Arrive<Vector2> arrive = new Arrive<Vector2>(aiAgent.steeringBody)
@@ -221,7 +259,8 @@ public class CustomerAISystem extends IteratingSystem {
 
     /**
      * Give customer food, send them away and remove the order from the list
-     * @param entity The actual customer that walks about.
+     * 
+     * @param entity   The actual customer that walks about.
      * @param customer The component properties of the customer.
      */
     private void fulfillOrder(Entity entity, CustomerComponent customer, Entity foodEntity) {
@@ -240,6 +279,8 @@ public class CustomerAISystem extends IteratingSystem {
         AIAgentComponent aiAgent = Mappers.aiAgent.get(entity);
         makeItGoThere(aiAgent, -1);
 
+        hud.money[0] += 5;
+
         customer.timer.stop();
         customer.timer.reset();
 
@@ -247,14 +288,16 @@ public class CustomerAISystem extends IteratingSystem {
     }
 
     /**
-     * Fulfill the order as above, but determine the food type from the customer's order.
+     * Fulfill the order as above, but determine the food type from the customer's
+     * order.
+     * 
      * @param entity The actual customer that walks about.
-     * @param customer The component properties of the customer.
      */
     public void autoFulfillOrder(Entity entity) {
         CustomerComponent customer = entity.getComponent(CustomerComponent.class);
         Gdx.app.log("Order automatically resolved", customer.order.name());
-        // This is created automatically rather than taking a food entity from the parameters of
+        // This is created automatically rather than taking a food entity from the
+        // parameters of
         // the method.
         Entity foodEntity = factory.createFood(customer.order);
 
@@ -271,6 +314,8 @@ public class CustomerAISystem extends IteratingSystem {
 
         AIAgentComponent aiAgent = Mappers.aiAgent.get(entity);
         makeItGoThere(aiAgent, -1);
+
+        hud.money[0] += 5;
 
         customer.timer.stop();
         customer.timer.reset();

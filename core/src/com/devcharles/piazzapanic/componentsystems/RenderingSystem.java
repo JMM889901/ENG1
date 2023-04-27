@@ -13,9 +13,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector3;
+import com.devcharles.piazzapanic.components.LockedComponent;
 import com.devcharles.piazzapanic.components.TextureComponent;
 import com.devcharles.piazzapanic.components.TransformComponent;
-import com.devcharles.piazzapanic.components.Powerups.PowerupComponent;
 import com.devcharles.piazzapanic.utility.Mappers;
 import com.devcharles.piazzapanic.utility.WalkAnimator;
 import com.devcharles.piazzapanic.utility.WorldTilemapRenderer;
@@ -24,6 +24,11 @@ import com.devcharles.piazzapanic.utility.ZComparator;
 import com.devcharles.piazzapanic.utility.Station.StationType;
 import com.devcharles.piazzapanic.utility.Station.itemDisplayDir;
 
+/**
+ * Has a bunch of "convenience" methods that do a lot of leg work for
+ * progressing animations,
+ * drawing in the right place on screen etc.
+ */
 public class RenderingSystem extends IteratingSystem {
 
     private SpriteBatch sb;
@@ -53,7 +58,8 @@ public class RenderingSystem extends IteratingSystem {
         // entities.addAll(PowerupSpawnSystem.powerUps);
         renderingAccumulator += deltaTime;
 
-        Collections.shuffle(entities);
+        Collections.shuffle(entities); // I can't possibly imagine why you would shuffle them then sort them but
+                                       // alright.
         Collections.sort(entities, Zcomparator);
         Collections.sort(entities, Ycomparator);
 

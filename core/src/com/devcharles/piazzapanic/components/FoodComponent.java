@@ -5,9 +5,15 @@ import java.util.Map;
 
 import com.badlogic.ashley.core.Component;
 
+/**
+ * An entity is "food" if it has FoodComponent, ie it has the attribute `type` (which is a FoodType).
+ */
 public class FoodComponent implements Component {
     public FoodType type;
 
+    /**
+     * These are the hard values behind the food types used in recipes etc.
+     */
     public enum FoodType {
         // These ids correspond to the order of the food in the sprite!
         unformedPatty(1),

@@ -22,6 +22,7 @@ import com.devcharles.piazzapanic.components.B2dBodyComponent;
 import com.devcharles.piazzapanic.components.ControllableComponent;
 import com.devcharles.piazzapanic.components.CustomerComponent;
 import com.devcharles.piazzapanic.components.FoodComponent;
+import com.devcharles.piazzapanic.components.LockedComponent;
 import com.devcharles.piazzapanic.components.TextureComponent;
 import com.devcharles.piazzapanic.components.TransformComponent;
 import com.devcharles.piazzapanic.components.WalkingAnimationComponent;
@@ -52,6 +53,11 @@ public class EntityFactory {
         this.world = world;
 
         createDefinitions();
+    }
+
+    public EntityFactory(PooledEngine engine) {// Test factory
+        this.engine = engine;
+        this.world = null;
     }
 
     private static final Map<FoodType, TextureRegion> foodTextures = new HashMap<FoodType, TextureRegion>();
@@ -87,6 +93,7 @@ public class EntityFactory {
 
     /**
      * Creates cook entity, and adds it to the engine.
+     * 
      * @param x X position of the chef (in weird tile units).
      * @param y Y position of the chef (in weird tile units).
      * @return Reference to the entity.
@@ -201,7 +208,7 @@ public class EntityFactory {
      * @param ingredientType (optional) if this is an Ingredient station, which
      *                       ingredient should it spawn.
      */
-    public Entity createStation(Station.StationType type, Vector2 position, FoodType ingredientType) {
+    public Entity createStation(Station.StationType type, Vector2 position, FoodType ingredientType, boolean locked) {
         Entity entity = engine.createEntity();
 
         float[] size = { 1f, 1f };
@@ -213,6 +220,7 @@ public class EntityFactory {
         TransformComponent transform = engine.createComponent(TransformComponent.class);
 
         StationComponent station = engine.createComponent(StationComponent.class);
+
         station.type = type;
 
         if (type == Station.StationType.ingredient) {
@@ -245,7 +253,12 @@ public class EntityFactory {
         entity.add(transform);
         entity.add(texture);
         entity.add(station);
-
+        if (locked) {
+            LockedComponent lockedComponent = engine.createComponent(LockedComponent.class);
+            entity.add(lockedComponent);
+            texture.region = new TextureRegion(new Texture("padded-lock.jpg.exe.zip.rar.wav.ogg.gif.7z.stl.docx.png"));
+            texture.scale.set(0.05f, 0.05f);
+        }
         engine.addEntity(entity);
 
         return entity;
@@ -371,6 +384,11 @@ public class EntityFactory {
         String boostIconPath = "boosts/boostError.png"; // Initiaise it to display an error if something goes wrong.
 
         int newPowerupType = ThreadLocalRandom.current().nextInt(0, 5);
+
+        newPowerupType = 0;
+        System.out.println(
+                "!!! THIS HAS BEEN TEMPORARILY CHANGED FOR TESTING PURPOSES, IF YOU SEE THIS, PLEASE CHANGE IT BACK. (entity factory.java)");
+
         switch (newPowerupType) {
             case 0:
                 boost.type = powerupType.speedBoost;

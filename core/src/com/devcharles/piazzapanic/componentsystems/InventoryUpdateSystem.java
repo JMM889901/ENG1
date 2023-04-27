@@ -8,6 +8,7 @@ import com.devcharles.piazzapanic.components.PlayerComponent;
 import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
 import com.devcharles.piazzapanic.scene2d.Hud;
 import com.devcharles.piazzapanic.utility.Mappers;
+
 /**
  * Links up the cook's inventory to the hud.
  */
@@ -18,6 +19,10 @@ public class InventoryUpdateSystem extends IteratingSystem {
         super(Family.all(PlayerComponent.class, ControllableComponent.class).get());
         this.hud = hud;
     }
+
+    /**
+     * Every frame, for every item in the cooks inventory, this draws the item to the hud.
+     */
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         ControllableComponent cook = Mappers.controllable.get(entity);
