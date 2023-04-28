@@ -13,7 +13,7 @@ import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.math.Vector2;
 
-public class testPlayerControlSystem {
+public class testPlayerInventorySystem {
     @Test
     /**
      * Tests if a player can pick up an item from a countertop
@@ -36,7 +36,7 @@ public class testPlayerControlSystem {
         Entity chef = testEntityFactory.createCook(0, 0);
         chef.add(testPlayerComponent);
         engine.update(1);
-        //TODO - add a countertop to pick the item up from. 
+        // TODO - add a countertop to pick the item up from.
         testPlayerControlSystem.playerComponent.pickUp = true; // Set the pickUp flag to false, allows chef to pickup
         ControllableComponent testControllableComponent = new ControllableComponent();
         // We need to make the chef actually pick something up! the testFoodEntity we
@@ -46,8 +46,10 @@ public class testPlayerControlSystem {
         testControllableComponent.currentFood.pushItem(testFoodEntity, chef);
         Assert.assertEquals(testControllableComponent.currentFood.pop(), testFoodEntity);
     }
+
     @Test
-    public void testPlayerPutDownItem(){
+    public void testPlayerPutDownItem() {
 
     }
+
 }

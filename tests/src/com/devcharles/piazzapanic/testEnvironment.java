@@ -1,5 +1,7 @@
 package com.devcharles.piazzapanic;
 
+import java.util.ArrayList;
+
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.ApplicationListener;
@@ -8,6 +10,7 @@ import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.devcharles.piazzapanic.utility.EntityFactory;
@@ -18,6 +21,8 @@ public class testEnvironment extends HeadlessApplication {
     public World world;
     public EntityFactory factory;
     public MapLoader loader;
+    public ArrayList<Vector2> spawnPoints = new ArrayList<Vector2>();
+    public int ppt = 16;// Default pixels per tile
 
     /**
      * Create a test environment for testing components and systems
@@ -72,6 +77,9 @@ public class testEnvironment extends HeadlessApplication {
             MapProperties properties = mapObject.getProperties();
             if (properties.containsKey("lightID")) {
                 properties.remove("lightID");
+            } else if (properties.containsKey("cookspawnpoint")) {
+                RectangleMapObject point = (RectangleMapObject) mapObject;
+                spawnPoints.add(new Vector2(point.getRectangle().x / ppt, point.getRectangle().y / ppt));
             }
         }
     }
