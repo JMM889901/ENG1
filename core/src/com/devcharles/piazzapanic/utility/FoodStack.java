@@ -10,8 +10,14 @@ public class FoodStack extends ArrayDeque<Entity> {
 
     private Engine engine;
 
-    public void init(Engine e) {
-        engine = e;
+    /**
+     * Give this foodstack a reference to the wider engine.
+     * <p>
+     * <em>This does not need to be called if you created the foodstack through entity factory.</em>
+     * @param e
+     */
+    public void init(Engine engine) {
+        this.engine = engine;
     }
 
     public final int capacity = 12;
