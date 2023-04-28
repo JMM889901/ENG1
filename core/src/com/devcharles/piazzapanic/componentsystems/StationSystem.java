@@ -75,7 +75,7 @@ public class StationSystem extends IteratingSystem {
         }
 
         stationTick(station, deltaTime);
-
+        
         if (station.interactingCook != null) {
 
             PlayerComponent player = Mappers.player.get(station.interactingCook);
