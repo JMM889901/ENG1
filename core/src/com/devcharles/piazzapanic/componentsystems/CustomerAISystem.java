@@ -43,7 +43,7 @@ public class CustomerAISystem extends IteratingSystem {
     private int numOfCustomerTotal = 0;
     private final Hud hud;
     private final Integer[] reputationPoints;
-    private  int maxCustomers = (int)Double.POSITIVE_INFINITY;
+    private static int maxCustomers = (int)Double.POSITIVE_INFINITY;
     private boolean firstSpawn = true;
 
     // https://stackoverflow.com/questions/33997169/when-to-use-anonymous-classes
@@ -323,8 +323,9 @@ public class CustomerAISystem extends IteratingSystem {
         customers.remove(entity);
     }
 
-    public void setMaxCustomers(int maxCustomers){
-        this.maxCustomers = maxCustomers;
+    public static void setMaxCustomers(int Customers){
+        System.out.println("customer max changed from "+CustomerAISystem.maxCustomers+"to "+Customers);
+        maxCustomers = Customers;
     }
 
 }

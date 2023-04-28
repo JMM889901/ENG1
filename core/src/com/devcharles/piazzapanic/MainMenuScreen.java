@@ -1,5 +1,7 @@
 package com.devcharles.piazzapanic;
 
+import java.io.Console;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -12,12 +14,19 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter.DigitsOnlyFilter;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.devcharles.piazzapanic.componentsystems.CustomerAISystem;
+import com.devcharles.piazzapanic.input.MyTextInputListener;
+import com.devcharles.piazzapanic.scene2d.InputDialog;
 import com.devcharles.piazzapanic.scene2d.Slideshow;
 
 /**
@@ -34,6 +43,8 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
     private Sprite sprite;
     private BitmapFont gamesFont;
     private Label title;
+    private Dialog numCustomersInput;
+    private TextField input;
 
     /**
      * creates main menu stage
@@ -67,12 +78,33 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
         root.row();
         TextButton scenarioModeButton = new TextButton("Scenario Mode", skin);
         root.add(scenarioModeButton).expandX().padBottom(20);
+
+        input = new TextField("5", skin);
+        input.setTextFieldFilter(new DigitsOnlyFilter());
+        input.setAlignment(1);
+
+        numCustomersInput = new InputDialog("", input, skin, game);
+        numCustomersInput.text("Enter number of customers:");
+        numCustomersInput.row();
+        //numCustomersInput.add(input);
+        //numCustomersInput.add(input);
+        numCustomersInput.row();
+        numCustomersInput.button("Play");
+        //numCustomersInput.scaleBy(1.5f);
+        numCustomersInput.align(Align.center);
+        root.addActor(numCustomersInput);
+        numCustomersInput.hide();
+        
+
+        
+
         // Checks if button is clicked and if clicked goes onto the tutorial set game to
         // endless mode
         scenarioModeButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new Slideshow(game, Slideshow.Type.tutorial));
-                dispose();
+                numCustomersInput.show(stage);                
+                //game.setScreen(new Slideshow(game, Slideshow.Type.tutorial));
+                //dispose();
             }
         });
 
@@ -102,6 +134,10 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
                 Gdx.app.exit();
             }
         });
+
+        MyTextInputListener listener = new MyTextInputListener();
+        Gdx.input.getTextInput(listener, "Dialog Title", "Initial Textfield Value", "Hint Value");
+
     }
 
     @Override
