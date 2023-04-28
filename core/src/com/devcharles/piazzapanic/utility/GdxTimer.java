@@ -59,4 +59,8 @@ public class GdxTimer {
     public void reset() {
         this.elapsed = 0;
     }
+
+    public int peakElapsed() {
+        return this.elapsed;
+    }
 }

@@ -186,7 +186,7 @@ public class StationSystem extends IteratingSystem {
     /**
      * Try and process the food from the player.
      */
-    private void processStation(ControllableComponent controllable, StationComponent station) {
+    public void processStation(ControllableComponent controllable, StationComponent station) {
 
         if (controllable.currentFood.isEmpty()) {
             return;
@@ -241,7 +241,7 @@ public class StationSystem extends IteratingSystem {
      * 
      * @param station the station the action is being performed on.
      */
-    private void interactStation(StationComponent station) {
+    public void interactStation(StationComponent station) {
         for (Entity food : station.food) {
             if (food == null || !Mappers.cooking.has(food)) {
                 continue;
@@ -373,7 +373,7 @@ public class StationSystem extends IteratingSystem {
      * @param station
      * @param deltaTime
      */
-    private void stationTick(StationComponent station, float deltaTime) {
+    public void stationTick(StationComponent station, float deltaTime) {
         if (station.type == StationType.cutting_board && station.interactingCook == null) {
             return;
         }
