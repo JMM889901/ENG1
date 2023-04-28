@@ -14,7 +14,7 @@ public class FoodStack extends ArrayDeque<Entity> {
      * Give this foodstack a reference to the wider engine.
      * <p>
      * <em>This does not need to be called if you created the foodstack through entity factory.</em>
-     * @param e
+     * @param engine The engine reference given to this food stack.
      */
     public void init(Engine engine) {
         this.engine = engine;
