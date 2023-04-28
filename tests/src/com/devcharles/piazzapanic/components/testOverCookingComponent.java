@@ -18,21 +18,20 @@ public class testOverCookingComponent {
     /**
      * Check foods become spoiled if processing too long.
      */
-    public void testOverCooking(){
+    public void testOverCooking() {
         // Initialise environment
-        new testEnvironment();
+        testEnvironment environment = new testEnvironment();
         PooledEngine engine = new PooledEngine();
-        World world = new World(new Vector2(0, 0), true);
-        StationSystem stationSystem = new StationSystem(null, null);
-        EntityFactory entityFactory = new EntityFactory(engine, world);
+        StationSystem stationSystem = new StationSystem(null, environment.factory);
+        EntityFactory entityFactory = environment.factory;
+        engine.addSystem(stationSystem);
 
         // Create 2 foods that each require a different type of cooking.
-        Entity testPattySuccess = entityFactory.createFood(FoodType.formedPatty);  // Grill.
+        Entity testPattySuccess = entityFactory.createFood(FoodType.formedPatty); // Grill.
         Entity testPattySpoil = entityFactory.createFood(FoodType.formedPatty);
 
-        Entity testPotatoSuccess = entityFactory.createFood(FoodType.potato);  // Oven.
+        Entity testPotatoSuccess = entityFactory.createFood(FoodType.potato); // Oven.
         Entity testPotatoSpoil = entityFactory.createFood(FoodType.potato);
-
 
         // Create a chef to put things on the station.
         Entity testCook = entityFactory.createCook(0, 0);
@@ -41,7 +40,6 @@ public class testOverCookingComponent {
         chefComponent.currentFood.pushItem(testPattySpoil, testCook);
         chefComponent.currentFood.pushItem(testPotatoSuccess, testCook);
         chefComponent.currentFood.pushItem(testPotatoSpoil, testCook);
-        
 
         // Create stations to process food.
         Entity testOvenSuccess = entityFactory.createStation(StationType.oven, new Vector2(1, 0), null, false);
@@ -54,23 +52,30 @@ public class testOverCookingComponent {
         StationComponent grillSuccessComponent = Mappers.station.get(testGrillSuccess);
         StationComponent grillSpoilComponent = Mappers.station.get(testGrillSpoil);
 
+        // Force set the interacting cook as our test cook
+        ovenSpoilComponent.interactingCook = testCook;
+        grillSpoilComponent.interactingCook = testCook;
+        ovenSuccessComponent.interactingCook = testCook;
+        grillSuccessComponent.interactingCook = testCook;
 
-
-        // This is used lots of times below, it gets overwritten each time so no worry about leaked references.
+        // This is used lots of times below, it gets overwritten each time so no worry
+        // about leaked references.
         CookingComponent foodCookingComponent;
 
         // Run the order of putting food on and using stations.
         stationSystem.processStation(chefComponent, ovenSuccessComponent);
         stationSystem.stationTick(ovenSuccessComponent, 5.1f);
         stationSystem.interactStation(ovenSuccessComponent);
-        // Quick sanity check to make sure the food is ready to start the second stage of processing.
+        // Quick sanity check to make sure the food is ready to start the second stage
+        // of processing.
         foodCookingComponent = Mappers.cooking.get(ovenSuccessComponent.food.get(0));
         Assert.assertTrue(foodCookingComponent.processed);
         Assert.assertTrue(foodCookingComponent.timer.peakElapsed() == 0);
         // Finish cooking the food.
-        stationSystem.stationTick(ovenSuccessComponent, 5.1f);  // Tick twice to give the OverCookingComponent a chance to check whether the food spoils.
+        stationSystem.stationTick(ovenSuccessComponent, 5.1f); // Tick twice to give the OverCookingComponent a chance
+                                                               // to check whether the food spoils.
         stationSystem.stationTick(ovenSuccessComponent, 0.1f);
         // TODO: Now pick up the food again. Is it spoiled?
-        
+
     }
 }
