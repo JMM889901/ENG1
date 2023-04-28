@@ -15,6 +15,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.graphics.GL20;
 
+//Ideally this wont be needed and tests should instead strip any lighting and such from the map
 public class emptyGL20 implements GL20 {
 
     @Override

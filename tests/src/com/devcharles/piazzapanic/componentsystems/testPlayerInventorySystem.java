@@ -1,5 +1,7 @@
 package com.devcharles.piazzapanic.componentsystems;
 
+import static org.junit.Assert.assertArrayEquals;
+
 import org.junit.*;
 import com.devcharles.piazzapanic.testEnvironment;
 import com.devcharles.piazzapanic.components.ControllableComponent;
@@ -65,4 +67,48 @@ public class testPlayerInventorySystem {
         Assert.assertTrue(false);
     }
 
+    @Test
+    public void testChefRememberItems() {
+        testEnvironment environment = new testEnvironment();
+        // Initialise wider systems.
+        PooledEngine engine = (PooledEngine) environment.engine;
+
+        KeyboardInput input = new KeyboardInput();
+        PlayerControlSystem testPlayerControlSystem = new PlayerControlSystem(input, environment.engine);
+        engine.addSystem(testPlayerControlSystem);
+
+        // Initialise foods (and the entity factory to make said food).
+        EntityFactory testEntityFactory = environment.factory;
+        FoodComponent testFoodType = new FoodComponent();
+
+        testFoodType.type = FoodType.unformedPatty; // From the FoodType: unformedPatty(1)
+        Entity testFoodEntity = testEntityFactory.createFood(testFoodType.type);
+
+        // Initialise a chef.
+        Vector2 spawn = environment.spawnPoints.get(0);
+        Entity chef = testEntityFactory.createCook((int) spawn.x, (int) spawn.y);
+        spawn = environment.spawnPoints.get(1);
+        Entity chef2 = testEntityFactory.createCook((int) spawn.x, (int) spawn.y);
+
+        PlayerComponent testPlayerComponent = new PlayerComponent();
+        chef.add(testPlayerComponent);
+        engine.update(1);// Engine needs to tick so playercomponent is detected by systems
+        testPlayerControlSystem.playerComponent.pickUp = true; // Set the pickUp flag to false, allows chef to pickup
+        ControllableComponent testControllableComponent = chef.getComponent(ControllableComponent.class);
+        // We need to make the chef actually pick something up! the testFoodEntity we
+        // created earlier.
+
+        testPlayerControlSystem.processEntity_test(testFoodEntity, 0);
+        testControllableComponent.currentFood.init(engine);
+        testControllableComponent.currentFood.pushItem(testFoodEntity, chef);
+
+        input.changeCooks = true; // Change the chef to chef2
+        engine.update(1);
+
+        assert (testControllableComponent.currentFood.pop() == testFoodEntity); // chef remembers the food he picked up
+                                                                                // when not selected
+        testControllableComponent = chef2.getComponent(ControllableComponent.class);
+        assert (testControllableComponent.currentFood.size() == 0); // chef2 does not remember the food chef1 picked
+                                                                    // up
+    }
 }

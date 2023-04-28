@@ -1,5 +1,7 @@
 package com.devcharles.piazzapanic.components;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.*;
 
 import com.badlogic.ashley.core.Entity;
