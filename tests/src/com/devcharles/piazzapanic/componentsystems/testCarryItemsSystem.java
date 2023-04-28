@@ -8,7 +8,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.devcharles.piazzapanic.testEnvironment;
 import com.devcharles.piazzapanic.components.ControllableComponent;
-import com.devcharles.piazzapanic.components.FoodComponent;
 import com.devcharles.piazzapanic.components.PlayerComponent;
 import com.devcharles.piazzapanic.components.TransformComponent;
 import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
@@ -47,7 +46,6 @@ public class testCarryItemsSystem {
 
         // Create the player.
         Entity testCook = entityFactory.createCook(0, 0);  // EntityFactory automatically gives this a bunch of components.
-        PlayerComponent testPlayerComponent = new PlayerComponent();  // This component just means *this* cook is being controlled.
 
         // Create food item to carry.
         Entity testIngredient = entityFactory.createFood(FoodType.tomato);
@@ -72,7 +70,7 @@ public class testCarryItemsSystem {
         Assert.assertTrue(distance < 1.01f);  // The item should be within 1 unit of the player.
 
         /*
-         * Basically, what I'm trying to do is test that a player is followed round by an object it carries.
+         * Basically, what I've tried to do is test that a player is followed round by an object it carries.
          * 
          * That means create a player
          * create an object
@@ -82,8 +80,6 @@ public class testCarryItemsSystem {
          *  (and then tick the player system or entity system.)
          * test if the object has moved.
          */
-
-        Assert.assertTrue(true);
     }
 
 

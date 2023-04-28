@@ -1,6 +1,9 @@
 package com.devcharles.piazzapanic.components;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.*;
+
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.math.Vector2;
@@ -12,10 +15,10 @@ import com.devcharles.piazzapanic.utility.EntityFactory;
 import com.devcharles.piazzapanic.utility.Mappers;
 import com.devcharles.piazzapanic.utility.Station.StationType;
 
-public class testCookingComponent {
+public class testOverCookingComponent {
     @Test
     /**
-     * Check food cooks correctly.
+     * Check foods become spoiled if processing too long.
      */
     public void testOverCooking() {
         // Initialise environment
@@ -75,5 +78,9 @@ public class testCookingComponent {
         stationSystem.stationTick(ovenSuccessComponent, 5.1f); // Tick twice to give the OverCookingComponent a chance to check whether the food spoils.
         stationSystem.stationTick(ovenSuccessComponent, 0.1f);
         // TODO: Now pick up the food again. Is it spoiled?
+
+        
+        
+        Assert.assertTrue(false);
     }
 }

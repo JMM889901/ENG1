@@ -28,6 +28,7 @@ import com.devcharles.piazzapanic.utility.EntityFactory;
  * HUD user interface rendering for the game, also includes the win screen.
  */
 public class Hud extends ApplicationAdapter {
+    private Boolean _ISNTTEST;  // This just disables trying a few things that don't aren't needed for testing.
     public Stage stage;
     private Viewport viewport;
     private Integer customerTimer = 000;
@@ -75,15 +76,19 @@ public class Hud extends ApplicationAdapter {
      */
     public Hud(SpriteBatch spriteBatch, final GameScreen savedGame, final Game game, Integer[] reputationPoints,
             Integer[] money) {
+        
+        _ISNTTEST = spriteBatch != null;
         this.game = game;
         this.reputation = reputationPoints;
         this.gameScreen = savedGame;
         this.money = money; // Yes player money is handled here, cope and seethe bozo
 
         // Setup the viewport
+        if(_ISNTTEST) {
         viewport = new ScreenViewport(new OrthographicCamera(1280, 720));
         stage = new Stage(viewport, spriteBatch);
         viewport.apply();
+        }
 
         // Import the custom skin with different fonts
         skin = new Skin(Gdx.files.internal("craftacular/skin/craftacular-ui.json"));
@@ -96,6 +101,7 @@ public class Hud extends ApplicationAdapter {
         titleLabelStyle = new Label.LabelStyle();
         titleLabelStyle.font = uiTitleFont;
 
+        if(_ISNTTEST) {
         stage.addListener(new InputListener() {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
@@ -114,9 +120,12 @@ public class Hud extends ApplicationAdapter {
                 return true;
             }
         });
+        }
 
         // Create the UI layout.
+        if(_ISNTTEST) {
         createTables();
+        }
     }
 
     private void createTables() {
