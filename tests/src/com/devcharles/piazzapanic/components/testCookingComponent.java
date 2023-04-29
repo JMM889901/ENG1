@@ -13,7 +13,8 @@ import com.devcharles.piazzapanic.utility.Station.StationType;
 public class testCookingComponent {
     @Test
     /**
-     * Test that food has two stages of processing and changes what food it is after the end of those stages.
+     * Test that food has two stages of processing and changes what food it is after
+     * the end of those stages.
      */
     public void testCooking() {
         // Initialise environment
@@ -31,28 +32,29 @@ public class testCookingComponent {
         // Create a chef to put things on the station.
         Entity testChef = environment.factory.createCook(0, 0);
         PlayerComponent testPlayerComponent = new PlayerComponent();
-        testChef.add(testPlayerComponent);  // Make our chef the active "player".
+        testChef.add(testPlayerComponent); // Make our chef the active "player".
 
         ControllableComponent testControllableComponent = Mappers.controllable.get(testChef);
-        testControllableComponent.currentFood.pushItem(testPatty, testChef);  // There are "redundant" references to testChef due to 'slightly' dodgy architecture inherited from Group26.
+        testControllableComponent.currentFood.pushItem(testPatty, testChef); // There are "redundant" references to
+                                                                             // testChef due to 'slightly' dodgy
+                                                                             // architecture inherited from Group26.
         testControllableComponent.currentFood.pushItem(testPotato, testChef);
         testControllableComponent.currentFood.pushItem(testOnion, testChef);
 
         // Create stations to process food.
         Entity testOven = environment.factory.createStation(StationType.oven, new Vector2(1, 0), null, false);
         Entity testGrill = environment.factory.createStation(StationType.grill, new Vector2(2, 0), null, false);
-        Entity testCuttingBoard = environment.factory.createStation(StationType.cutting_board, new Vector2(3, 0), null, false);
+        Entity testCuttingBoard = environment.factory.createStation(StationType.cutting_board, new Vector2(3, 0), null,
+                false);
 
         StationComponent ovenComponent = Mappers.station.get(testOven);
         StationComponent grillComponent = Mappers.station.get(testGrill);
         StationComponent cuttingBoardComponent = Mappers.station.get(testCuttingBoard);
 
-
         // Start the first stage of processing.
         cuttingBoardComponent.interactingCook = testChef;
         testPlayerComponent.putDown = true;
         environment.engine.update(0.1f);
-        cuttingBoardComponent.interactingCook = null;
 
         ovenComponent.interactingCook = testChef;
         testPlayerComponent.putDown = true;
@@ -63,8 +65,8 @@ public class testCookingComponent {
         testPlayerComponent.putDown = true;
         environment.engine.update(0.1f);
         grillComponent.interactingCook = null;
-        // (This is done in reverse order as above because the player's foodstack is of course LIFO.)
-        
+        // (This is done in reverse order as above because the player's foodstack is of
+        // course LIFO.)
 
         // Everything processes for just long enough for the first stage.
         environment.engine.update(CookingComponent.COOKING_TIME_BASE / 1000f + 0.1f);
@@ -83,8 +85,6 @@ public class testCookingComponent {
         cuttingBoardComponent.interactingCook = testChef;
         testPlayerComponent.interact = true;
         environment.engine.update(0.1f);
-        cuttingBoardComponent.interactingCook = null;
-
 
         // Allow time for the second stage of processing.
         environment.engine.update(CookingComponent.COOKING_TIME_BASE / 1000f + 0.1f);
