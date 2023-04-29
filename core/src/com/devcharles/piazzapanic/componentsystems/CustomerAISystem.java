@@ -47,7 +47,9 @@ public class CustomerAISystem extends IteratingSystem {
     private static int maxCustomers = (int) Double.POSITIVE_INFINITY;
     private static int maxActiveCustomers = 5;
     private boolean firstSpawn = true;
-    public static int MaxGroupSize = 3;// easy is 1(this is kind of a hack ig), hard is 3
+    public static int MaxGroupSize = 3;// easy is 1(this is kind of a hack ig), hard is 3 Spawning more than 3 may
+                                       // cause funky stuff so dont
+    private int spawnedThisGroup = 0;
     public static int SpawnTime = 30000;// easy is 30000, hard is 10000
     public static int SpawnRampTime = 1;// Seconds for group spawn frequency to ramp up, should be 300
     private final GdxTimer spawnTimer = new GdxTimer(SpawnTime, false, true);
@@ -199,8 +201,6 @@ public class CustomerAISystem extends IteratingSystem {
                 fulfillOrder(entity, customer, food);
                 cook.currentFood.pop();
 
-            } else {
-                getEngine().removeEntity(food);
             }
 
         }
@@ -215,7 +215,9 @@ public class CustomerAISystem extends IteratingSystem {
                                 MaxGroupSize) + 1);// Not a huge fan of chaining min but what can you do
                 for (int i = 0; i < numToSpawn; i++) {
                     SpawnCustomer();
+                    spawnedThisGroup++;
                 }
+                spawnedThisGroup = 0;
                 return;
             }
             SpawnCustomer();
@@ -234,7 +236,7 @@ public class CustomerAISystem extends IteratingSystem {
     }
 
     void SpawnCustomer() {
-        Entity newCustomer = factory.createCustomer(objectives.get(-2).getPosition());
+        Entity newCustomer = factory.createCustomer(objectives.get(-2 - spawnedThisGroup).getPosition());
         customers.add(newCustomer);
         numOfCustomerTotal++;
         numActiveCustomers++;

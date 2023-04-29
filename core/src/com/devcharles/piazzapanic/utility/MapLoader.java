@@ -1,6 +1,7 @@
 package com.devcharles.piazzapanic.utility;
 
 import java.beans.VetoableChangeSupport;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,6 +65,8 @@ public class MapLoader {
 
     private Map<Integer, Box2dLocation> aiObjectives;
 
+    public ArrayList<Vector2> cookSpawns;
+
     boolean lockedCookMade = false;
     boolean lockedCutMade = false;
     boolean lockedGrillMade = false;
@@ -85,7 +88,7 @@ public class MapLoader {
         } else {
             map = new TmxMapLoader().load("v2/map.tmx");
         }
-
+        this.cookSpawns = new ArrayList<Vector2>();
         this.factory = factory;
     }
 
@@ -144,13 +147,14 @@ public class MapLoader {
                     int cookID = (int) properties.get(cookSpawnPoint);
                     Gdx.app.log("map parsing", String.format("Cook spawn point at x:%.2f y:%.2f", pos.x, pos.y));
                     Entity cook = factory.createCook((int) pos.x, (int) pos.y);
+                    cookSpawns.add(new Vector2(pos.x, pos.y));
                     if (cookID == 0) {
                         cook.add(new PlayerComponent());
                     }
 
                 } else if (properties.containsKey(aiSpawnPoint)) {
                     Gdx.app.log("map parsing", String.format("Ai spawn point at x:%.2f y:%.2f", pos.x, pos.y));
-                    aiObjectives.put(-2, new Box2dLocation(pos, 0));
+                    aiObjectives.put(-2 - (int) properties.get(aiSpawnPoint), new Box2dLocation(pos, 0));
                 } else if (properties.containsKey(aiObjective)) {
                     int objective = (int) properties.get(aiObjective);
                     aiObjectives.put(objective, new Box2dLocation(new Vector2(pos.x, pos.y), (float) (1.5f * Math.PI)));
@@ -251,5 +255,9 @@ public class MapLoader {
                 }
             }
         }
+    }
+
+    public ArrayList<Vector2> GetCookSpawns() {
+        return cookSpawns;
     }
 }

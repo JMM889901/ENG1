@@ -13,6 +13,7 @@ import com.devcharles.piazzapanic.componentsystems.StationSystem;
 import com.devcharles.piazzapanic.components.Powerups.PowerupSpawnControllerComponent;
 import com.devcharles.piazzapanic.componentsystems.CarryItemsSystem;
 import com.devcharles.piazzapanic.componentsystems.CustomerAISystem;
+import com.devcharles.piazzapanic.componentsystems.InWorldStoreSystem;
 import com.devcharles.piazzapanic.componentsystems.InventoryUpdateSystem;
 import com.devcharles.piazzapanic.componentsystems.LightingSystem;
 import com.devcharles.piazzapanic.componentsystems.PhysicsSystem;
@@ -26,7 +27,6 @@ import com.devcharles.piazzapanic.utility.MapLoader;
 import com.devcharles.piazzapanic.utility.box2d.WorldContactListener;
 import com.devcharles.piazzapanic.scene2d.Hud;
 import box2dLight.RayHandler;
-
 
 public class GameScreen implements Screen {
 
@@ -50,7 +50,7 @@ public class GameScreen implements Screen {
 
     private Integer[] reputationPoints = { 3 };
 
-    private Integer[] money = { 0 };
+    private Integer[] money = { 150 };// DEBUG, SET TO 0
 
     public GameScreen(PiazzaPanic game) {
         this.game = game;
@@ -70,12 +70,13 @@ public class GameScreen implements Screen {
         EntityFactory factory = new EntityFactory(engine, world);
         EntityFactory.cutFood(null);
 
-        hud = new Hud(game.batch, this, game, reputationPoints, money);
-
         mapLoader = new MapLoader(null, null, factory);
         mapLoader.buildCollisions(world);
         mapLoader.buildFromObjects(engine, rayhandler);
         mapLoader.buildStations(engine, world);
+
+        InWorldStoreSystem inWorldStoreSystem = new InWorldStoreSystem(engine, factory, world, mapLoader);
+        hud = new Hud(game.batch, this, game, reputationPoints, money, inWorldStoreSystem);
 
         engine.addSystem(new PhysicsSystem(world));
         engine.addSystem(new RenderingSystem(mapLoader.map, game.batch, camera));

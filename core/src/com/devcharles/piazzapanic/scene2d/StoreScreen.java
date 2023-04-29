@@ -24,6 +24,7 @@ import com.devcharles.piazzapanic.components.CookingComponent;
 import com.devcharles.piazzapanic.components.LockedComponent;
 import com.devcharles.piazzapanic.components.StationComponent;
 import com.devcharles.piazzapanic.components.TextureComponent;
+import com.devcharles.piazzapanic.componentsystems.InWorldStoreSystem;
 import com.devcharles.piazzapanic.utility.Station.StationType;
 
 public class StoreScreen extends ApplicationAdapter implements Screen {
@@ -33,9 +34,12 @@ public class StoreScreen extends ApplicationAdapter implements Screen {
     private Skin skin;
     private Batch batch;
     private Table table;
+    private InWorldStoreSystem inWorldStoreSystem;
+    private int CooksToSpawn;
 
     // Build the store screen
-    public StoreScreen(final Game game, final Screen previousScreen) {
+    public StoreScreen(final Game game, final Screen previousScreen, final InWorldStoreSystem inWorldStoreSystem) {
+        this.inWorldStoreSystem = inWorldStoreSystem;
         camera = new OrthographicCamera();
         skin = new Skin(Gdx.files.internal("craftacular/skin/craftacular-ui.json"));
         ScalingViewport viewport = new ScalingViewport(Scaling.fit, 1280, 720, camera);
@@ -53,6 +57,7 @@ public class StoreScreen extends ApplicationAdapter implements Screen {
         exit.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(previousScreen);
+                SpawnItems();
             }
         });
         table.add(exit).width(200).height(50);
@@ -95,7 +100,27 @@ public class StoreScreen extends ApplicationAdapter implements Screen {
             }
         });
         table.add(extraGrill);
+
+        table.row();
+
+        TextButton newCook = new TextButton("Hire cook(15)", skin);
+        newCook.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                if (Hud.money[0] < 15)
+                    return;
+                Hud.money[0] -= 15;
+                inWorldStoreSystem.SpawnNewCook();
+            }
+        });
+        table.add(newCook);
+
         stage.addActor(table);
+    }
+
+    void SpawnItems() {
+        for (int i = 0; i < CooksToSpawn; i++) {
+            inWorldStoreSystem.SpawnNewCook();
+        }
     }
 
     static void unlockStationOfType(StationType type, int cost) {

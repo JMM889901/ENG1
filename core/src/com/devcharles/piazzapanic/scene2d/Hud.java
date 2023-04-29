@@ -22,6 +22,7 @@ import com.devcharles.piazzapanic.GameScreen;
 import com.devcharles.piazzapanic.MainMenuScreen;
 import com.devcharles.piazzapanic.PiazzaPanic;
 import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
+import com.devcharles.piazzapanic.componentsystems.InWorldStoreSystem;
 import com.devcharles.piazzapanic.utility.EntityFactory;
 
 /**
@@ -57,6 +58,7 @@ public class Hud extends ApplicationAdapter {
     private Image photo;
 
     private Game game;
+    private InWorldStoreSystem inWorldStoreSystem;
     private Table tableBottom, tableRight, tableTop, tablePause, tableBottomLabel;
 
     private boolean pauseToggled = false;
@@ -75,13 +77,14 @@ public class Hud extends ApplicationAdapter {
      *                         https://stackoverflow.com/questions/3326112/java-best-way-to-pass-int-by-reference
      */
     public Hud(SpriteBatch spriteBatch, final GameScreen savedGame, final Game game, Integer[] reputationPoints,
-            Integer[] money) {
+            Integer[] money, InWorldStoreSystem inWorldStoreSystem) {
 
         _ISNTTEST = spriteBatch != null;
         this.game = game;
         this.reputation = reputationPoints;
         this.gameScreen = savedGame;
         this.money = money; // Yes player money is handled here, cope and seethe bozo
+        this.inWorldStoreSystem = inWorldStoreSystem;
 
         // Setup the viewport
         if (_ISNTTEST) {
@@ -187,7 +190,7 @@ public class Hud extends ApplicationAdapter {
         recipeBookButton.addListener(createListener(new Slideshow(game, Slideshow.Type.recipe, gameScreen)));
         tutorialButton.addListener(createListener(new Slideshow(game, Slideshow.Type.tutorial, gameScreen)));
 
-        storeButton.addListener(createListener(new StoreScreen(game, gameScreen)));
+        storeButton.addListener(createListener(new StoreScreen(game, gameScreen, inWorldStoreSystem)));
         tablePause.add(resumeButton).width(240).height(70).padBottom(30);
 
         tablePause.row();

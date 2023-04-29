@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="60" height="35" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="118">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="60" height="35" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="120">
  <tileset firstgid="1" source="tileset_32.tsx"/>
  <tileset firstgid="43" source="objects.tsx"/>
  <tileset firstgid="85" source="maxwell32.tsx"/>
@@ -521,6 +521,18 @@
   <object id="117" x="1344.24" y="703.621">
    <properties>
     <property name="aiobjective" type="int" value="9"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="118" x="1408.67" y="734.667">
+   <properties>
+    <property name="aispawnpoint" type="int" value="0"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="119" x="1380.67" y="719.333">
+   <properties>
+    <property name="aispawnpoint" type="int" value="-2"/>
    </properties>
    <point/>
   </object>

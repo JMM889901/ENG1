@@ -27,7 +27,6 @@ import com.devcharles.piazzapanic.PiazzaPanic;
 import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
 import com.devcharles.piazzapanic.utility.EntityFactory;
 
-
 /**
  * HUD user interface rendering for the game, also includes the win screen.
  */
@@ -39,7 +38,7 @@ public class TestHud extends Hud {
      * Create a dud Hud.
      */
     public TestHud() {
-        super(null, null, null, new Integer[] {1}, new Integer[] {1});
+        super(null, null, null, new Integer[] { 1 }, new Integer[] { 1 }, null);
     }
 
     /**
@@ -48,7 +47,7 @@ public class TestHud extends Hud {
      * @param inventory array of {@link FoodType} to display.
      */
     public void updateInventory(FoodType[] inventory) {
-        
+
     }
 
     /**
@@ -57,7 +56,7 @@ public class TestHud extends Hud {
      * @param orders array of {@link FoodType} to display.
      */
     public void updateOrders(FoodType[] orders) {
-        
+
     }
 
     /**
@@ -72,12 +71,12 @@ public class TestHud extends Hud {
 
     @Override
     public void pause() {
-        
+
     }
 
     @Override
     public void resume() {
-        
+
     }
 
     /**
@@ -86,23 +85,23 @@ public class TestHud extends Hud {
      * @param freezeTime how many seconds to freeze the timer for.
      */
     public void freezeCustomers(int freezeTime) {
-        
+
     }
 
     /**
      * Win screen
      */
     private void win() {
-        
+
     }
 
     @Override
     public void resize(int width, int height) {
-        
+
     }
 
     public void dispose() {
-        
+
     }
 
     private ClickListener createListener(final Screen screen) {
