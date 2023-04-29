@@ -422,7 +422,7 @@ public class StationSystem extends IteratingSystem {
                 }
                 if ((tickAccumulator > 0.5f && cooking.debugPrintableTimer > 0.5f) && !cooking.processed)
                     System.out.println(cooking.debugPrintableTimer);// TEMP
-            } else if (station.type != StationType.cutting_board && Mappers.overcooking.has(foodEntity)) {
+            } else if (Mappers.overcooking.has(foodEntity)) {
                 OvercookingComponent overcooking = Mappers.overcooking.get(foodEntity);
                 // Handle overcooking food
                 boolean ready = overcooking.timer.tick(deltaTime);
