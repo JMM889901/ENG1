@@ -41,9 +41,11 @@ public class CustomerAISystem extends IteratingSystem {
     private final GdxTimer spawnTimer = new GdxTimer(30000, false, true);
     private final EntityFactory factory;
     private int numOfCustomerTotal = 0;
+    private int numActiveCustomers = 0;
     private final Hud hud;
     private final Integer[] reputationPoints;
     private int maxCustomers = (int) Double.POSITIVE_INFINITY;
+    private int maxActiveCustomers = 5;
     private boolean firstSpawn = true;
 
     // https://stackoverflow.com/questions/33997169/when-to-use-anonymous-classes
@@ -122,11 +124,13 @@ public class CustomerAISystem extends IteratingSystem {
 
     @Override
     public void update(float deltaTime) {
-        if (firstSpawn || (spawnTimer.tick(deltaTime) && numOfCustomerTotal < maxCustomers)) {
+        if (firstSpawn || (spawnTimer.tick(deltaTime) && numActiveCustomers < maxActiveCustomers
+                && numOfCustomerTotal < maxCustomers)) {
             firstSpawn = false;
             Entity newCustomer = factory.createCustomer(objectives.get(-2).getPosition());
             customers.add(newCustomer);
             numOfCustomerTotal++;
+            numActiveCustomers++;
             Mappers.customer.get(newCustomer).timer.start();
         }
 
@@ -281,6 +285,8 @@ public class CustomerAISystem extends IteratingSystem {
 
         hud.money[0] += 5;
 
+        numActiveCustomers--;
+
         customer.timer.stop();
         customer.timer.reset();
 
@@ -316,6 +322,8 @@ public class CustomerAISystem extends IteratingSystem {
         makeItGoThere(aiAgent, -1);
 
         hud.money[0] += 5;
+
+        numActiveCustomers--;
 
         customer.timer.stop();
         customer.timer.reset();
