@@ -29,7 +29,7 @@ public class testPlayerInventorySystem {
         EntityFactory testEntityFactory = new EntityFactory(engine, world);
         KeyboardInput keyboardInput = new KeyboardInput();
 
-        PlayerControlSystem testPlayerControlSystem = new PlayerControlSystem(keyboardInput, null);// Do I need to
+        PlayerControlSystem testPlayerControlSystem = new PlayerControlSystem(keyboardInput, null);
         StationSystem testStationSystem = new StationSystem(keyboardInput, testEntityFactory);
         engine.addSystem(testPlayerControlSystem);
         engine.addSystem(testStationSystem);
@@ -73,7 +73,7 @@ public class testPlayerInventorySystem {
         EntityFactory testEntityFactory = new EntityFactory(engine, world);
         KeyboardInput keyboardInput = new KeyboardInput();
 
-        PlayerControlSystem testPlayerControlSystem = new PlayerControlSystem(keyboardInput, null);// Do I need to
+        PlayerControlSystem testPlayerControlSystem = new PlayerControlSystem(keyboardInput, null);
         StationSystem testStationSystem = new StationSystem(keyboardInput, testEntityFactory);
         engine.addSystem(testPlayerControlSystem);
         engine.addSystem(testStationSystem);
@@ -220,7 +220,7 @@ public class testPlayerInventorySystem {
         EntityFactory testEntityFactory = new EntityFactory(engine, world);
         KeyboardInput keyboardInput = new KeyboardInput();
 
-        PlayerControlSystem testPlayerControlSystem = new PlayerControlSystem(keyboardInput, null);// Do I need to
+        PlayerControlSystem testPlayerControlSystem = new PlayerControlSystem(keyboardInput, null);
         StationSystem testStationSystem = new StationSystem(keyboardInput, testEntityFactory);
         engine.addSystem(testPlayerControlSystem);
         engine.addSystem(testStationSystem);

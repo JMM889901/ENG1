@@ -13,11 +13,13 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.devcharles.piazzapanic.input.KeyboardInput;
 import com.devcharles.piazzapanic.utility.EntityFactory;
 import com.devcharles.piazzapanic.utility.MapLoader;
 
 public class testEnvironment extends HeadlessApplication {
     public Engine engine;
+    public KeyboardInput input;
     public World world;
     public EntityFactory factory;
     public MapLoader loader;
@@ -31,7 +33,6 @@ public class testEnvironment extends HeadlessApplication {
      * Also strips the map of lighting then builds the world
      */
     public testEnvironment() {
-
         super(new ApplicationListener() {
 
             @Override
@@ -65,8 +66,10 @@ public class testEnvironment extends HeadlessApplication {
             }
 
         });
+        
         Gdx.gl = new emptyGL20();
         engine = new PooledEngine();
+        input = new KeyboardInput();
         world = new World(new Vector2(0, 0), true);
         factory = new EntityFactory((PooledEngine) engine, world);
 
