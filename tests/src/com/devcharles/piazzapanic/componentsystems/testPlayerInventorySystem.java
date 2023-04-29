@@ -5,6 +5,7 @@ import static org.junit.Assert.assertArrayEquals;
 import org.junit.*;
 import com.devcharles.piazzapanic.testEnvironment;
 import com.devcharles.piazzapanic.components.ControllableComponent;
+import com.devcharles.piazzapanic.components.FoodComponent;
 import com.devcharles.piazzapanic.components.PlayerComponent;
 import com.devcharles.piazzapanic.components.StationComponent;
 import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
@@ -44,27 +45,62 @@ public class testPlayerInventorySystem {
         Entity testTater = testEntityFactory.createFood(FoodType.potato);  // Potato.
 
         Entity testCountertop = testEntityFactory.createStation(StationType.counter, new Vector2(0, 0), null, false);  // Station.
-        StationComponent countertopComponent = Mappers.station.get(testCountertop);
-        countertopComponent.food.set(0, testTater);
+        StationComponent testcountertopComponent = Mappers.station.get(testCountertop);
+        testcountertopComponent.food.set(0, testTater);
         
         // Brief sanity check to make sure the countertop has a potato.
         Assert.assertTrue(testControllableComponent.currentFood.isEmpty());
-        Assert.assertFalse(countertopComponent.food.get(0) == null);
+        Assert.assertFalse(testcountertopComponent.food.get(0) == null);
 
         // Pick up the potato.
         testPlayerComponent.pickUp = true;
-        countertopComponent.interactingCook = chef;  // This is so that PlayerControlSystem.processEntity() processes the chef made above. 
+        testcountertopComponent.interactingCook = chef;  // This is so that PlayerControlSystem.processEntity() processes the chef made above. 
         testStationSystem.update(1);
         testStationSystem.processEntity(testCountertop, 1);
 
-        Assert.assertTrue(countertopComponent.food.get(0) == null);
+        Assert.assertTrue(testcountertopComponent.food.get(0) == null);
         Assert.assertTrue(testControllableComponent.currentFood.peek() == testTater);
     }
 
     @Test
     public void testPlayerPutDownItem() {
-        // TODO, should be quite similar to above. I will do this - Joss
-        Assert.assertTrue(false);
+        // Set up environment.
+        new testEnvironment();
+        PooledEngine engine = new PooledEngine();
+        World world = new World(new Vector2(0, 0), true);
+        EntityFactory testEntityFactory = new EntityFactory(engine, world);
+        KeyboardInput keyboardInput = new KeyboardInput();
+
+        PlayerControlSystem testPlayerControlSystem = new PlayerControlSystem(keyboardInput, null);// Do I need to
+        StationSystem testStationSystem = new StationSystem(keyboardInput, testEntityFactory);
+        engine.addSystem(testPlayerControlSystem);
+        engine.addSystem(testStationSystem);
+
+        // Create entities.
+        Entity testTater = testEntityFactory.createFood(FoodType.potato);  // Potato.
+
+        Entity chef = testEntityFactory.createCook(0, 0);  // Chef.
+        PlayerComponent testPlayerComponent = new PlayerComponent();
+        ControllableComponent testControllableComponent = Mappers.controllable.get(chef);
+        chef.add(testPlayerComponent);  // Make our chef the active "player".
+        testControllableComponent.currentFood.push(testTater);
+
+
+        Entity testCountertop = testEntityFactory.createStation(StationType.counter, new Vector2(0, 0), null, false);  // Station.
+        StationComponent testcountertopComponent = Mappers.station.get(testCountertop);
+        
+        // Brief sanity check to make sure the player has the potato.
+        Assert.assertFalse(testControllableComponent.currentFood.isEmpty());
+        Assert.assertTrue(testcountertopComponent.food.get(0) == null);
+
+        // Put down the potato.
+        testPlayerComponent.putDown = true;
+        testcountertopComponent.interactingCook = chef;  // This is so that PlayerControlSystem.processEntity() processes the chef made above. 
+        testStationSystem.update(1);
+        testStationSystem.processEntity(testCountertop, 1);
+
+        Assert.assertTrue(testcountertopComponent.food.get(0) == testTater);
+        Assert.assertTrue(testControllableComponent.currentFood.isEmpty());
     }
 
     @Test
