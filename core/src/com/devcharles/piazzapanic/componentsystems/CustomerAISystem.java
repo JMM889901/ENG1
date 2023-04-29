@@ -331,8 +331,9 @@ public class CustomerAISystem extends IteratingSystem {
         customers.remove(entity);
     }
 
-    public void setMaxCustomers(int maxCustomers) {
-        this.maxCustomers = maxCustomers;
+    public static void setMaxCustomers(int Customers) {
+        System.out.println("customer max changed from " + CustomerAISystem.maxCustomers + "to " + Customers);
+        maxCustomers = Customers;
     }
 
 }

@@ -39,9 +39,7 @@ public class PowerupSpawnSystem extends EntitySystem {
         super.update(deltaTime);
         timeLastSpawned += deltaTime;
 
-        if (getPowerupSpawnChanceFrame(deltaTime) >= Math.random() * 0 + 0.001) { // Bodged to make it spawn in quickly (added " * 0 + 0.001").
-            System.out.println("Creating powerup");
-            System.out.println("!!! THIS HAS BEEN CHANGED TEMPORARILY FOR TESTING PURPOSES. PLEASE CHANGE BACK (powerup spawn system.java).");
+        if (getPowerupSpawnChanceFrame(deltaTime) >= Math.random()) {
             Entity spawner = spawners.get(ThreadLocalRandom.current().nextInt(0, spawners.size()));
             PowerupSpawnerComponent spawnerComponent = spawner.getComponent(PowerupSpawnerComponent.class);
             spawnerComponent.createPowerup(factory);

@@ -66,6 +66,7 @@ public class testOverCookingComponent {
 
         // Run the order of putting food on and using stations.
         stationSystem.processStation(chefComponent, ovenSuccessComponent);
+        Assert.assertTrue(Mappers.cooking.get(ovenSuccessComponent.food.get(0)).timer.peakElapsed() == 0);
         stationSystem.stationTick(ovenSuccessComponent, 5.1f);
         stationSystem.interactStation(ovenSuccessComponent);
         // Quick sanity check to make sure the food is ready to start the second stage
@@ -74,10 +75,12 @@ public class testOverCookingComponent {
         Assert.assertTrue(foodCookingComponent.processed);
         Assert.assertTrue(foodCookingComponent.timer.peakElapsed() == 0);
         // Finish cooking the food.
-        stationSystem.stationTick(ovenSuccessComponent, 5.1f); // Tick twice to give the OverCookingComponent a chance
-                                                               // to check whether the food spoils.
+        stationSystem.stationTick(ovenSuccessComponent, 5.1f); // Tick twice to give the OverCookingComponent a chance to check whether the food spoils.
         stationSystem.stationTick(ovenSuccessComponent, 0.1f);
         // TODO: Now pick up the food again. Is it spoiled?
 
+        
+        
+        Assert.assertTrue(false);
     }
 }
