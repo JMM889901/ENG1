@@ -28,10 +28,10 @@ import com.devcharles.piazzapanic.utility.EntityFactory;
  * HUD user interface rendering for the game, also includes the win screen.
  */
 public class Hud extends ApplicationAdapter {
-    private Boolean _ISNTTEST;  // This just disables trying a few things that don't aren't needed for testing.
+    private Boolean _ISNTTEST; // This just disables trying a few things that don't aren't needed for testing.
     public Stage stage;
     private Viewport viewport;
-    private Integer customerTimer = 000;
+    public Integer customerTimer = 000;// Used elsewhere to get game time with respect to the time freeze powerup
     private Integer customerFreezeTimer = 0; // Using a time freeze powerup pauses the customer timer while this one
                                              // counts down.
     private float timeCounter = 0;
@@ -76,7 +76,7 @@ public class Hud extends ApplicationAdapter {
      */
     public Hud(SpriteBatch spriteBatch, final GameScreen savedGame, final Game game, Integer[] reputationPoints,
             Integer[] money) {
-        
+
         _ISNTTEST = spriteBatch != null;
         this.game = game;
         this.reputation = reputationPoints;
@@ -84,10 +84,10 @@ public class Hud extends ApplicationAdapter {
         this.money = money; // Yes player money is handled here, cope and seethe bozo
 
         // Setup the viewport
-        if(_ISNTTEST) {
-        viewport = new ScreenViewport(new OrthographicCamera(1280, 720));
-        stage = new Stage(viewport, spriteBatch);
-        viewport.apply();
+        if (_ISNTTEST) {
+            viewport = new ScreenViewport(new OrthographicCamera(1280, 720));
+            stage = new Stage(viewport, spriteBatch);
+            viewport.apply();
         }
 
         // Import the custom skin with different fonts
@@ -101,30 +101,30 @@ public class Hud extends ApplicationAdapter {
         titleLabelStyle = new Label.LabelStyle();
         titleLabelStyle.font = uiTitleFont;
 
-        if(_ISNTTEST) {
-        stage.addListener(new InputListener() {
-            @Override
-            public boolean keyDown(InputEvent event, int keycode) {
-                if (keycode == Keys.ESCAPE) {
-                    pauseToggled = true;
-                    // sets game to go bigscreen if F11 is pressed or sets it to go small screen
-                } else if (keycode == Keys.F11) {
-                    Boolean fullScreen = Gdx.graphics.isFullscreen();
-                    Graphics.DisplayMode currentMode = Gdx.graphics.getDisplayMode();
-                    if (fullScreen == true) {
-                        Gdx.graphics.setWindowedMode(1280, 720);
-                    } else {
-                        Gdx.graphics.setFullscreenMode(currentMode);
+        if (_ISNTTEST) {
+            stage.addListener(new InputListener() {
+                @Override
+                public boolean keyDown(InputEvent event, int keycode) {
+                    if (keycode == Keys.ESCAPE) {
+                        pauseToggled = true;
+                        // sets game to go bigscreen if F11 is pressed or sets it to go small screen
+                    } else if (keycode == Keys.F11) {
+                        Boolean fullScreen = Gdx.graphics.isFullscreen();
+                        Graphics.DisplayMode currentMode = Gdx.graphics.getDisplayMode();
+                        if (fullScreen == true) {
+                            Gdx.graphics.setWindowedMode(1280, 720);
+                        } else {
+                            Gdx.graphics.setFullscreenMode(currentMode);
+                        }
                     }
+                    return true;
                 }
-                return true;
-            }
-        });
+            });
         }
 
         // Create the UI layout.
-        if(_ISNTTEST) {
-        createTables();
+        if (_ISNTTEST) {
+            createTables();
         }
     }
 

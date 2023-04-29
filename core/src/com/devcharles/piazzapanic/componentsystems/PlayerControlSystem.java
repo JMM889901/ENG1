@@ -19,9 +19,12 @@ import com.devcharles.piazzapanic.utility.Mappers;
 /**
  * Controls whichever one cook has the PlayerComponent
  */
-public class PlayerControlSystem extends IteratingSystem {    
+public class PlayerControlSystem extends IteratingSystem {
 
-    /** Given that there is only one instance of PlayerControlSystem, this kind of acts like a static value. */
+    /**
+     * Given that there is only one instance of PlayerControlSystem, this kind of
+     * acts like a static value.
+     */
     boolean hasInitComponent = false;
 
     KeyboardInput input;
@@ -30,6 +33,7 @@ public class PlayerControlSystem extends IteratingSystem {
     PlayerComponent playerComponent;
 
     Engine engine;
+
     public PlayerControlSystem(KeyboardInput input, Engine engine) {
         super(Family.all(ControllableComponent.class).get());
         this.engine = engine;
@@ -40,7 +44,8 @@ public class PlayerControlSystem extends IteratingSystem {
      * Expose processEntity to a public interface for testing purposes.
      * This is very cursed, never do this, bad idea, never do this.
      * I have a feeling such code will become quite common in this codebase ;).
-     * @param entity a chef, this loops through and processes chefs.
+     * 
+     * @param entity    a chef, this loops through and processes chefs.
      * @param deltaTime duration of last tick.
      */
     public void processEntity_test(Entity entity, float deltaTime) {
@@ -49,13 +54,15 @@ public class PlayerControlSystem extends IteratingSystem {
 
     /**
      * Process inputs and direct player actions on a chef which has playerComponent.
-     * @param entity a chef, this loops through and processes chefs.
+     * 
+     * @param entity    a chef, this loops through and processes chefs.
      * @param deltaTime duration of last tick.
      */
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        // Remember what playerComponent is, regardless of cook (just do this once at the start).
-        if(!hasInitComponent) {
+        // Remember what playerComponent is, regardless of cook (just do this once at
+        // the start).
+        if (!hasInitComponent) {
             this.playerComponent = Mappers.player.get(entity);
 
             // It doesn't matter if it gets run multiple times, just being explicit here.
@@ -68,7 +75,8 @@ public class PlayerControlSystem extends IteratingSystem {
         if (this.changingCooks) {
             this.changingCooks = false;
 
-            // [B1] Add playercomponent to new cook (the next cook iterated on by an external loop).
+            // [B1] Add playercomponent to new cook (the next cook iterated on by an
+            // external loop).
             entity.add(this.playerComponent);
         }
 
@@ -79,9 +87,10 @@ public class PlayerControlSystem extends IteratingSystem {
         if (input.changeCooks) {
             input.changeCooks = false;
 
-            // This is run once for each chef in a given frame, so we set this now, and then the
+            // This is run once for each chef in a given frame, so we set this now, and then
+            // the
             // value is caught by the next chef in the loop (ie on line 43,
-            //if(this.changingCooks) {...} ).
+            // if(this.changingCooks) {...} ).
             this.changingCooks = true;
 
             // [A1] Remove playercomponent from current cook.
@@ -98,7 +107,7 @@ public class PlayerControlSystem extends IteratingSystem {
             // Get an array of all the cooks and a record of how many cooks.
             ImmutableArray<Entity> cooks = engine.getEntitiesFor(getFamily());
             int cookNum = cooks.size();
-            Entity prevCook = cooks.get((cooks.indexOf(entity, true)-1 + cookNum) % cookNum);
+            Entity prevCook = cooks.get((cooks.indexOf(entity, true) - 1 + cookNum) % cookNum);
 
             // [B2] Add playercomponent to new cook (the previous cook identified above).
             prevCook.add(this.playerComponent);
@@ -164,14 +173,13 @@ public class PlayerControlSystem extends IteratingSystem {
             b2body.body.applyLinearImpulse(finalV, b2body.body.getPosition(), true);
         }
 
-
         // Tick the timers forwards here.
 
         if (entity.getComponent(cookBoostComponent.class) != null) {
-            if (entity.getComponent(speedBoostComponent.class).timeHad > speedBoostComponent.timeMax) {
-                entity.remove(speedBoostComponent.class);
+            if (entity.getComponent(cookBoostComponent.class).timeHad > cookBoostComponent.timeMax) {
+                entity.remove(cookBoostComponent.class);
             } else {
-                entity.getComponent(speedBoostComponent.class).timeHad += deltaTime;
+                entity.getComponent(cookBoostComponent.class).timeHad += deltaTime;
             }
         }
 
@@ -184,7 +192,7 @@ public class PlayerControlSystem extends IteratingSystem {
         }
 
         // OrderBoost doesn't have a timer, skip that one here.
-        
+
         if (entity.getComponent(speedBoostComponent.class) != null) {
             if (entity.getComponent(speedBoostComponent.class).timeHad > speedBoostComponent.timeMax) {
                 entity.remove(speedBoostComponent.class);

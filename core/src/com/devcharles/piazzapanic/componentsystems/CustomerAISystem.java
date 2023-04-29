@@ -3,6 +3,7 @@ package com.devcharles.piazzapanic.componentsystems;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
@@ -38,15 +39,18 @@ public class CustomerAISystem extends IteratingSystem {
     private final Map<Integer, Boolean> objectiveTaken;
 
     private final World world;
-    private final GdxTimer spawnTimer = new GdxTimer(30000, false, true);
     private final EntityFactory factory;
     private int numOfCustomerTotal = 0;
     private int numActiveCustomers = 0;
     private final Hud hud;
     private final Integer[] reputationPoints;
-    private int maxCustomers = (int) Double.POSITIVE_INFINITY;
-    private int maxActiveCustomers = 5;
+    private static int maxCustomers = (int) Double.POSITIVE_INFINITY;
+    private static int maxActiveCustomers = 5;
     private boolean firstSpawn = true;
+    public static int MaxGroupSize = 3;// easy is 1(this is kind of a hack ig), hard is 3
+    public static int SpawnTime = 30000;// easy is 30000, hard is 10000
+    public static int SpawnRampTime = 1;// Seconds for group spawn frequency to ramp up, should be 300
+    private final GdxTimer spawnTimer = new GdxTimer(SpawnTime, false, true);
 
     // https://stackoverflow.com/questions/33997169/when-to-use-anonymous-classes
     // https://www.baeldung.com/java-anonymous-classes
@@ -124,14 +128,9 @@ public class CustomerAISystem extends IteratingSystem {
 
     @Override
     public void update(float deltaTime) {
-        if (firstSpawn || (spawnTimer.tick(deltaTime) && numActiveCustomers < maxActiveCustomers
-                && numOfCustomerTotal < maxCustomers)) {
+        if (firstSpawn || (spawnTimer.tick(deltaTime))) {
             firstSpawn = false;
-            Entity newCustomer = factory.createCustomer(objectives.get(-2).getPosition());
-            customers.add(newCustomer);
-            numOfCustomerTotal++;
-            numActiveCustomers++;
-            Mappers.customer.get(newCustomer).timer.start();
+            SpawnCustomerGroup();
         }
 
         FoodType[] orders = new FoodType[customers.size()];
@@ -192,18 +191,54 @@ public class CustomerAISystem extends IteratingSystem {
                 return;
             }
 
-            Entity food = cook.currentFood.pop();
+            Entity food = cook.currentFood.getLast();
 
             if (Mappers.food.get(food).type == customer.order) {
                 // Fulfill order
                 Gdx.app.log("Order success", customer.order.name());
                 fulfillOrder(entity, customer, food);
+                cook.currentFood.pop();
 
             } else {
                 getEngine().removeEntity(food);
             }
 
         }
+    }
+
+    void SpawnCustomerGroup() {
+        if (numActiveCustomers < maxActiveCustomers
+                && numOfCustomerTotal < maxCustomers) {
+            if (ShouldSpawnGroup()) {
+                int numToSpawn = ThreadLocalRandom.current().nextInt(1,
+                        Math.min(Math.min(maxActiveCustomers - numActiveCustomers, maxCustomers - numOfCustomerTotal),
+                                MaxGroupSize) + 1);// Not a huge fan of chaining min but what can you do
+                for (int i = 0; i < numToSpawn; i++) {
+                    SpawnCustomer();
+                }
+                return;
+            }
+            SpawnCustomer();
+        }
+    }
+
+    boolean ShouldSpawnGroup() {
+        // Random chance scaling with difficulty and time
+        if (maxActiveCustomers - numActiveCustomers < 2 || maxCustomers - numOfCustomerTotal < 2)
+            return false;
+        Float chance = (float) (hud.customerTimer / SpawnRampTime); // yes this scales over 1, lol, lmao even
+        if (chance > 0.8) {
+            chance = 0.8f;
+        }
+        return ThreadLocalRandom.current().nextFloat() < chance;
+    }
+
+    void SpawnCustomer() {
+        Entity newCustomer = factory.createCustomer(objectives.get(-2).getPosition());
+        customers.add(newCustomer);
+        numOfCustomerTotal++;
+        numActiveCustomers++;
+        Mappers.customer.get(newCustomer).timer.start();
     }
 
     void tickCustomerTimer(Entity entity, CustomerComponent customer, float deltaTime) {
@@ -333,6 +368,8 @@ public class CustomerAISystem extends IteratingSystem {
 
     public static void setMaxCustomers(int Customers) {
         System.out.println("customer max changed from " + CustomerAISystem.maxCustomers + "to " + Customers);
+        // since we use instanced systems this should be static
+        // but also: Thats alot of effort and we dont have time
         maxCustomers = Customers;
     }
 
