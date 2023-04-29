@@ -1,7 +1,5 @@
 package com.devcharles.piazzapanic.componentsystems;
 
-import static org.junit.Assert.assertArrayEquals;
-
 import org.junit.*;
 import com.devcharles.piazzapanic.testEnvironment;
 import com.devcharles.piazzapanic.components.ControllableComponent;
