@@ -63,7 +63,106 @@ public class testPlayerInventorySystem {
     }
 
     @Test
-    public void testPlayerPutDownItem() {
+    /**
+     * Tests if a player can pick up an item with just 1 inventory slot left.
+     */
+    public void testPlayerPickUpItemInventoryAlmostFull() {
+        // Set up environment.
+        new testEnvironment();
+        PooledEngine engine = new PooledEngine();
+        World world = new World(new Vector2(0, 0), true);
+        EntityFactory testEntityFactory = new EntityFactory(engine, world);
+        KeyboardInput keyboardInput = new KeyboardInput();
+
+        PlayerControlSystem testPlayerControlSystem = new PlayerControlSystem(keyboardInput, null);
+        StationSystem testStationSystem = new StationSystem(keyboardInput, testEntityFactory);
+        engine.addSystem(testPlayerControlSystem);
+        engine.addSystem(testStationSystem);
+
+        // Create entities.
+        Entity chef = testEntityFactory.createCook(0, 0);  // Chef.
+        PlayerComponent testPlayerComponent = new PlayerComponent();
+        ControllableComponent testControllableComponent = Mappers.controllable.get(chef);
+        chef.add(testPlayerComponent);  // Make our chef the active "player".
+        for(int i = 0; i < 11; i++) {
+            // Fill the player's inventory with 11 onions (inventory max is 12).
+            testControllableComponent.currentFood.push(testEntityFactory.createFood(FoodType.onion));
+        }
+
+        Entity testTater = testEntityFactory.createFood(FoodType.potato);  // Potato.
+
+        Entity testCountertop = testEntityFactory.createStation(StationType.counter, new Vector2(0, 0), null, false);  // Station.
+        StationComponent testcountertopComponent = Mappers.station.get(testCountertop);
+        testcountertopComponent.food.set(0, testTater);
+        
+        // Brief sanity check to make sure the player's inventory is almost full and the countertop has a potato.
+        Assert.assertTrue(testControllableComponent.currentFood.size() == 11);
+        Assert.assertTrue(Mappers.food.get(testControllableComponent.currentFood.peek()).type == FoodType.onion);
+        Assert.assertFalse(testcountertopComponent.food.get(0) == null);
+
+        // Pick up the potato.
+        testPlayerComponent.pickUp = true;
+        testcountertopComponent.interactingCook = chef;  // This is so that PlayerControlSystem.processEntity() processes the chef made above. 
+        testStationSystem.update(1);
+        testStationSystem.processEntity(testCountertop, 1);
+
+        Assert.assertTrue(testcountertopComponent.food.get(0) == null);
+        Assert.assertTrue(testControllableComponent.currentFood.peek() == testTater);
+    }
+
+    @Test
+    /**
+     * Tests if a player can pick up an item with a full inventory.
+     */
+    public void testPlayerPickUpItemInventoryFull() {
+        // Set up environment.
+        new testEnvironment();
+        PooledEngine engine = new PooledEngine();
+        World world = new World(new Vector2(0, 0), true);
+        EntityFactory testEntityFactory = new EntityFactory(engine, world);
+        KeyboardInput keyboardInput = new KeyboardInput();
+
+        PlayerControlSystem testPlayerControlSystem = new PlayerControlSystem(keyboardInput, null);
+        StationSystem testStationSystem = new StationSystem(keyboardInput, testEntityFactory);
+        engine.addSystem(testPlayerControlSystem);
+        engine.addSystem(testStationSystem);
+
+        // Create entities.
+        Entity chef = testEntityFactory.createCook(0, 0);  // Chef.
+        PlayerComponent testPlayerComponent = new PlayerComponent();
+        ControllableComponent testControllableComponent = Mappers.controllable.get(chef);
+        chef.add(testPlayerComponent);  // Make our chef the active "player".
+        for(int i = 0; i < 12; i++) {
+            // Completely fill the player's inventory with 12 onions.
+            testControllableComponent.currentFood.push(testEntityFactory.createFood(FoodType.onion));
+        }
+
+        Entity testTater = testEntityFactory.createFood(FoodType.potato);  // Potato.
+
+        Entity testCountertop = testEntityFactory.createStation(StationType.counter, new Vector2(0, 0), null, false);  // Station.
+        StationComponent testcountertopComponent = Mappers.station.get(testCountertop);
+        testcountertopComponent.food.set(0, testTater);
+        
+        // Brief sanity check to make sure the player's inventory is almost full and the countertop has a potato.
+        Assert.assertTrue(testControllableComponent.currentFood.size() == 12);
+        Assert.assertTrue(Mappers.food.get(testControllableComponent.currentFood.peek()).type == FoodType.onion);
+        Assert.assertFalse(testcountertopComponent.food.get(0) == null);
+
+        // Try to pick up the potato.
+        testPlayerComponent.pickUp = true;
+        testcountertopComponent.interactingCook = chef;  // This is so that PlayerControlSystem.processEntity() processes the chef made above. 
+        testStationSystem.update(1);
+        testStationSystem.processEntity(testCountertop, 1);
+
+        Assert.assertTrue(testcountertopComponent.food.get(0) == testTater);
+        Assert.assertTrue(Mappers.food.get(testControllableComponent.currentFood.peek()).type == FoodType.onion);
+    }
+
+    @Test
+    /**
+     * Tests if a player can pick up an item from an empty station.
+     */
+    public void testPlayerPickUpItemStationEmpty() {
         // Set up environment.
         new testEnvironment();
         PooledEngine engine = new PooledEngine();
@@ -77,6 +176,46 @@ public class testPlayerInventorySystem {
         engine.addSystem(testStationSystem);
 
         // Create entities.
+        Entity chef = testEntityFactory.createCook(0, 0);  // Chef.
+        PlayerComponent testPlayerComponent = new PlayerComponent();
+        ControllableComponent testControllableComponent = Mappers.controllable.get(chef);
+        chef.add(testPlayerComponent);  // Make our chef the active "player".
+
+        Entity testCountertop = testEntityFactory.createStation(StationType.counter, new Vector2(0, 0), null, false);  // Station.
+        StationComponent testcountertopComponent = Mappers.station.get(testCountertop);
+        
+        // Brief sanity check to make sure both countertop and player have nothing.
+        Assert.assertTrue(testControllableComponent.currentFood.isEmpty());
+        Assert.assertTrue(testcountertopComponent.food.get(0) == null);
+
+        // Pick up the potato.
+        testPlayerComponent.pickUp = true;
+        testcountertopComponent.interactingCook = chef;  // This is so that PlayerControlSystem.processEntity() processes the chef made above. 
+        testStationSystem.update(1);
+        testStationSystem.processEntity(testCountertop, 1);
+
+        Assert.assertTrue(testcountertopComponent.food.get(0) == null);
+        Assert.assertTrue(testControllableComponent.currentFood.isEmpty());
+    }
+
+    @Test
+    /**
+     * Tests if a player can put down an item.
+     */
+    public void testPlayerPutDownItem() {
+        // Set up environment.
+        new testEnvironment();
+        PooledEngine engine = new PooledEngine();
+        World world = new World(new Vector2(0, 0), true);
+        EntityFactory testEntityFactory = new EntityFactory(engine, world);
+        KeyboardInput keyboardInput = new KeyboardInput();
+
+        PlayerControlSystem testPlayerControlSystem = new PlayerControlSystem(keyboardInput, null);
+        StationSystem testStationSystem = new StationSystem(keyboardInput, testEntityFactory);
+        engine.addSystem(testPlayerControlSystem);
+        engine.addSystem(testStationSystem);
+
+        // Create entities.
         Entity testTater = testEntityFactory.createFood(FoodType.potato);  // Potato.
 
         Entity chef = testEntityFactory.createCook(0, 0);  // Chef.
@@ -85,10 +224,10 @@ public class testPlayerInventorySystem {
         chef.add(testPlayerComponent);  // Make our chef the active "player".
         testControllableComponent.currentFood.push(testTater);
 
-
         Entity testCountertop = testEntityFactory.createStation(StationType.counter, new Vector2(0, 0), null, false);  // Station.
         StationComponent testcountertopComponent = Mappers.station.get(testCountertop);
         
+
         // Brief sanity check to make sure the player has the potato.
         Assert.assertFalse(testControllableComponent.currentFood.isEmpty());
         Assert.assertTrue(testcountertopComponent.food.get(0) == null);
