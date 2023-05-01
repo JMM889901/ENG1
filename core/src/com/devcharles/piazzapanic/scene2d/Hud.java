@@ -36,7 +36,7 @@ public class Hud extends ApplicationAdapter {
     private Integer customerFreezeTimer = 0; // Using a time freeze powerup pauses the customer timer while this one
                                              // counts down.
     private float timeCounter = 0;
-    private Integer[] reputation;
+    public static Integer[] reputation;
     public static Integer[] money; // This is static purely for the sake of simplicity, yes its bad practice but
                                    // cry about it
     private Skin skin;
