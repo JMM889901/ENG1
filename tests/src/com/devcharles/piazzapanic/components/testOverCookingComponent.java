@@ -10,7 +10,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.devcharles.piazzapanic.testEnvironment;
 import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
-import com.devcharles.piazzapanic.componentsystems.PlayerControlSystem;
 import com.devcharles.piazzapanic.componentsystems.StationSystem;
 import com.devcharles.piazzapanic.utility.EntityFactory;
 import com.devcharles.piazzapanic.utility.Mappers;
@@ -22,29 +21,27 @@ public class testOverCookingComponent {
      * Check foods become spoiled if processing too long.
      */
     public void testOverCooking() {
+        // Initialise environment
         testEnvironment environment = new testEnvironment();
         PooledEngine engine = (PooledEngine) environment.engine;
         StationSystem stationSystem = new StationSystem(null, environment.factory);
-        PlayerControlSystem playerControlSystem = new PlayerControlSystem(environment.input, environment.engine);
-        environment.engine.addSystem(stationSystem);
-        environment.engine.addSystem(playerControlSystem);
+        EntityFactory entityFactory = environment.factory;
+        engine.addSystem(stationSystem);
 
-        // Create 3 foods that each require a different type of processing.
-        Entity testOnion = environment.factory.createFood(FoodType.onion); // Cutting board.
-        Entity testPatty = environment.factory.createFood(FoodType.formedPatty); // Grill.
-        Entity testPotato = environment.factory.createFood(FoodType.potato); // Oven.
+        // Create 2 foods that each require a different type of cooking.
+        Entity testPattySuccess = entityFactory.createFood(FoodType.formedPatty); // Grill.
+        Entity testPattySpoil = entityFactory.createFood(FoodType.formedPatty);
 
+        Entity testPotatoSuccess = entityFactory.createFood(FoodType.potato); // Oven.
+        Entity testPotatoSpoil = entityFactory.createFood(FoodType.potato);
 
         // Create a chef to put things on the station.
-        Entity testChef = environment.factory.createCook(0, 0);
-        PlayerComponent testPlayerComponent = new PlayerComponent();
-        testChef.add(testPlayerComponent); // Make our chef the active "player".
-
-        ControllableComponent testControllableComponent = Mappers.controllable.get(testChef);
-        testControllableComponent.currentFood.pushItem(testOnion, testChef);  // There are "redundant" references to testChef due to 'slightly' dodgy architecture inherited from Group26.
-        testControllableComponent.currentFood.pushItem(testPatty, testChef);
-        testControllableComponent.currentFood.pushItem(testPotato, testChef);
-        
+        Entity testCook = entityFactory.createCook(0, 0);
+        ControllableComponent chefComponent = Mappers.controllable.get(testCook);
+        chefComponent.currentFood.pushItem(testPattySuccess, testCook);
+        chefComponent.currentFood.pushItem(testPattySpoil, testCook);
+        chefComponent.currentFood.pushItem(testPotatoSuccess, testCook);
+        chefComponent.currentFood.pushItem(testPotatoSpoil, testCook);
 
         // Create stations to process food.
         Entity testOvenSuccess = entityFactory.createStation(StationType.oven, new Vector2(1, 0), null, false);
