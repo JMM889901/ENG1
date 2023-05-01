@@ -31,21 +31,22 @@ public class testCarryItemsSystem {
         World world = new World(new Vector2(0, 0), true);
         EntityFactory entityFactory = new EntityFactory(engine, world);
 
-        // Environments required to move the player (and hopefully the carried entity, too).
+        // Environments required to move the player (and hopefully the carried entity,
+        // too).
         KeyboardInput input = new KeyboardInput();
         PlayerControlSystem testPlayerControlSystem = new PlayerControlSystem(input, engine);
-        
+
         // We are testing this.
         CarryItemsSystem testCarryItemsSystem = new CarryItemsSystem();
 
         engine.addSystem(testPlayerControlSystem);
         engine.addSystem(testCarryItemsSystem);
 
-
         // Actually test the thing:
 
         // Create the player.
-        Entity testCook = entityFactory.createCook(0, 0);  // EntityFactory automatically gives this a bunch of components.
+        Entity testCook = entityFactory.createCook(0, 0); // EntityFactory automatically gives this a bunch of
+                                                          // components.
 
         // Create food item to carry.
         Entity testIngredient = entityFactory.createFood(FoodType.tomato);
@@ -53,34 +54,35 @@ public class testCarryItemsSystem {
         // Carry the food item.
         // This is emulating some of the code in StationSystem.java, processEntity().
         ControllableComponent controllable = Mappers.controllable.get(testCook);
-        controllable.currentFood.pushItem(testIngredient, testCook);  // It is poor software architecture to have to supply testCook twice, but that's how it works.
+        controllable.currentFood.pushItem(testIngredient, testCook); // It is poor software architecture to have to
+                                                                     // supply testCook twice, but that's how it works.
 
         // A quick sanity check on the above note on dodgy architecture.
         Assert.assertTrue(Mappers.item.get(testIngredient).holderTransform == Mappers.transform.get(testCook));
 
         // Move the player.
         TransformComponent transform = Mappers.transform.get(testCook);
-        transform.position.x += 5f;  // Just move it 5 to the right.
-        testCarryItemsSystem.update(0.1f);  // This is the line that should move the item.
+        transform.position.x += 5f; // Just move it 5 to the right.
+        testCarryItemsSystem.update(0.1f); // This is the line that should move the item.
 
         float dx = Mappers.transform.get(testIngredient).position.x - Mappers.transform.get(testCook).position.x;
         float dy = Mappers.transform.get(testIngredient).position.y - Mappers.transform.get(testCook).position.y;
         float distance = (float) Math.sqrt(dx * dx + dy * dy);
 
-        Assert.assertTrue(distance < 1.01f);  // The item should be within 1 unit of the player.
+        Assert.assertTrue(distance < 1.01f); // The item should be within 1 unit of the player.
 
         /*
-         * Basically, what I've tried to do is test that a player is followed round by an object it carries.
+         * Basically, what I've tried to do is test that a player is followed round by
+         * an object it carries.
          * 
          * That means create a player
          * create an object
          * get the player to carry the object
          * 
          * move the player
-         *  (and then tick the player system or entity system.)
+         * (and then tick the player system or entity system.)
          * test if the object has moved.
          */
     }
-
 
 }
