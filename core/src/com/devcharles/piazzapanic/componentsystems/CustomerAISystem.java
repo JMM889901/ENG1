@@ -47,8 +47,8 @@ public class CustomerAISystem extends IteratingSystem {
     private final Hud hud;
     private final Integer[] reputationPoints;
     private static int maxCustomers = (int) Double.POSITIVE_INFINITY;
-    private static int maxActiveCustomers = 5;
     private static int difficulty;  // This is just a record to be recalled when saving, this doesn't set anything.
+    private static int maxActiveCustomers = 7;
     private boolean firstSpawn = true;
     public static int MaxGroupSize = 3;// easy is 1(this is kind of a hack ig), hard is 3 Spawning more than 3 may
                                        // cause funky stuff so dont
@@ -87,6 +87,11 @@ public class CustomerAISystem extends IteratingSystem {
                         // ... and that space in the queue is not taken (objectiveTaken is a map of
                         // queue indeces to booleans noting whether there is something in that queue
                         // index)
+                        System.out.println("Objective taken: " + objectiveTaken.get(aiAgent.currentObjective - 1));
+                        if (!objectiveTaken.containsKey(aiAgent.currentObjective - 1)) {
+                            System.out.println("Objective does not exist");
+                            continue;// This is a hack, I don't know why it's happening but it's happening
+                        }
                         if (!objectiveTaken.get(aiAgent.currentObjective - 1)) {
                             // ... then move the customer up the queue.
                             makeItGoThere(aiAgent, aiAgent.currentObjective - 1);
@@ -223,8 +228,7 @@ public class CustomerAISystem extends IteratingSystem {
             if (Mappers.food.get(food).type == customer.order) {
                 // Fulfill order
                 Gdx.app.log("Order success", customer.order.name());
-                fulfillOrder(entity, customer, food);
-                cook.currentFood.pop();
+                fulfillOrder(entity, customer, cook.currentFood.pop());
 
             }
 

@@ -14,7 +14,7 @@ import com.devcharles.piazzapanic.utility.GdxTimer;
  * float) StationSystem.java} for details.
  */
 public class OvercookingComponent implements Component, Poolable {
-    public static int OVERCOOK_TIME_BASE = 3000;
+    public static int OVERCOOK_TIME_BASE = 5000;
     public GdxTimer timer = new GdxTimer(OVERCOOK_TIME_BASE, false, false); // We may want to tweak this number for
                                                                             // difficulty levels.
     /**

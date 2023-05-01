@@ -313,6 +313,9 @@ public class Hud extends ApplicationAdapter {
             if (triggerWin) {
                 triggerWin = false;
                 win();
+            } else if (reputation[0] < 1) {
+                lose();// BOO AND I CANNOT STRESS THIS ENOUGH, WOMP
+
             }
             timeCounter -= 1;
         }
@@ -383,6 +386,40 @@ public class Hud extends ApplicationAdapter {
         // labels given different fonts so it looks nicer
         Label congrats = new Label("Congratulations!", titleLabelStyle);
         Label congratsSubtitle = new Label("You won!", hudLabelStyle);
+        // colspan2 important! do some googling if you dont know what it does (scene2d)
+        centerTable.add(congrats).padBottom(40).colspan(2);
+        centerTable.row();
+        centerTable.add(congratsSubtitle).padBottom(30).colspan(2);
+
+        centerTable.row();
+
+        centerTable.add(timeNameLabel);
+        centerTable.add(reputationNameLabel);
+
+        centerTable.row();
+
+        centerTable.add(timerLabel);
+        centerTable.add(reputationLabel);
+
+        centerTable.row();
+
+        TextButton returnToMenuButton = new TextButton("Main menu", skin);
+        centerTable.add(returnToMenuButton).width(240).height(70).padTop(50).colspan(2);
+
+        returnToMenuButton.addListener(createListener(new MainMenuScreen((PiazzaPanic) game)));
+
+        stage.addActor(centerTable);
+    }
+
+    private void lose() {
+        won = true;// "But you didnt win you cant set won to true" cope harder
+        // losescreen table made
+        stage.clear();
+        Table centerTable = new Table();
+        centerTable.setFillParent(true);
+        // labels given different fonts so it looks nicer
+        Label congrats = new Label("You lost!", titleLabelStyle);
+        Label congratsSubtitle = new Label("Better luck next time!", hudLabelStyle);
         // colspan2 important! do some googling if you dont know what it does (scene2d)
         centerTable.add(congrats).padBottom(40).colspan(2);
         centerTable.row();
