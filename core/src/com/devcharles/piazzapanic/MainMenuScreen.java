@@ -16,8 +16,10 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter.DigitsOnlyFilter;
@@ -39,12 +41,14 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
     OrthographicCamera camera;
     private Stage stage;
     private Skin skin;
+    private Skin skin2;
     private Batch batch;
     private Sprite sprite;
     private BitmapFont gamesFont;
     private Label title;
     private Dialog numCustomersInput;
     private TextField input;
+    private SelectBox<String> difficultySelect;
 
     /**
      * creates main menu stage
@@ -62,6 +66,7 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
         sprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         skin = new Skin(Gdx.files.internal("craftacular/skin/craftacular-ui.json"));
+        skin2 = new Skin(Gdx.files.internal("skin2/uiskin.json"));
         stage = new Stage(new ScreenViewport());
 
         Label.LabelStyle menuLabelStyle = new Label.LabelStyle();
@@ -86,7 +91,14 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
         numCustomersInput = new InputDialog("", input, skin, game);
         numCustomersInput.text("Enter number of customers:");
         numCustomersInput.row();
-        //numCustomersInput.add(input);
+
+        difficultySelect = new SelectBox<String>(skin2);
+        difficultySelect.setItems("Easy","Medium","Hard");
+        difficultySelect.setAlignment(0);
+
+        numCustomersInput.row();
+        
+        numCustomersInput.add(difficultySelect);
         //numCustomersInput.add(input);
         numCustomersInput.row();
         numCustomersInput.button("Play");
@@ -99,7 +111,7 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
         
 
         // Checks if button is clicked and if clicked goes onto the tutorial set game to
-        // endless mode
+        // scenario mode, opens dialog box to input number of customers
         scenarioModeButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 numCustomersInput.show(stage);                
@@ -114,7 +126,7 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
         root.add(endlessModeButton).expandX().padBottom(20);
 
         // Checks if button is clicked and if clicked goes onto the tutorial set game to
-        // scenario mode
+        // endless mode
         endlessModeButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new Slideshow(game, Slideshow.Type.tutorial));
@@ -127,8 +139,7 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
         TextButton quitButton = new TextButton("Quit", skin);
         root.add(quitButton).expandX().padBottom(20);
 
-        // Checks if button is clicked and if clicked goes onto the tutorial set game to
-        // scenario mode
+        // Checks if button is clicked and if clicked quits
         quitButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.exit();
