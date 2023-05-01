@@ -94,35 +94,43 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
         numCustomersInput.row();
 
         difficultySelect = new SelectBox<String>(skin2);
-        difficultySelect.setItems("Easy","Medium","Hard");
+        difficultySelect.setItems("Easy", "Medium", "Hard");
+        difficultySelect.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                if (difficultySelect.getSelected().equals("Easy")) {
+                    CustomerAISystem.setDifficulty(0);
+                } else if (difficultySelect.getSelected().equals("Medium")) {
+                    CustomerAISystem.setDifficulty(1);
+                } else if (difficultySelect.getSelected().equals("Hard")) {
+                    CustomerAISystem.setDifficulty(2);
+                }
+            }
+        });
         difficultySelect.setAlignment(0);
 
         numCustomersInput.row();
-        
+
         numCustomersInput.add(difficultySelect);
-        //numCustomersInput.add(input);
+        // numCustomersInput.add(input);
         numCustomersInput.row();
         numCustomersInput.button("Play");
-        //numCustomersInput.scaleBy(1.5f);
+        // numCustomersInput.scaleBy(1.5f);
         numCustomersInput.align(Align.center);
         root.addActor(numCustomersInput);
         numCustomersInput.hide();
-        
-
-        
 
         // Checks if button is clicked and if clicked goes onto the tutorial set game to
         // scenario mode, opens dialog box to input number of customers
         scenarioModeButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                numCustomersInput.show(stage);                
-                //game.setScreen(new Slideshow(game, Slideshow.Type.tutorial));
-                //dispose();
+                numCustomersInput.show(stage);
+                // game.setScreen(new Slideshow(game, Slideshow.Type.tutorial));
+                // dispose();
             }
         });
 
         root.row();
-        
+
         TextButton endlessModeButton = new TextButton("Endless Mode", skin);
         root.add(endlessModeButton).expandX().padBottom(20);
 
@@ -136,7 +144,7 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
         });
 
         root.row();
-        
+
         TextButton quitButton = new TextButton("Quit", skin);
         root.add(quitButton).expandX().padBottom(20);
 

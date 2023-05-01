@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.swing.undo.StateEdit;
+
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -95,6 +97,22 @@ public class CustomerAISystem extends IteratingSystem {
             return super.remove(o);
         }
     };
+
+    public static void setDifficulty(int i) {
+        if (i == 0) {
+            MaxGroupSize = 1;
+            SpawnTime = 30000;
+            SpawnRampTime = 300;
+        } else if (i == 1) {
+            MaxGroupSize = 2;
+            SpawnTime = 20000;
+            SpawnRampTime = 200;
+        } else if (i == 2) {
+            MaxGroupSize = 3;
+            SpawnTime = 10000;
+            SpawnRampTime = 100;
+        }
+    }
 
     public void forceTick(Entity entity, Float deltaTime) {
         tickCustomerTimer(entity, entity.getComponent(CustomerComponent.class), deltaTime);
