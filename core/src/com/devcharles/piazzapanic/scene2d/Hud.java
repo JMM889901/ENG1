@@ -190,7 +190,7 @@ public class Hud extends ApplicationAdapter {
         recipeBookButton.addListener(createListener(new Slideshow(game, Slideshow.Type.recipe, gameScreen)));
         tutorialButton.addListener(createListener(new Slideshow(game, Slideshow.Type.tutorial, gameScreen)));
 
-        storeButton.addListener(createListener(new StoreScreen(game, gameScreen, inWorldStoreSystem)));
+        storeButton.addListener(createListener(new StoreScreen(game, gameScreen, inWorldStoreSystem, this)));
         tablePause.add(resumeButton).width(240).height(70).padBottom(30);
 
         tablePause.row();
@@ -258,6 +258,12 @@ public class Hud extends ApplicationAdapter {
         }
     }
 
+    public int addMoney(int moneyToAdd) {
+        money[0] += moneyToAdd;
+        moneyLabel.setText(money[0]);
+        return money[0];
+    }
+
     /**
      * Render the hud. If {@code triggerWin} is true when this runs, the Win screen
      * will be shown.
@@ -293,7 +299,6 @@ public class Hud extends ApplicationAdapter {
 
             timerLabel.setText(String.format("%03d", customerTimer));
             reputationLabel.setText(reputation[0]);
-            moneyLabel.setText(money[0]);
             if (triggerWin) {
                 triggerWin = false;
                 win();

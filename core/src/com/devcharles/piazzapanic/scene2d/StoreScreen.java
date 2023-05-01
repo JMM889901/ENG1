@@ -36,9 +36,12 @@ public class StoreScreen extends ApplicationAdapter implements Screen {
     private Table table;
     private InWorldStoreSystem inWorldStoreSystem;
     private int CooksToSpawn;
+    private Hud hud;
 
     // Build the store screen
-    public StoreScreen(final Game game, final Screen previousScreen, final InWorldStoreSystem inWorldStoreSystem) {
+    public StoreScreen(final Game game, final Screen previousScreen, final InWorldStoreSystem inWorldStoreSystem,
+            final Hud hud) {
+        this.hud = hud;
         this.inWorldStoreSystem = inWorldStoreSystem;
         camera = new OrthographicCamera();
         skin = new Skin(Gdx.files.internal("craftacular/skin/craftacular-ui.json"));
@@ -67,7 +70,7 @@ public class StoreScreen extends ApplicationAdapter implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 if (CookingComponent.COOKING_TIME_BASE > 600 && Hud.money[0] >= 10) {
                     CookingComponent.COOKING_TIME_BASE -= 300f;
-                    Hud.money[0] -= 10;
+                    hud.addMoney(-10);
                 }
 
             }
@@ -108,7 +111,7 @@ public class StoreScreen extends ApplicationAdapter implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 if (Hud.money[0] < 15)
                     return;
-                Hud.money[0] -= 15;
+                hud.addMoney(-15);
                 inWorldStoreSystem.SpawnNewCook();
             }
         });
@@ -123,7 +126,7 @@ public class StoreScreen extends ApplicationAdapter implements Screen {
         }
     }
 
-    static void unlockStationOfType(StationType type, int cost) {
+    void unlockStationOfType(StationType type, int cost) {
         if (Hud.money[0] < cost)
             return;
         for (Entity station : LockedComponent.lockedStations) {
@@ -134,7 +137,7 @@ public class StoreScreen extends ApplicationAdapter implements Screen {
                 break;
             }
         }
-        Hud.money[0] -= cost;
+        hud.addMoney(-cost);
     }
 
     @Override
