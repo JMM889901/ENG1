@@ -75,7 +75,7 @@ public class StationSystem extends IteratingSystem {
         }
 
         stationTick(station, deltaTime);
-        
+
         if (station.interactingCook != null) {
 
             PlayerComponent player = Mappers.player.get(station.interactingCook);
@@ -89,8 +89,10 @@ public class StationSystem extends IteratingSystem {
 
                 ControllableComponent controllable = Mappers.controllable.get(station.interactingCook);
 
-                // AFTER YOU PUT DOWN FOOD, THE LOCATION OF THE FOOD IS LATER DETERMINED BY THE RENDERING SYSTEM.
-                // In: `renderEntity(Entity entity)`, because the food does not exist in it's own right, it is
+                // AFTER YOU PUT DOWN FOOD, THE LOCATION OF THE FOOD IS LATER DETERMINED BY THE
+                // RENDERING SYSTEM.
+                // In: `renderEntity(Entity entity)`, because the food does not exist in it's
+                // own right, it is
                 // stored in a list by the station, not recorded by the entity system directly.
 
                 switch (station.type) {
@@ -344,7 +346,7 @@ public class StationSystem extends IteratingSystem {
     /**
      * Pick up ready food from a station
      */
-    private void stationPickup(StationComponent station, ControllableComponent controllable) {
+    public void stationPickup(StationComponent station, ControllableComponent controllable) {
         // For each food item stored in a station:...
         for (Entity foodEntity : station.food) {
 

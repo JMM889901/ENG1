@@ -23,7 +23,7 @@ public class testOverCookingComponent {
     public void testOverCooking() {
         // Initialise environment
         testEnvironment environment = new testEnvironment();
-        PooledEngine engine = new PooledEngine();
+        PooledEngine engine = (PooledEngine) environment.engine;
         StationSystem stationSystem = new StationSystem(null, environment.factory);
         EntityFactory entityFactory = environment.factory;
         engine.addSystem(stationSystem);
@@ -65,24 +65,81 @@ public class testOverCookingComponent {
         CookingComponent foodCookingComponent;
 
         // Run the order of putting food on and using stations.
+        stationSystem.processStation(chefComponent, ovenSpoilComponent);
         stationSystem.processStation(chefComponent, ovenSuccessComponent);
+        stationSystem.processStation(chefComponent, grillSpoilComponent);
+        stationSystem.processStation(chefComponent, grillSuccessComponent);
+
+        // Check the food timers are initialised correctly
+        Assert.assertTrue(Mappers.cooking.get(ovenSpoilComponent.food.get(0)).timer.peakElapsed() == 0);
         Assert.assertTrue(Mappers.cooking.get(ovenSuccessComponent.food.get(0)).timer.peakElapsed() == 0);
+        Assert.assertTrue(Mappers.cooking.get(grillSpoilComponent.food.get(0)).timer.peakElapsed() == 0);
+        Assert.assertTrue(Mappers.cooking.get(grillSuccessComponent.food.get(0)).timer.peakElapsed() == 0);
+
+        // Tick the stations to start cooking the food.
+        stationSystem.stationTick(ovenSpoilComponent, 5.1f);
         stationSystem.stationTick(ovenSuccessComponent, 5.1f);
+        stationSystem.stationTick(grillSpoilComponent, 5.1f);
+        stationSystem.stationTick(grillSuccessComponent, 5.1f);
+        // Interact with station as needed
+        stationSystem.interactStation(ovenSpoilComponent);
         stationSystem.interactStation(ovenSuccessComponent);
+        stationSystem.interactStation(grillSpoilComponent);
+        stationSystem.interactStation(grillSuccessComponent);
         // Quick sanity check to make sure the food is ready to start the second stage
         // of processing.
         foodCookingComponent = Mappers.cooking.get(ovenSuccessComponent.food.get(0));
         Assert.assertTrue(foodCookingComponent.processed);
         Assert.assertTrue(foodCookingComponent.timer.peakElapsed() == 0);
         // Finish cooking the food.
-        stationSystem.stationTick(ovenSuccessComponent, 5.1f); // Tick twice to give the OverCookingComponent a chance to check whether the food spoils.
-        stationSystem.stationTick(ovenSuccessComponent, 0.1f);
-        // TODO: Now pick up the food again. Is it spoiled?
 
-        // TODO: Joss, do this, written at 11:05 by Joss, on Saturday just before the deadline.
+        // stationSystem.stationTick(ovenSpoilComponent, 5f);
+        // stationSystem.stationTick(ovenSuccessComponent, 5f);
+        // stationSystem.stationTick(grillSpoilComponent, 5f);
+        // stationSystem.stationTick(grillSuccessComponent, 5f);
 
-        
-        
-        Assert.assertTrue(false);
+        engine.update(5);
+
+        // Tick twice to give the OverCookingComponent a chance
+        // to check whether the food spoils.
+        engine.update(0.1f);// starts overcooking after 5 seconds
+
+        // Test that the OverCookingComponent is added to the food
+
+        assertTrue(testPotatoSpoil.getComponent(OvercookingComponent.class) != null);
+        assertTrue(testPattySpoil.getComponent(OvercookingComponent.class) != null);
+        assertTrue(testPotatoSuccess.getComponent(OvercookingComponent.class) != null);
+        assertTrue(testPattySuccess.getComponent(OvercookingComponent.class) != null);
+
+        // Pickup 2 of the food items
+        stationSystem.stationPickup(ovenSuccessComponent, chefComponent);
+        stationSystem.stationPickup(grillSuccessComponent, chefComponent);
+
+        // Tick the stations
+
+        engine.update(5);
+        engine.update(0.1f);
+
+        // Check that they are overcooked
+
+        assertTrue(testPotatoSpoil.getComponent(TintComponent.class) != null);
+        assertTrue(testPattySpoil.getComponent(TintComponent.class) != null);
+        assertTrue(testPotatoSuccess.getComponent(TintComponent.class) == null);
+        assertTrue(testPattySuccess.getComponent(TintComponent.class) == null);
+
+        // Pick up the remaining food items
+        stationSystem.stationPickup(ovenSpoilComponent, chefComponent);
+        stationSystem.stationPickup(grillSpoilComponent, chefComponent);
+
+        engine.update(5);
+        engine.update(0.1f);
+        // Check that they are still spoiled
+
+        assertTrue(testPotatoSpoil.getComponent(TintComponent.class) != null);
+        assertTrue(testPattySpoil.getComponent(TintComponent.class) != null);
+        assertTrue(testPotatoSuccess.getComponent(TintComponent.class) == null);
+        assertTrue(testPattySuccess.getComponent(TintComponent.class) == null);
+
+        // Assert.assertTrue(false);
     }
 }
