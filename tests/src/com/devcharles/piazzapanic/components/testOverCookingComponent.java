@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.devcharles.piazzapanic.testEnvironment;
 import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
+import com.devcharles.piazzapanic.componentsystems.PlayerControlSystem;
 import com.devcharles.piazzapanic.componentsystems.StationSystem;
 import com.devcharles.piazzapanic.utility.EntityFactory;
 import com.devcharles.piazzapanic.utility.Mappers;
@@ -21,68 +22,85 @@ public class testOverCookingComponent {
      * Check foods become spoiled if processing too long.
      */
     public void testOverCooking() {
-        // Initialise environment
         testEnvironment environment = new testEnvironment();
-        PooledEngine engine = new PooledEngine();
         StationSystem stationSystem = new StationSystem(null, environment.factory);
-        EntityFactory entityFactory = environment.factory;
-        engine.addSystem(stationSystem);
+        PlayerControlSystem playerControlSystem = new PlayerControlSystem(environment.input, environment.engine);
+        environment.engine.addSystem(stationSystem);
+        environment.engine.addSystem(playerControlSystem);
 
-        // Create 2 foods that each require a different type of cooking.
-        Entity testPattySuccess = entityFactory.createFood(FoodType.formedPatty); // Grill.
-        Entity testPattySpoil = entityFactory.createFood(FoodType.formedPatty);
+        // Create 3 foods that each require a different type of processing.
+        Entity testOnion = environment.factory.createFood(FoodType.onion); // Cutting board.
+        Entity testPatty = environment.factory.createFood(FoodType.formedPatty); // Grill.
+        Entity testPotato = environment.factory.createFood(FoodType.potato); // Oven.
 
-        Entity testPotatoSuccess = entityFactory.createFood(FoodType.potato); // Oven.
-        Entity testPotatoSpoil = entityFactory.createFood(FoodType.potato);
 
         // Create a chef to put things on the station.
-        Entity testCook = entityFactory.createCook(0, 0);
-        ControllableComponent chefComponent = Mappers.controllable.get(testCook);
-        chefComponent.currentFood.pushItem(testPattySuccess, testCook);
-        chefComponent.currentFood.pushItem(testPattySpoil, testCook);
-        chefComponent.currentFood.pushItem(testPotatoSuccess, testCook);
-        chefComponent.currentFood.pushItem(testPotatoSpoil, testCook);
+        Entity testChef = environment.factory.createCook(0, 0);
+        PlayerComponent testPlayerComponent = new PlayerComponent();
+        testChef.add(testPlayerComponent); // Make our chef the active "player".
+
+        ControllableComponent testControllableComponent = Mappers.controllable.get(testChef);
+        testControllableComponent.currentFood.pushItem(testOnion, testChef);  // There are "redundant" references to testChef due to 'slightly' dodgy architecture inherited from Group26.
+        testControllableComponent.currentFood.pushItem(testPatty, testChef);
+        testControllableComponent.currentFood.pushItem(testPotato, testChef);
+        
 
         // Create stations to process food.
-        Entity testOvenSuccess = entityFactory.createStation(StationType.oven, new Vector2(1, 0), null, false);
-        Entity testOvenSpoil = entityFactory.createStation(StationType.oven, new Vector2(2, 0), null, false);
-        Entity testGrillSuccess = entityFactory.createStation(StationType.grill, new Vector2(3, 0), null, false);
-        Entity testGrillSpoil = entityFactory.createStation(StationType.grill, new Vector2(4, 0), null, false);
-
-        StationComponent ovenSuccessComponent = Mappers.station.get(testOvenSuccess);
-        StationComponent ovenSpoilComponent = Mappers.station.get(testOvenSpoil);
-        StationComponent grillSuccessComponent = Mappers.station.get(testGrillSuccess);
-        StationComponent grillSpoilComponent = Mappers.station.get(testGrillSpoil);
-
-        // Force set the interacting cook as our test cook
-        ovenSpoilComponent.interactingCook = testCook;
-        grillSpoilComponent.interactingCook = testCook;
-        ovenSuccessComponent.interactingCook = testCook;
-        grillSuccessComponent.interactingCook = testCook;
-
-        // This is used lots of times below, it gets overwritten each time so no worry
-        // about leaked references.
-        CookingComponent foodCookingComponent;
-
-        // Run the order of putting food on and using stations.
-        stationSystem.processStation(chefComponent, ovenSuccessComponent);
-        Assert.assertTrue(Mappers.cooking.get(ovenSuccessComponent.food.get(0)).timer.peakElapsed() == 0);
-        stationSystem.stationTick(ovenSuccessComponent, 5.1f);
-        stationSystem.interactStation(ovenSuccessComponent);
-        // Quick sanity check to make sure the food is ready to start the second stage
-        // of processing.
-        foodCookingComponent = Mappers.cooking.get(ovenSuccessComponent.food.get(0));
-        Assert.assertTrue(foodCookingComponent.processed);
-        Assert.assertTrue(foodCookingComponent.timer.peakElapsed() == 0);
-        // Finish cooking the food.
-        stationSystem.stationTick(ovenSuccessComponent, 5.1f); // Tick twice to give the OverCookingComponent a chance to check whether the food spoils.
-        stationSystem.stationTick(ovenSuccessComponent, 0.1f);
-        // TODO: Now pick up the food again. Is it spoiled?
-
-        // TODO: Joss, do this, written at 11:05 by Joss, on Saturday just before the deadline.
-
+        Entity testCuttingBoard = environment.factory.createStation(StationType.cutting_board, new Vector2(3, 0), null, false);
+        Entity testOven = environment.factory.createStation(StationType.oven, new Vector2(1, 0), null, false);
+        Entity testGrill = environment.factory.createStation(StationType.grill, new Vector2(2, 0), null, false);
         
-        
+        StationComponent cuttingBoardComponent = Mappers.station.get(testCuttingBoard);
+        StationComponent ovenComponent = Mappers.station.get(testOven);
+        StationComponent grillComponent = Mappers.station.get(testGrill);
+
+        // Start the first stage of processing.
+        ovenComponent.interactingCook = testChef;  // (This is done in reverse order as above because the player's foodstack is of course LIFO.)
+        testPlayerComponent.putDown = true;
+        environment.engine.update(0.1f);
+        ovenComponent.interactingCook = null;
+
+        grillComponent.interactingCook = testChef;
+        testPlayerComponent.putDown = true;
+        environment.engine.update(0.1f);
+        grillComponent.interactingCook = null;
+
+        cuttingBoardComponent.interactingCook = testChef;
+        testPlayerComponent.putDown = true;
+        environment.engine.update(0.1f);
+        // Don't remove interactingCook here because you can't AFK a cutting board.
+
+        // Everything processes for just long enough for the first stage.
+        environment.engine.update(CookingComponent.COOKING_TIME_BASE / 1000f + 0.1f);
+
+        cuttingBoardComponent.interactingCook = null;
+
+        // Start the second stage of processing.
+        grillComponent.interactingCook = testChef;
+        testPlayerComponent.interact = true;
+        environment.engine.update(0.1f);
+        grillComponent.interactingCook = null;
+
+        ovenComponent.interactingCook = testChef;
+        testPlayerComponent.interact = true;
+        environment.engine.update(0.1f);
+        ovenComponent.interactingCook = null;
+
+        cuttingBoardComponent.interactingCook = testChef;
+        testPlayerComponent.interact = true;
+        environment.engine.update(0.1f);
+
+        // Allow time for the second stage of processing.
+        environment.engine.update(CookingComponent.COOKING_TIME_BASE / 1000f + 0.1f);
+
+        System.out.println(Mappers.food.get(cuttingBoardComponent.food.get(0)).type);
+
+        // Test that everything has cooked/cut.
+        Assert.assertTrue(Mappers.food.get(grillComponent.food.get(0)).type == FoodType.grilledPatty);
+        Assert.assertTrue(Mappers.food.get(ovenComponent.food.get(0)).type == FoodType.bakedPotatoPlain);
+        Assert.assertTrue(Mappers.food.get(cuttingBoardComponent.food.get(0)).type == FoodType.slicedOnion);
+
+
         Assert.assertTrue(false);
     }
 }
