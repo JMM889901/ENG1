@@ -34,7 +34,7 @@ public class GameScreen implements Screen {
 
     private KeyboardInput kbInput;
 
-    private World world;
+    public static World world;  //  :)
 
     private OrthographicCamera camera;
 

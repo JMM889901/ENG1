@@ -24,6 +24,7 @@ import com.devcharles.piazzapanic.PiazzaPanic;
 import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
 import com.devcharles.piazzapanic.componentsystems.InWorldStoreSystem;
 import com.devcharles.piazzapanic.utility.EntityFactory;
+import com.devcharles.piazzapanic.utility.SaveHandler;
 
 /**
  * HUD user interface rendering for the game, also includes the win screen.
@@ -181,25 +182,35 @@ public class Hud extends ApplicationAdapter {
         TextButton recipeBookButton = new TextButton("Recipe Book", skin);
         TextButton tutorialButton = new TextButton("Tutorial", skin);
         TextButton storeButton = new TextButton("Store", skin);
+        TextButton saveButton = new TextButton("Save", skin);
 
         resumeButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 pauseToggled = true;
             }
         });
+
+        final Hud myHud = this;  //  :)
+
         recipeBookButton.addListener(createListener(new Slideshow(game, Slideshow.Type.recipe, gameScreen)));
         tutorialButton.addListener(createListener(new Slideshow(game, Slideshow.Type.tutorial, gameScreen)));
-
         storeButton.addListener(createListener(new StoreScreen(game, gameScreen, inWorldStoreSystem, this)));
+        saveButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                SaveHandler.save(SaveHandler.SAVE_FILE, GameScreen.world, myHud);
+            }
+        });
+
+
         tablePause.add(resumeButton).width(240).height(70).padBottom(30);
-
         tablePause.row();
-
         tablePause.add(recipeBookButton).width(240).height(70).padBottom(30);
         tablePause.row();
         tablePause.add(tutorialButton).width(240).height(70);
         tablePause.row();
         tablePause.add(storeButton).width(240).height(70);
+        tablePause.row();
+        tablePause.add(saveButton).width(240).height(70);
         this.tableRight = new Table();
         this.tableBottom = new Table();
 
