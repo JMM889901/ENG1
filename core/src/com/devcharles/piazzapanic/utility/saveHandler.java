@@ -5,8 +5,10 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Json;
+import com.devcharles.piazzapanic.componentsystems.CustomerAISystem;
 import com.devcharles.piazzapanic.scene2d.Hud;
 import com.devcharles.piazzapanic.utility.saveStructure.SaveData;
 
@@ -30,18 +32,20 @@ public class SaveHandler {
 
         // Get data from passed in world and hud.
 
-        saveData.money = 1234567;
-        saveData.reputation = 2;
+        saveData.money = Hud.money[0];
+        saveData.reputation = Hud.reputation[0];
+        saveData.difficulty = CustomerAISystem.getDifficulty();
+        saveData.maxCustomers = CustomerAISystem.getMaxCustomers();
 
 
         // Take the structured data and now save it.
 
         Json json = new Json();
-        String saveFile = json.prettyPrint(saveData);
+        String saveText = json.prettyPrint(saveData);
 
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
-            writer.write(saveFile);
+            writer.write(saveText);
             System.out.println("Saved to " + filename);
             writer.close();
         } catch (Exception e) {
@@ -49,18 +53,20 @@ public class SaveHandler {
         }
     }
 
-    public static SaveData load(String filename) {
+    public static void load(String filename, World world, Hud hud) {
         Json json = new Json();
         SaveData saveData = new SaveData();
-        String saveFile = "";
+        String saveText = "";
         
+        // Read structured data from the save file.
+
         try {
             BufferedReader reader = new BufferedReader(new FileReader(filename));
             
             String curLine;
             curLine = reader.readLine();
             while (curLine != null) {
-                saveFile += curLine + "\n";
+                saveText += curLine + "\n";
                 curLine = reader.readLine();
             }
             reader.close();
@@ -68,8 +74,15 @@ public class SaveHandler {
             System.out.println("Error loading from " + filename);
         }
 
-        saveData = json.fromJson(SaveData.class, saveFile);
+        saveData = json.fromJson(SaveData.class, saveText);
 
-        return saveData;
+
+        // Set values in the world and hud based on the structured data.
+
+        Hud.money[0] = saveData.money;
+        Hud.reputation[0] = saveData.reputation;
+        CustomerAISystem.setDifficulty(saveData.difficulty);
+        CustomerAISystem.setMaxCustomers(saveData.maxCustomers);
+
     }
 }

@@ -1,6 +1,7 @@
 package com.devcharles.piazzapanic;
 
 import java.io.Console;
+import java.io.File;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -138,6 +139,21 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
         // endless mode
         endlessModeButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new Slideshow(game, Slideshow.Type.tutorial));
+                dispose();
+            }
+        });
+
+        root.row();
+
+        TextButton loadFromFileButton = new TextButton("Resume previous", skin);
+        root.add(loadFromFileButton).expandX().padBottom(20);
+        File saveFile = new File(SaveHandler.SAVE_FILE);
+        loadFromFileButton.setDisabled(!saveFile.isFile());
+
+        loadFromFileButton.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                GameScreen.loadFrom = SaveHandler.SAVE_FILE;
                 game.setScreen(new Slideshow(game, Slideshow.Type.tutorial));
                 dispose();
             }

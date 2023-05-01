@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Null;
 import com.devcharles.piazzapanic.componentsystems.StationSystem;
 import com.devcharles.piazzapanic.components.Powerups.PowerupSpawnControllerComponent;
 import com.devcharles.piazzapanic.componentsystems.CarryItemsSystem;
@@ -24,6 +25,7 @@ import com.devcharles.piazzapanic.componentsystems.RenderingSystem;
 import com.devcharles.piazzapanic.input.KeyboardInput;
 import com.devcharles.piazzapanic.utility.EntityFactory;
 import com.devcharles.piazzapanic.utility.MapLoader;
+import com.devcharles.piazzapanic.utility.SaveHandler;
 import com.devcharles.piazzapanic.utility.box2d.WorldContactListener;
 import com.devcharles.piazzapanic.scene2d.Hud;
 import box2dLight.RayHandler;
@@ -51,6 +53,8 @@ public class GameScreen implements Screen {
     private Integer[] reputationPoints = { 3 };
 
     private Integer[] money = { 150 };// DEBUG, SET TO 0
+
+    public static String loadFrom = null;
 
     public GameScreen(PiazzaPanic game) {
         this.game = game;
@@ -101,6 +105,14 @@ public class GameScreen implements Screen {
         multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(kbInput);
         multiplexer.addProcessor(hud.stage);
+
+
+        // DO THE LOADING IN FROM FILE STUFF HERE.
+
+        if (loadFrom != null) {
+            SaveHandler.load(loadFrom, world, hud);
+            loadFrom = null;
+        }
 
     }
 

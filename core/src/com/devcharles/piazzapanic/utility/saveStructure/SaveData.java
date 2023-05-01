@@ -6,4 +6,6 @@ public class SaveData {
     public StationData stations[];
     public CustomerData customers[];
     public int gameTime;
+    public int difficulty;
+    public int maxCustomers;
 }

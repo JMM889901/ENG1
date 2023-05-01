@@ -48,6 +48,7 @@ public class CustomerAISystem extends IteratingSystem {
     private final Integer[] reputationPoints;
     private static int maxCustomers = (int) Double.POSITIVE_INFINITY;
     private static int maxActiveCustomers = 5;
+    private static int difficulty;  // This is just a record to be recalled when saving, this doesn't set anything.
     private boolean firstSpawn = true;
     public static int MaxGroupSize = 3;// easy is 1(this is kind of a hack ig), hard is 3 Spawning more than 3 may
                                        // cause funky stuff so dont
@@ -99,6 +100,8 @@ public class CustomerAISystem extends IteratingSystem {
     };
 
     public static void setDifficulty(int i) {
+        difficulty = i;  // Just remember this for saving.
+
         if (i == 0) {
             MaxGroupSize = 1;
             SpawnTime = 30000;
@@ -112,6 +115,10 @@ public class CustomerAISystem extends IteratingSystem {
             SpawnTime = 10000;
             SpawnRampTime = 100;
         }
+    }
+
+    public static int getDifficulty() {
+        return difficulty;
     }
 
     public void forceTick(Entity entity, Float deltaTime) {
@@ -391,6 +398,10 @@ public class CustomerAISystem extends IteratingSystem {
         // since we use instanced systems this should be static
         // but also: Thats alot of effort and we dont have time
         maxCustomers = Customers;
+    }
+
+    public static int getMaxCustomers() {
+        return maxCustomers;
     }
 
 }
