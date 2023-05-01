@@ -25,9 +25,10 @@ public class testCookingComponent {
         environment.engine.addSystem(playerControlSystem);
 
         // Create 3 foods that each require a different type of processing.
+        Entity testOnion = environment.factory.createFood(FoodType.onion); // Cutting board.
         Entity testPatty = environment.factory.createFood(FoodType.formedPatty); // Grill.
         Entity testPotato = environment.factory.createFood(FoodType.potato); // Oven.
-        Entity testOnion = environment.factory.createFood(FoodType.onion); // Cutting board.
+
 
         // Create a chef to put things on the station.
         Entity testChef = environment.factory.createCook(0, 0);
@@ -35,28 +36,22 @@ public class testCookingComponent {
         testChef.add(testPlayerComponent); // Make our chef the active "player".
 
         ControllableComponent testControllableComponent = Mappers.controllable.get(testChef);
-        testControllableComponent.currentFood.pushItem(testPatty, testChef); // There are "redundant" references to
-                                                                             // testChef due to 'slightly' dodgy
-                                                                             // architecture inherited from Group26.
+        testControllableComponent.currentFood.pushItem(testOnion, testChef);  // There are "redundant" references to testChef due to 'slightly' dodgy architecture inherited from Group26.
+        testControllableComponent.currentFood.pushItem(testPatty, testChef);
         testControllableComponent.currentFood.pushItem(testPotato, testChef);
-        testControllableComponent.currentFood.pushItem(testOnion, testChef);
+        
 
         // Create stations to process food.
+        Entity testCuttingBoard = environment.factory.createStation(StationType.cutting_board, new Vector2(3, 0), null, false);
         Entity testOven = environment.factory.createStation(StationType.oven, new Vector2(1, 0), null, false);
         Entity testGrill = environment.factory.createStation(StationType.grill, new Vector2(2, 0), null, false);
-        Entity testCuttingBoard = environment.factory.createStation(StationType.cutting_board, new Vector2(3, 0), null,
-                false);
-
+        
+        StationComponent cuttingBoardComponent = Mappers.station.get(testCuttingBoard);
         StationComponent ovenComponent = Mappers.station.get(testOven);
         StationComponent grillComponent = Mappers.station.get(testGrill);
-        StationComponent cuttingBoardComponent = Mappers.station.get(testCuttingBoard);
 
         // Start the first stage of processing.
-        cuttingBoardComponent.interactingCook = testChef;
-        testPlayerComponent.putDown = true;
-        environment.engine.update(0.1f);
-
-        ovenComponent.interactingCook = testChef;
+        ovenComponent.interactingCook = testChef;  // (This is done in reverse order as above because the player's foodstack is of course LIFO.)
         testPlayerComponent.putDown = true;
         environment.engine.update(0.1f);
         ovenComponent.interactingCook = null;
@@ -65,11 +60,16 @@ public class testCookingComponent {
         testPlayerComponent.putDown = true;
         environment.engine.update(0.1f);
         grillComponent.interactingCook = null;
-        // (This is done in reverse order as above because the player's foodstack is of
-        // course LIFO.)
+
+        cuttingBoardComponent.interactingCook = testChef;
+        testPlayerComponent.putDown = true;
+        environment.engine.update(0.1f);
+        // Don't remove interactingCook here because you can't AFK a cutting board.
 
         // Everything processes for just long enough for the first stage.
         environment.engine.update(CookingComponent.COOKING_TIME_BASE / 1000f + 0.1f);
+
+        cuttingBoardComponent.interactingCook = null;
 
         // Start the second stage of processing.
         grillComponent.interactingCook = testChef;
