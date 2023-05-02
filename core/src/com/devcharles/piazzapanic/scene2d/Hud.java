@@ -1,5 +1,6 @@
 package com.devcharles.piazzapanic.scene2d;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -38,8 +39,8 @@ public class Hud extends ApplicationAdapter {
                                              // counts down.
     private float timeCounter = 0;
     public static Integer[] reputation;
-    public static Integer[] money; // This is static purely for the sake of simplicity, yes its bad practice but
-                                   // cry about it
+    private static Integer[] money; // This is static purely for the sake of simplicity, yes its bad practice but
+                                    // cry about it
     private Skin skin;
 
     private final float fontScale = 0.6f;
@@ -59,6 +60,7 @@ public class Hud extends ApplicationAdapter {
     private Image photo;
 
     private Game game;
+    private Engine engine;
     private InWorldStoreSystem inWorldStoreSystem;
     private Table tableBottom, tableRight, tableTop, tablePause, tableBottomLabel;
 
@@ -77,14 +79,15 @@ public class Hud extends ApplicationAdapter {
      * @param reputationPoints Must be an object to pass by reference, see
      *                         https://stackoverflow.com/questions/3326112/java-best-way-to-pass-int-by-reference
      */
-    public Hud(SpriteBatch spriteBatch, final GameScreen savedGame, final Game game, Integer[] reputationPoints,
+    public Hud(SpriteBatch spriteBatch, final GameScreen savedGame, final Game game, Engine engine, Integer[] reputationPoints,
             Integer[] money, InWorldStoreSystem inWorldStoreSystem) {
 
         _ISNTTEST = spriteBatch != null;
         this.game = game;
-        this.reputation = reputationPoints;
+        this.engine = engine;
+        Hud.reputation = reputationPoints;
         this.gameScreen = savedGame;
-        this.money = money; // Yes player money is handled here, cope and seethe bozo
+        Hud.money = money; // Yes player money is handled here, cope and seethe bozo
         this.inWorldStoreSystem = inWorldStoreSystem;
 
         // Setup the viewport
@@ -190,17 +193,17 @@ public class Hud extends ApplicationAdapter {
             }
         });
 
-        final Hud myHud = this;  //  :)
+        final Hud myHud = this; // :)
 
         recipeBookButton.addListener(createListener(new Slideshow(game, Slideshow.Type.recipe, gameScreen)));
         tutorialButton.addListener(createListener(new Slideshow(game, Slideshow.Type.tutorial, gameScreen)));
         storeButton.addListener(createListener(new StoreScreen(game, gameScreen, inWorldStoreSystem, this)));
         saveButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                SaveHandler.save(SaveHandler.SAVE_FILE, GameScreen.world, myHud);
+                SaveHandler.save(SaveHandler.SAVE_FILE, engine, GameScreen.world, myHud);
+                //saveButton.setDisabled(true);
             }
         });
-
 
         tablePause.add(resumeButton).width(240).height(70).padBottom(30);
         tablePause.row();
@@ -269,9 +272,31 @@ public class Hud extends ApplicationAdapter {
         }
     }
 
+    public int initMoney(int moneyToSet) {
+        money[0] = moneyToSet;
+        moneyLabel.setText(money[0]);
+        return money[0];
+    }
+
     public int addMoney(int moneyToAdd) {
         money[0] += moneyToAdd;
-        moneyLabel.setText(money[0]);
+        if (moneyLabel != null)// hehe
+            moneyLabel.setText(money[0]);
+        return money[0];
+    }
+
+    public static int getMoney() {
+        return money[0];
+    }
+
+    /**
+     * ONLY USE FOR UNIT TESTS.
+     * 
+     * @param moneyToSet
+     * @return
+     */
+    public static int setMoneyReference_TEST(Integer[] moneyToSet) {
+        money = moneyToSet;
         return money[0];
     }
 
@@ -287,6 +312,7 @@ public class Hud extends ApplicationAdapter {
                 pauseToggled = false;
                 this.resume();
             }
+
             stage.act();
             stage.draw();
             return;
@@ -313,6 +339,9 @@ public class Hud extends ApplicationAdapter {
             if (triggerWin) {
                 triggerWin = false;
                 win();
+            } else if (reputation[0] < 1) {
+                lose();// BOO AND I CANNOT STRESS THIS ENOUGH, WOMP
+
             }
             timeCounter -= 1;
         }
@@ -383,6 +412,40 @@ public class Hud extends ApplicationAdapter {
         // labels given different fonts so it looks nicer
         Label congrats = new Label("Congratulations!", titleLabelStyle);
         Label congratsSubtitle = new Label("You won!", hudLabelStyle);
+        // colspan2 important! do some googling if you dont know what it does (scene2d)
+        centerTable.add(congrats).padBottom(40).colspan(2);
+        centerTable.row();
+        centerTable.add(congratsSubtitle).padBottom(30).colspan(2);
+
+        centerTable.row();
+
+        centerTable.add(timeNameLabel);
+        centerTable.add(reputationNameLabel);
+
+        centerTable.row();
+
+        centerTable.add(timerLabel);
+        centerTable.add(reputationLabel);
+
+        centerTable.row();
+
+        TextButton returnToMenuButton = new TextButton("Main menu", skin);
+        centerTable.add(returnToMenuButton).width(240).height(70).padTop(50).colspan(2);
+
+        returnToMenuButton.addListener(createListener(new MainMenuScreen((PiazzaPanic) game)));
+
+        stage.addActor(centerTable);
+    }
+
+    private void lose() {
+        won = true;// "But you didnt win you cant set won to true" cope harder
+        // losescreen table made
+        stage.clear();
+        Table centerTable = new Table();
+        centerTable.setFillParent(true);
+        // labels given different fonts so it looks nicer
+        Label congrats = new Label("You lost!", titleLabelStyle);
+        Label congratsSubtitle = new Label("Better luck next time!", hudLabelStyle);
         // colspan2 important! do some googling if you dont know what it does (scene2d)
         centerTable.add(congrats).padBottom(40).colspan(2);
         centerTable.row();

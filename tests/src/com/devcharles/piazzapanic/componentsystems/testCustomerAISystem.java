@@ -1,5 +1,6 @@
 package com.devcharles.piazzapanic.componentsystems;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -18,9 +19,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.devcharles.piazzapanic.components.AIAgentComponent;
+import com.devcharles.piazzapanic.components.ControllableComponent;
 import com.devcharles.piazzapanic.components.CustomerComponent;
+import com.devcharles.piazzapanic.components.PlayerComponent;
 import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
 import com.devcharles.piazzapanic.scene2d.Hud;
+import com.devcharles.piazzapanic.scene2d.TestHud;
 import com.devcharles.piazzapanic.utility.EntityFactory;
 import com.devcharles.piazzapanic.utility.GdxTimer;
 import com.devcharles.piazzapanic.utility.MapLoader;
@@ -61,9 +65,10 @@ public class testCustomerAISystem {
         new testEnvironment();
         Engine engine = new PooledEngine();
         Integer[] money = { 0 };
-        Hud.money = money;
+        Hud.setMoneyReference_TEST(money);
+        Hud hud = new Hud(null, null, null, null, money, null, null);
         EntityFactory factory = new EntityFactory((PooledEngine) engine);
-        CustomerAISystem system = new CustomerAISystem(null, null, factory, null, null);
+        CustomerAISystem system = new CustomerAISystem(null, null, factory, hud, null);
         engine.addSystem(system);
         Entity customer = new Entity();
         CustomerComponent component = new CustomerComponent();
@@ -112,5 +117,105 @@ public class testCustomerAISystem {
         system.makeItGoThere(AiComponent, 1);
         assert (AiComponent.currentObjective == 1);
         assert (AiComponent.steeringBody.getOrientation() != 0);
+    }
+
+    @Test
+    public void testCustomerTakesOrder() {
+        // Create environment
+        testEnvironment env = new testEnvironment();
+        env.loader.buildFromObjects(env.engine, null);// Build objectives
+        // Create ai system
+        CustomerAISystem system = new CustomerAISystem(env.loader.getObjectives(), env.world, env.factory,
+                new TestHud(), null);
+        env.engine.addSystem(system);
+
+        // Create customer and set order
+        Entity customer = env.factory.createCustomer(new Vector2(0, 0));
+        CustomerComponent component = customer.getComponent(CustomerComponent.class);
+        component.order = FoodType.bakedPotato;
+
+        // Create chef and give him a baked potato
+        Entity chef = env.factory.createCook(0, 1);
+        Entity food = env.factory.createFood(FoodType.bakedPotato);
+        ControllableComponent player = chef.getComponent(ControllableComponent.class);
+        player.currentFood.push(food);
+
+        // get playercomponent
+        PlayerComponent playerComponent = env.engine.createComponent(PlayerComponent.class);
+        chef.add(playerComponent);
+        playerComponent.giveToCustomer = true;
+
+        // Make customer take order
+        component.interactingCook = chef;
+        env.engine.update(0.1f);
+
+        assertTrue(player.currentFood.isEmpty());
+        assertTrue(component.order == null);
+        assertTrue(component.food == food);
+
+    }
+
+    @Test
+    public void testCustomerRejectsOrder() {
+        // Create environment
+        testEnvironment env = new testEnvironment();
+        env.loader.buildFromObjects(env.engine, null);// Build objectives
+        // Create ai system
+        CustomerAISystem system = new CustomerAISystem(env.loader.getObjectives(), env.world, env.factory,
+                new TestHud(), null);
+        env.engine.addSystem(system);
+
+        // Create customer and set order
+        Entity customer = env.factory.createCustomer(new Vector2(0, 0));
+        CustomerComponent component = customer.getComponent(CustomerComponent.class);
+        component.order = FoodType.bakedPotato;
+
+        // Create chef and give him a baked potato
+        Entity chef = env.factory.createCook(0, 1);
+        Entity food = env.factory.createFood(FoodType.burger);
+        ControllableComponent player = chef.getComponent(ControllableComponent.class);
+        player.currentFood.push(food);
+
+        // get playercomponent
+        PlayerComponent playerComponent = env.engine.createComponent(PlayerComponent.class);
+        chef.add(playerComponent);
+        playerComponent.giveToCustomer = true;
+
+        // Make customer take order
+        component.interactingCook = chef;
+        env.engine.update(0.1f);
+
+        assertTrue(!player.currentFood.isEmpty());
+        assertTrue(component.order != null);
+        assertTrue(component.food == null);
+    }
+
+    @Test
+    public void testDifficulty() {
+        // Create environment
+        testEnvironment env = new testEnvironment();
+        env.loader.buildFromObjects(env.engine, null);// Build objectives
+        // Create ai system
+        CustomerAISystem system = new CustomerAISystem(env.loader.getObjectives(), env.world, env.factory,
+                new TestHud(), new Integer[] { 0 });
+        env.engine.addSystem(system);
+        // Set difficulty
+        CustomerAISystem.setDifficulty(0);
+
+        assertTrue(CustomerAISystem.MaxGroupSize == 1);
+        assertTrue(CustomerAISystem.SpawnTime == 30000);
+        assertTrue(CustomerAISystem.SpawnRampTime == 300);
+
+        CustomerAISystem.setDifficulty(1);
+
+        assertTrue(CustomerAISystem.MaxGroupSize == 2);
+        assertTrue(CustomerAISystem.SpawnTime == 20000);
+        assertTrue(CustomerAISystem.SpawnRampTime == 200);
+
+        CustomerAISystem.setDifficulty(2);
+
+        assertTrue(CustomerAISystem.MaxGroupSize == 3);
+        assertTrue(CustomerAISystem.SpawnTime == 10000);
+        assertTrue(CustomerAISystem.SpawnRampTime == 100);
     }
 }

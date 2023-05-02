@@ -47,8 +47,9 @@ public class CustomerAISystem extends IteratingSystem {
     private final Hud hud;
     private final Integer[] reputationPoints;
     private static int maxCustomers = (int) Double.POSITIVE_INFINITY;
-    private static int maxActiveCustomers = 5;
-    private boolean firstSpawn = true;
+    private static int difficulty; // This is just a record to be recalled when saving, this doesn't set anything.
+    private static int maxActiveCustomers = 7;
+    public boolean firstSpawn = true;
     public static int MaxGroupSize = 3;// easy is 1(this is kind of a hack ig), hard is 3 Spawning more than 3 may
                                        // cause funky stuff so dont
     private int spawnedThisGroup = 0;
@@ -66,7 +67,7 @@ public class CustomerAISystem extends IteratingSystem {
 
     // List of customers, on removal we move the other customers up a place
     // (queueing).
-    private final ArrayList<Entity> customers = new ArrayList<Entity>() {
+    public final ArrayList<Entity> customers = new ArrayList<Entity>() {
         // Just list of customers apart from it does extra things when you remove a
         // customer off the list. - Joss
         @Override
@@ -86,6 +87,11 @@ public class CustomerAISystem extends IteratingSystem {
                         // ... and that space in the queue is not taken (objectiveTaken is a map of
                         // queue indeces to booleans noting whether there is something in that queue
                         // index)
+                        System.out.println("Objective taken: " + objectiveTaken.get(aiAgent.currentObjective - 1));
+                        if (!objectiveTaken.containsKey(aiAgent.currentObjective - 1)) {
+                            System.out.println("Objective does not exist");
+                            continue;// This is a hack, I don't know why it's happening but it's happening
+                        }
                         if (!objectiveTaken.get(aiAgent.currentObjective - 1)) {
                             // ... then move the customer up the queue.
                             makeItGoThere(aiAgent, aiAgent.currentObjective - 1);
@@ -99,6 +105,8 @@ public class CustomerAISystem extends IteratingSystem {
     };
 
     public static void setDifficulty(int i) {
+        difficulty = i; // Just remember this for saving.
+
         if (i == 0) {
             MaxGroupSize = 1;
             SpawnTime = 30000;
@@ -112,6 +120,10 @@ public class CustomerAISystem extends IteratingSystem {
             SpawnTime = 10000;
             SpawnRampTime = 100;
         }
+    }
+
+    public static int getDifficulty() {
+        return difficulty;
     }
 
     public void forceTick(Entity entity, Float deltaTime) {
@@ -216,8 +228,7 @@ public class CustomerAISystem extends IteratingSystem {
             if (Mappers.food.get(food).type == customer.order) {
                 // Fulfill order
                 Gdx.app.log("Order success", customer.order.name());
-                fulfillOrder(entity, customer, food);
-                cook.currentFood.pop();
+                fulfillOrder(entity, customer, cook.currentFood.pop());
 
             }
 
@@ -259,6 +270,7 @@ public class CustomerAISystem extends IteratingSystem {
         numOfCustomerTotal++;
         numActiveCustomers++;
         Mappers.customer.get(newCustomer).timer.start();
+        makeItGoThere(newCustomer.getComponent(AIAgentComponent.class), customers.size() - 1);
     }
 
     void tickCustomerTimer(Entity entity, CustomerComponent customer, float deltaTime) {
@@ -338,7 +350,8 @@ public class CustomerAISystem extends IteratingSystem {
         AIAgentComponent aiAgent = Mappers.aiAgent.get(entity);
         makeItGoThere(aiAgent, -1);
 
-        hud.money[0] += 5;
+        hud.addMoney(5);
+        // Hud.money[0] += 5;
 
         numActiveCustomers--;
 
@@ -376,7 +389,8 @@ public class CustomerAISystem extends IteratingSystem {
         AIAgentComponent aiAgent = Mappers.aiAgent.get(entity);
         makeItGoThere(aiAgent, -1);
 
-        hud.money[0] += 5;
+        hud.addMoney(5);
+        // Hud.money[0] += 5;
 
         numActiveCustomers--;
 
@@ -391,6 +405,10 @@ public class CustomerAISystem extends IteratingSystem {
         // since we use instanced systems this should be static
         // but also: Thats alot of effort and we dont have time
         maxCustomers = Customers;
+    }
+
+    public static int getMaxCustomers() {
+        return maxCustomers;
     }
 
 }

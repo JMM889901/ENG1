@@ -60,7 +60,12 @@ public class GdxTimer {
         this.elapsed = 0;
     }
 
+
+    // These next two added by Joss:
     public int peakElapsed() {
         return this.elapsed;
+    }
+    public void setElapsed(int elapsed) {
+        this.elapsed = elapsed;
     }
 }

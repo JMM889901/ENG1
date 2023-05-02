@@ -68,7 +68,7 @@ public class StoreScreen extends ApplicationAdapter implements Screen {
         TextButton cookSpeed = new TextButton("cookSpeed boost(10)", skin);
         cookSpeed.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                if (CookingComponent.COOKING_TIME_BASE > 600 && Hud.money[0] >= 10) {
+                if (CookingComponent.COOKING_TIME_BASE > 600 && Hud.getMoney() >= 10) {
                     CookingComponent.COOKING_TIME_BASE -= 300f;
                     hud.addMoney(-10);
                 }
@@ -109,7 +109,7 @@ public class StoreScreen extends ApplicationAdapter implements Screen {
         TextButton newCook = new TextButton("Hire cook(15)", skin);
         newCook.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                if (Hud.money[0] < 15)
+                if (Hud.getMoney() < 15)
                     return;
                 hud.addMoney(-15);
                 inWorldStoreSystem.SpawnNewCook();
@@ -127,17 +127,17 @@ public class StoreScreen extends ApplicationAdapter implements Screen {
     }
 
     void unlockStationOfType(StationType type, int cost) {
-        if (Hud.money[0] < cost)
+        if (Hud.getMoney() < cost)
             return;
         for (Entity station : LockedComponent.lockedStations) {
             StationComponent component = station.getComponent(StationComponent.class);
             if (component.type == type) {
                 station.remove(LockedComponent.class);
                 station.getComponent(TextureComponent.class).region = null;
+                hud.addMoney(-cost);
                 break;
             }
         }
-        hud.addMoney(-cost);
     }
 
     @Override

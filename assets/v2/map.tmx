@@ -380,7 +380,7 @@
    </properties>
    <point/>
   </object>
-  <object id="55" x="1408" y="704">
+  <object id="55" x="1416" y="704.667">
    <properties>
     <property name="aiobjective" type="int" value="-1"/>
    </properties>
@@ -524,15 +524,15 @@
    </properties>
    <point/>
   </object>
-  <object id="118" x="1408.67" y="734.667">
+  <object id="118" x="1394" y="705.334">
    <properties>
-    <property name="aispawnpoint" type="int" value="0"/>
+    <property name="aispawnpoint" type="int" value="1"/>
    </properties>
    <point/>
   </object>
-  <object id="119" x="1380.67" y="719.333">
+  <object id="119" x="1373.34" y="706.666">
    <properties>
-    <property name="aispawnpoint" type="int" value="-2"/>
+    <property name="aispawnpoint" type="int" value="2"/>
    </properties>
    <point/>
   </object>

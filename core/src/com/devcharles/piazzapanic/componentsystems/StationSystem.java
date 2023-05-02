@@ -21,6 +21,7 @@ import com.devcharles.piazzapanic.components.TintComponent;
 import com.devcharles.piazzapanic.components.CookingComponent;
 import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
 import com.devcharles.piazzapanic.components.Powerups.cookBoostComponent;
+import com.devcharles.piazzapanic.components.Powerups.cutBoostComponent;
 import com.devcharles.piazzapanic.input.KeyboardInput;
 import com.devcharles.piazzapanic.utility.EntityFactory;
 import com.devcharles.piazzapanic.utility.GdxTimer;
@@ -227,8 +228,12 @@ public class StationSystem extends IteratingSystem {
         CookingComponent cooking = getEngine().createComponent(CookingComponent.class);
 
         // If the cook is currently boosted, we overwrite the default timer.
-        if (station.interactingCook.getComponent(cookBoostComponent.class) != null) {
+        if (station.type != StationType.cutting_board
+                && station.interactingCook.getComponent(cookBoostComponent.class) != null) {
             cooking.timer = new GdxTimer(cookBoostComponent.boostTime, false, false);
+        } else if (station.type == StationType.cutting_board
+                && station.interactingCook.getComponent(cutBoostComponent.class) != null) {
+            cooking.timer = new GdxTimer(cutBoostComponent.boostTime, false, false);
         }
         cooking.timer.start();
 

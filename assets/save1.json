@@ -1,4 +1,70 @@
 {
-money: 1234567
+money: 5
 reputation: 2
+customers: [
+	{
+		x: 61.80121
+		y: 26.059082
+		patience: 16
+		order: {
+			type: bakedPotato
+		}
+	}
+	{
+		x: 66.95447
+		y: 25.943396
+		patience: 19370
+		objective: 1
+		order: {
+			type: bakedPotato
+		}
+	}
+	{
+		x: 69.91712
+		y: 25.965332
+		patience: 19370
+		objective: 2
+		order: {
+			type: salad
+		}
+	}
+	{
+		x: 73.038055
+		y: 25.85879
+		patience: 49378
+		objective: 3
+		order: {
+			type: salad
+		}
+	}
+	{
+		x: 75.86484
+		y: 26.16756
+		patience: 49378
+		objective: 4
+		order: {
+			type: pizza
+		}
+	}
+	{
+		x: 77.55016
+		y: 26.11602
+		patience: 49378
+		objective: 5
+		order: {
+			type: bakedPotato
+		}
+	}
+	{
+		x: 79.31176
+		y: 26.065014
+		patience: 19370
+		objective: 6
+		order: {
+			type: bakedPotato
+		}
+	}
+]
+gameTime: 126
+maxCustomers: 2147483647
 }
