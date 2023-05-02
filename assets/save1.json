@@ -3,16 +3,16 @@ money: 5
 reputation: 2
 customers: [
 	{
-		x: 62.01248
-		y: 25.86098
+		x: 61.80121
+		y: 26.059082
 		patience: 16
 		order: {
 			type: bakedPotato
 		}
 	}
 	{
-		x: 78.391655
-		y: 25.82431
+		x: 66.95447
+		y: 25.943396
 		patience: 19370
 		objective: 1
 		order: {
@@ -20,8 +20,8 @@ customers: [
 		}
 	}
 	{
-		x: 79.816765
-		y: 25.379175
+		x: 69.91712
+		y: 25.965332
 		patience: 19370
 		objective: 2
 		order: {
@@ -29,8 +29,8 @@ customers: [
 		}
 	}
 	{
-		x: 73.6442
-		y: 27.351978
+		x: 73.038055
+		y: 25.85879
 		patience: 49378
 		objective: 3
 		order: {
@@ -38,8 +38,8 @@ customers: [
 		}
 	}
 	{
-		x: 73.49745
-		y: 26.14938
+		x: 75.86484
+		y: 26.16756
 		patience: 49378
 		objective: 4
 		order: {
@@ -47,8 +47,8 @@ customers: [
 		}
 	}
 	{
-		x: 72.5441
-		y: 25.874388
+		x: 77.55016
+		y: 26.11602
 		patience: 49378
 		objective: 5
 		order: {
@@ -56,8 +56,8 @@ customers: [
 		}
 	}
 	{
-		x: 79.47822
-		y: 26.829235
+		x: 79.31176
+		y: 26.065014
 		patience: 19370
 		objective: 6
 		order: {
@@ -65,6 +65,6 @@ customers: [
 		}
 	}
 ]
-gameTime: 113
+gameTime: 126
 maxCustomers: 2147483647
 }

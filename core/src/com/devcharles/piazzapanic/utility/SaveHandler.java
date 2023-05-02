@@ -138,7 +138,7 @@ public class SaveHandler {
             AIAgentComponent aiAgentComponent = customerEntity.getComponent(AIAgentComponent.class);
 
             customerComponent.timer.setElapsed(customer.patience);
-            engine.getSystem(CustomerAISystem.class).makeItGoThere(aiAgentComponent, customer.objective - 1);
+            engine.getSystem(CustomerAISystem.class).makeItGoThere(aiAgentComponent, customer.objective);
             customerComponent.order = customer.order.type;
         }
     }
