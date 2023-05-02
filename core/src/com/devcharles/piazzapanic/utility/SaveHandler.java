@@ -120,7 +120,8 @@ public class SaveHandler {
                 .setMaxCustomers(saveData.maxCustomers == -1 ? (int) Double.POSITIVE_INFINITY : saveData.maxCustomers);
         hud.customerTimer = saveData.gameTime;
 
-        engine.getSystem(CustomerAISystem.class).firstSpawn = false;
+        CustomerAISystem customerAISystem = engine.getSystem(CustomerAISystem.class);
+        customerAISystem.firstSpawn = false;
 
         // Clear out existing customers (and also consequently their orders).
         for (Entity customer : engine.getEntitiesFor(Family.all(CustomerComponent.class).get())) {
@@ -131,15 +132,28 @@ public class SaveHandler {
         }
 
         // Create new customers.
-        for (CustomerData customer : saveData.customers) {
-            Entity customerEntity = entityFactory.createCustomer(new Vector2(customer.x, customer.y));
+        for (CustomerData customerData : saveData.customers) {
+            Entity customer = entityFactory.createCustomer(new Vector2(customerData.x, customerData.y));
 
-            CustomerComponent customerComponent = customerEntity.getComponent(CustomerComponent.class);
-            AIAgentComponent aiAgentComponent = customerEntity.getComponent(AIAgentComponent.class);
+            CustomerComponent customerComponent = customer.getComponent(CustomerComponent.class);
+            AIAgentComponent aiAgentComponent = customer.getComponent(AIAgentComponent.class);
 
-            customerComponent.timer.setElapsed(customer.patience);
-            engine.getSystem(CustomerAISystem.class).makeItGoThere(aiAgentComponent, customer.objective - 1);
-            customerComponent.order = customer.order.type;
+            customerComponent.timer.setElapsed(customerData.patience);
+            engine.getSystem(CustomerAISystem.class).makeItGoThere(aiAgentComponent, customerData.objective - 1);
+            customerComponent.order = customerData.order.type;
+
+            // Code duplicated from CustomerAISystem.spawnCustomer().
+            customerAISystem.customers.add(customer);
+            customerAISystem.numOfCustomerTotal++;
+
+            if(customerData.objective != -1) {
+                customerAISystem.numActiveCustomers++;
+            }
+            
+            customerComponent.timer.start();
+            customerComponent.timer.setElapsed(customerData.patience);
+
+            customerAISystem.makeItGoThere(aiAgentComponent, customerData.objective);
         }
     }
 }

@@ -1,70 +1,31 @@
 {
-money: 5
-reputation: 2
+money: 10
+reputation: 3
 customers: [
 	{
-		x: 62.01248
-		y: 25.86098
-		patience: 16
+		x: 61.847893
+		y: 26.136208
+		patience: 19613
 		order: {
-			type: bakedPotato
+			type: salad
 		}
 	}
 	{
-		x: 78.391655
-		y: 25.82431
-		patience: 19370
+		x: 68.57951
+		y: 26.801367
+		objective: -1
+		order: {}
+	}
+	{
+		x: 68.28208
+		y: 25.598827
+		patience: 19613
 		objective: 1
 		order: {
 			type: bakedPotato
 		}
 	}
-	{
-		x: 79.816765
-		y: 25.379175
-		patience: 19370
-		objective: 2
-		order: {
-			type: salad
-		}
-	}
-	{
-		x: 73.6442
-		y: 27.351978
-		patience: 49378
-		objective: 3
-		order: {
-			type: salad
-		}
-	}
-	{
-		x: 73.49745
-		y: 26.14938
-		patience: 49378
-		objective: 4
-		order: {
-			type: pizza
-		}
-	}
-	{
-		x: 72.5441
-		y: 25.874388
-		patience: 49378
-		objective: 5
-		order: {
-			type: bakedPotato
-		}
-	}
-	{
-		x: 79.47822
-		y: 26.829235
-		patience: 19370
-		objective: 6
-		order: {
-			type: bakedPotato
-		}
-	}
 ]
-gameTime: 113
+gameTime: 52
 maxCustomers: 2147483647
 }

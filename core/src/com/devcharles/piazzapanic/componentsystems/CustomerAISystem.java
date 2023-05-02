@@ -42,8 +42,8 @@ public class CustomerAISystem extends IteratingSystem {
 
     private final World world;
     private final EntityFactory factory;
-    private int numOfCustomerTotal = 0;
-    private int numActiveCustomers = 0;
+    public int numOfCustomerTotal = 0;
+    public int numActiveCustomers = 0;
     private final Hud hud;
     private final Integer[] reputationPoints;
     private static int maxCustomers = (int) Double.POSITIVE_INFINITY;
