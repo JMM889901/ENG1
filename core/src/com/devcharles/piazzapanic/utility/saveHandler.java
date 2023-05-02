@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Json;
+import com.devcharles.piazzapanic.GameScreen;
 import com.devcharles.piazzapanic.componentsystems.CustomerAISystem;
 import com.devcharles.piazzapanic.scene2d.Hud;
 import com.devcharles.piazzapanic.utility.saveStructure.SaveData;
@@ -32,7 +33,7 @@ public class SaveHandler {
 
         // Get data from passed in world and hud.
 
-        saveData.money = Hud.money[0];
+        saveData.money = Hud.getMoney();
         saveData.reputation = Hud.reputation[0];
         saveData.difficulty = CustomerAISystem.getDifficulty();
         saveData.maxCustomers = CustomerAISystem.getMaxCustomers();
@@ -46,8 +47,8 @@ public class SaveHandler {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
             writer.write(saveText);
-            System.out.println("Saved to " + filename);
             writer.close();
+            System.out.println("Saved to " + filename);
         } catch (Exception e) {
             System.out.println("Error saving to " + filename);
         }
@@ -70,6 +71,7 @@ public class SaveHandler {
                 curLine = reader.readLine();
             }
             reader.close();
+            System.out.println("Loaded from " + filename);
         } catch (Exception e) {
             System.out.println("Error loading from " + filename);
         }
@@ -79,7 +81,9 @@ public class SaveHandler {
 
         // Set values in the world and hud based on the structured data.
 
-        Hud.money[0] = saveData.money;
+        saveData.money = 1000;
+
+        hud.initMoney(saveData.money);
         Hud.reputation[0] = saveData.reputation;
         CustomerAISystem.setDifficulty(saveData.difficulty);
         CustomerAISystem.setMaxCustomers(saveData.maxCustomers);

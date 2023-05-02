@@ -38,7 +38,7 @@ public class Hud extends ApplicationAdapter {
                                              // counts down.
     private float timeCounter = 0;
     public static Integer[] reputation;
-    public static Integer[] money; // This is static purely for the sake of simplicity, yes its bad practice but
+    private static Integer[] money; // This is static purely for the sake of simplicity, yes its bad practice but
                                    // cry about it
     private Skin skin;
 
@@ -269,9 +269,29 @@ public class Hud extends ApplicationAdapter {
         }
     }
 
+    public int initMoney(int moneyToSet) {
+        money[0] = moneyToSet;
+        moneyLabel.setText(money[0]);
+        return money[0];
+    }
+
     public int addMoney(int moneyToAdd) {
         money[0] += moneyToAdd;
         moneyLabel.setText(money[0]);
+        return money[0];
+    }
+
+    public static int getMoney() {
+        return money[0];
+    }
+
+    /**
+     * ONLY USE FOR UNIT TESTS.
+     * @param moneyToSet
+     * @return
+     */
+    public static int setMoneyReference_TEST(Integer[] moneyToSet) {
+        money = moneyToSet;
         return money[0];
     }
 

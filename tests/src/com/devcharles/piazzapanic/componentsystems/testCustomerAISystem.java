@@ -61,7 +61,7 @@ public class testCustomerAISystem {
         new testEnvironment();
         Engine engine = new PooledEngine();
         Integer[] money = { 0 };
-        Hud.money = money;
+        Hud.setMoneyReference_TEST(money);
         EntityFactory factory = new EntityFactory((PooledEngine) engine);
         CustomerAISystem system = new CustomerAISystem(null, null, factory, null, null);
         engine.addSystem(system);

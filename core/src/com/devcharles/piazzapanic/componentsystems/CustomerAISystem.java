@@ -349,7 +349,7 @@ public class CustomerAISystem extends IteratingSystem {
         AIAgentComponent aiAgent = Mappers.aiAgent.get(entity);
         makeItGoThere(aiAgent, -1);
 
-        hud.money[0] += 5;
+        hud.addMoney(5);
 
         numActiveCustomers--;
 
@@ -387,7 +387,7 @@ public class CustomerAISystem extends IteratingSystem {
         AIAgentComponent aiAgent = Mappers.aiAgent.get(entity);
         makeItGoThere(aiAgent, -1);
 
-        hud.money[0] += 5;
+        hud.addMoney(5);
 
         numActiveCustomers--;
 
