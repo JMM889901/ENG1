@@ -47,7 +47,7 @@ public class CustomerAISystem extends IteratingSystem {
     private final Hud hud;
     private final Integer[] reputationPoints;
     private static int maxCustomers = (int) Double.POSITIVE_INFINITY;
-    private static int difficulty;  // This is just a record to be recalled when saving, this doesn't set anything.
+    private static int difficulty; // This is just a record to be recalled when saving, this doesn't set anything.
     private static int maxActiveCustomers = 7;
     private boolean firstSpawn = true;
     public static int MaxGroupSize = 3;// easy is 1(this is kind of a hack ig), hard is 3 Spawning more than 3 may
@@ -105,7 +105,7 @@ public class CustomerAISystem extends IteratingSystem {
     };
 
     public static void setDifficulty(int i) {
-        difficulty = i;  // Just remember this for saving.
+        difficulty = i; // Just remember this for saving.
 
         if (i == 0) {
             MaxGroupSize = 1;
@@ -350,6 +350,7 @@ public class CustomerAISystem extends IteratingSystem {
         makeItGoThere(aiAgent, -1);
 
         hud.addMoney(5);
+        //Hud.money[0] += 5;
 
         numActiveCustomers--;
 
@@ -388,6 +389,7 @@ public class CustomerAISystem extends IteratingSystem {
         makeItGoThere(aiAgent, -1);
 
         hud.addMoney(5);
+        //Hud.money[0] += 5;
 
         numActiveCustomers--;
 

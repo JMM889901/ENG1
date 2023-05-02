@@ -36,7 +36,7 @@ public class GameScreen implements Screen {
 
     private KeyboardInput kbInput;
 
-    public static World world;  //  :)
+    public static World world; // :)
 
     private OrthographicCamera camera;
 
@@ -52,7 +52,7 @@ public class GameScreen implements Screen {
 
     private Integer[] reputationPoints = { 3 };
 
-    private Integer[] money = { 150 };// DEBUG, SET TO 0
+    private Integer[] money = { 0 };
 
     public static String loadFrom = null;
 
@@ -105,7 +105,6 @@ public class GameScreen implements Screen {
         multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(kbInput);
         multiplexer.addProcessor(hud.stage);
-
 
         // DO THE LOADING IN FROM FILE STUFF HERE.
 
