@@ -139,7 +139,7 @@ public class SaveHandler {
             AIAgentComponent aiAgentComponent = customer.getComponent(AIAgentComponent.class);
 
             customerComponent.timer.setElapsed(customerData.patience);
-            engine.getSystem(CustomerAISystem.class).makeItGoThere(aiAgentComponent, customerData.objective - 1);
+            engine.getSystem(CustomerAISystem.class).makeItGoThere(aiAgentComponent, customerData.objective);
             customerComponent.order = customerData.order.type;
 
             // Code duplicated from CustomerAISystem.spawnCustomer().
