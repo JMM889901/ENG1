@@ -134,10 +134,10 @@ public class StoreScreen extends ApplicationAdapter implements Screen {
             if (component.type == type) {
                 station.remove(LockedComponent.class);
                 station.getComponent(TextureComponent.class).region = null;
+                hud.addMoney(-cost);
                 break;
             }
         }
-        hud.addMoney(-cost);
     }
 
     @Override
