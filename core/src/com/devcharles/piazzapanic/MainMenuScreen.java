@@ -48,11 +48,11 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
     private Sprite sprite;
     private BitmapFont gamesFont;
     private Label title;
-    private Dialog numCustomersInput;
     private TextField input;
     private SelectBox<String> difficultySelect;
-    private Dialog scenarioModeDialog;
-    private Dialog endlessModeDialog;
+    private Dialog playModeDialog;
+    private final Button playScenario;
+    private final Button playEndless;
 
     /**
      * creates main menu stage
@@ -88,7 +88,7 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
         TextButton scenarioModeButton = new TextButton("Scenario Mode", skin);
         root.add(scenarioModeButton).expandX().padBottom(20);
 
-        
+    
         //Textfield to input number of customers in scenario mode
         input = new TextField("5", skin);
         input.setTextFieldFilter(new DigitsOnlyFilter());
@@ -112,19 +112,25 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
             }
         });
 
-        //dialog box to pop up when scenario mode is chosen
-        //includes customer number input and difficulty selection
-        scenarioModeDialog = new Dialog("", skin);
 
-        scenarioModeDialog.text("Enter number of customers:");
-        scenarioModeDialog.getContentTable().add(input);
-        scenarioModeDialog.getContentTable().row();
+        //dialog box to pop up when endless mode is chosen
+        //includes difficulty selection
+        playModeDialog = new Dialog("", skin);
 
-        scenarioModeDialog.text("Difficulty:");
-        scenarioModeDialog.getContentTable().add(difficultySelect);
-        scenarioModeDialog.getContentTable().row();
+        
+        playModeDialog.text("Difficulty:");
+        playModeDialog.getContentTable().add(difficultySelect);
+        playModeDialog.getContentTable().row();
 
-        Button playScenario = new TextButton("Play", skin);
+        playEndless = new TextButton("Play", skin);
+        playEndless.addListener(new ClickListener(){
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new Slideshow(game, Slideshow.Type.tutorial));
+                dispose();
+            }
+        });
+
+        playScenario = new TextButton("Play", skin);
         playScenario.addListener(new ClickListener(){
             public void clicked(InputEvent event, float x, float y) {
                 CustomerAISystem.setMaxCustomers(Integer.parseInt(input.getText()));
@@ -133,33 +139,15 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
             }
         });
 
-        scenarioModeDialog.button(playScenario);
-
-        //dialog box to pop up when endless mode is chosen
-        //includes difficulty selection
-        endlessModeDialog = new Dialog("", skin);
-
-        endlessModeDialog.text("Difficulty:");
-        endlessModeDialog.getContentTable().add(difficultySelect);
-        endlessModeDialog.getContentTable().row();
-
-        Button playEndless = new TextButton("Play", skin);
-        playEndless.addListener(new ClickListener(){
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new Slideshow(game, Slideshow.Type.tutorial));
-                dispose();
-            }
-        });
-
-        endlessModeDialog.button(playEndless);
-
-
-
         // Checks if button is clicked and if clicked goes onto the tutorial set game to
         // scenario mode, opens dialog box to input number of customers
         scenarioModeButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                scenarioModeDialog.show(stage);
+                playModeDialog.getContentTable().row();
+                playModeDialog.text("Enter number of customers:");
+                playModeDialog.getContentTable().add(input);
+                playModeDialog.button(playScenario);
+                playModeDialog.show(stage);
                 // game.setScreen(new Slideshow(game, Slideshow.Type.tutorial));
                 // dispose();
             }
@@ -174,7 +162,9 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
         // endless mode
         endlessModeButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                endlessModeDialog.show(stage);
+                CustomerAISystem.setMaxCustomers((int)Double.POSITIVE_INFINITY);
+                playModeDialog.button(playEndless);
+                playModeDialog.show(stage);
             }
         });
 
