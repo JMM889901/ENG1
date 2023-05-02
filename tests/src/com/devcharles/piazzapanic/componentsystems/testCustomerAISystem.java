@@ -141,6 +141,7 @@ public class testCustomerAISystem {
         // Create customer and set order
         Entity customer = env.factory.createCustomer(new Vector2(0, 0));
         CustomerComponent component = customer.getComponent(CustomerComponent.class);
+        AIAgentComponent aiComponent = customer.getComponent(AIAgentComponent.class);
         component.order = FoodType.bakedPotato;
 
         // Create chef and give him a baked potato
@@ -161,6 +162,7 @@ public class testCustomerAISystem {
         assertTrue(player.currentFood.isEmpty());
         assertTrue(component.order == null);
         assertTrue(component.food == food);
+        assertTrue(aiComponent.currentObjective == -1);
 
     }
 
@@ -180,6 +182,7 @@ public class testCustomerAISystem {
         // Create customer and set order
         Entity customer = env.factory.createCustomer(new Vector2(0, 0));
         CustomerComponent component = customer.getComponent(CustomerComponent.class);
+        AIAgentComponent aiComponent = customer.getComponent(AIAgentComponent.class);
         component.order = FoodType.bakedPotato;
 
         // Create chef and give him a baked potato
@@ -188,6 +191,8 @@ public class testCustomerAISystem {
         ControllableComponent player = chef.getComponent(ControllableComponent.class);
         player.currentFood.push(food);
 
+        env.engine.update(0.1f);
+        int objective = aiComponent.currentObjective;
         // get playercomponent
         PlayerComponent playerComponent = env.engine.createComponent(PlayerComponent.class);
         chef.add(playerComponent);
@@ -200,6 +205,7 @@ public class testCustomerAISystem {
         assertTrue(!player.currentFood.isEmpty());
         assertTrue(component.order != null);
         assertTrue(component.food == null);
+        assertTrue(aiComponent.currentObjective == objective);
     }
 
     /**

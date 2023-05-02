@@ -27,6 +27,9 @@ import com.devcharles.piazzapanic.components.TextureComponent;
 import com.devcharles.piazzapanic.componentsystems.InWorldStoreSystem;
 import com.devcharles.piazzapanic.utility.Station.StationType;
 
+/**
+ * Implementation of core store functioanlity as per FR_INVESTMENT
+ */
 public class StoreScreen extends ApplicationAdapter implements Screen {
 
     OrthographicCamera camera;

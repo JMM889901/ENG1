@@ -14,6 +14,7 @@ import com.devcharles.piazzapanic.utility.EntityFactory;
 /**
  * Runs every frame, determines "random intervals" by just rolling to see if something should
  * spawn every frame, using a very low probability.
+ * Handles the spawning of powerups as per FR_POWERUPS
  */
 public class PowerupSpawnSystem extends EntitySystem {
 

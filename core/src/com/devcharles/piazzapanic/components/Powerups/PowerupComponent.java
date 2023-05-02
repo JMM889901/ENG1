@@ -10,6 +10,7 @@ import com.badlogic.ashley.core.Entity;
  * <p>
  * It also records which player touched it (set by the entity collision system, to supply the data
  * to the powerup pickup system).
+ * Used in implementation of FR_POWERUPS
  */
 public class PowerupComponent implements Component {
     public enum powerupType {

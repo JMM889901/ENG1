@@ -14,6 +14,7 @@ import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
 public class Station {
 
     public StationType type;
+    // Itemdisplaydirections used for FR_COUNTER
     public itemDisplayDir direction;
     public static HashMap<FoodType, FoodType> grillRecipes = new HashMap<FoodType, FoodType>() {
         {
@@ -94,7 +95,7 @@ public class Station {
 
     /**
      * Named enumeration of the item display directions.
-     * represents the starting positions and offsets of items displayed
+     * represents the starting positions and offsets of items displayed (FR_COUNTER)
      */
     public enum itemDisplayDir {
         top,
