@@ -25,12 +25,12 @@ public class PlayerControlSystem extends IteratingSystem {
      * Given that there is only one instance of PlayerControlSystem, this kind of
      * acts like a static value.
      */
-    boolean hasInitComponent = false;
+    public boolean hasInitComponent = false;
 
     KeyboardInput input;
 
     boolean changingCooks = false;
-    PlayerComponent playerComponent;
+    public PlayerComponent playerComponent;
 
     Engine engine;
 
@@ -63,10 +63,14 @@ public class PlayerControlSystem extends IteratingSystem {
         // Remember what playerComponent is, regardless of cook (just do this once at
         // the start).
         if (!hasInitComponent) {
-            this.playerComponent = Mappers.player.get(entity);
+            PlayerComponent component = Mappers.player.get(entity);
+            if (component != null) {
+                this.playerComponent = component;
 
-            // It doesn't matter if it gets run multiple times, just being explicit here.
-            hasInitComponent = true;
+                // It doesn't matter if it gets run multiple times, just being explicit here.
+                hasInitComponent = true;
+            }
+
         }
 
         // Collect toggleable inputs
@@ -77,6 +81,7 @@ public class PlayerControlSystem extends IteratingSystem {
 
             // [B1] Add playercomponent to new cook (the next cook iterated on by an
             // external loop).
+            System.out.println(this.playerComponent);
             entity.add(this.playerComponent);
         }
 
@@ -110,6 +115,7 @@ public class PlayerControlSystem extends IteratingSystem {
             Entity prevCook = cooks.get((cooks.indexOf(entity, true) - 1 + cookNum) % cookNum);
 
             // [B2] Add playercomponent to new cook (the previous cook identified above).
+            System.out.println(this.playerComponent);
             prevCook.add(this.playerComponent);
             return;
         }

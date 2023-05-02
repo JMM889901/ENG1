@@ -18,6 +18,7 @@ import com.devcharles.piazzapanic.components.AIAgentComponent;
 import com.devcharles.piazzapanic.components.ControllableComponent;
 import com.devcharles.piazzapanic.components.CustomerComponent;
 import com.devcharles.piazzapanic.components.FoodComponent;
+import com.devcharles.piazzapanic.components.ItemComponent;
 import com.devcharles.piazzapanic.components.PlayerComponent;
 import com.devcharles.piazzapanic.components.TransformComponent;
 import com.devcharles.piazzapanic.components.Powerups.PowerupComponent;
@@ -26,6 +27,7 @@ import com.devcharles.piazzapanic.components.Powerups.cutBoostComponent;
 import com.devcharles.piazzapanic.components.Powerups.speedBoostComponent;
 import com.devcharles.piazzapanic.components.Powerups.timeFreezeBoostComponent;
 import com.devcharles.piazzapanic.componentsystems.CustomerAISystem;
+import com.devcharles.piazzapanic.componentsystems.PlayerControlSystem;
 import com.devcharles.piazzapanic.scene2d.Hud;
 import com.devcharles.piazzapanic.utility.saveStructure.BoostData;
 import com.devcharles.piazzapanic.utility.saveStructure.CookData;
@@ -59,11 +61,10 @@ public class SaveHandler {
         saveData.maxCustomers = CustomerAISystem.getMaxCustomers();
         saveData.gameTime = hud.customerTimer;
 
-
         // Customers.
 
         ImmutableArray<Entity> customers = engine.getEntitiesFor(Family.all(CustomerComponent.class).get());
-        
+
         saveData.customers = new CustomerData[customers.size()];
 
         for (int i = 0; i < customers.size(); i++) {
@@ -85,14 +86,14 @@ public class SaveHandler {
             saveData.customers[i] = customerData;
         }
 
-
         // Chefs/cooks.
 
         ImmutableArray<Entity> cooks = engine.getEntitiesFor(Family.all(ControllableComponent.class).get());
 
         saveData.cooks = new CookData[cooks.size()];
 
-        for(int i = 0; i < cooks.size(); i++) {
+        for (int i = 0; i < cooks.size(); i++) {
+
             Entity cook = cooks.get(i);
             CookData cookData = new CookData();
             ControllableComponent controllableComponent = cook.getComponent(ControllableComponent.class);
@@ -102,8 +103,10 @@ public class SaveHandler {
             cookData.y = transformComponent.position.y;
 
             cookData.inventory = new FoodData[controllableComponent.currentFood.size()];
-            int j = controllableComponent.currentFood.size() - 1;  // A bit scuffed but you can only peak through a Deque with a for each loop, so we need a separate increment.
-            for(Entity currentFood : controllableComponent.currentFood) {
+            int j = controllableComponent.currentFood.size() - 1; // A bit scuffed but you can only peak through a Deque
+                                                                  // with a for each loop, so we need a separate
+                                                                  // increment.
+            for (Entity currentFood : controllableComponent.currentFood) {
                 FoodData foodData = new FoodData();
                 foodData.type = currentFood.getComponent(FoodComponent.class).type;
                 cookData.inventory[j] = foodData;
@@ -111,42 +114,45 @@ public class SaveHandler {
             }
 
             ArrayList<BoostData> boostsData = new ArrayList<BoostData>();
-            cookBoostComponent cookBoost = cook.getComponent(cookBoostComponent.class);
-            if(cookBoost != null) {
+            cookBoostComponent cookboost = cook.getComponent(cookBoostComponent.class);
+            if (cookboost != null) {
                 BoostData cookBoostData = new BoostData();
                 cookBoostData.type = PowerupComponent.powerupType.cookBoost;
-                cookBoostData.time = cookBoost.timeHad;
+                cookBoostData.time = cookboost.timeHad;
                 boostsData.add(cookBoostData);
             }
-            cutBoostComponent cutBoost = cook.getComponent(cutBoostComponent.class);
-            if(cutBoost != null) {
+            cutBoostComponent cutboost = cook.getComponent(cutBoostComponent.class);
+            if (cutboost != null) {
                 BoostData cutBoostData = new BoostData();
                 cutBoostData.type = PowerupComponent.powerupType.cutBoost;
-                cutBoostData.time = cutBoost.timeHad;
+                cutBoostData.time = cutboost.timeHad;
                 boostsData.add(cutBoostData);
             }
-            speedBoostComponent speedBoost = cook.getComponent(speedBoostComponent.class);
-            if(speedBoost != null) {
+            speedBoostComponent speedboost = cook.getComponent(speedBoostComponent.class);
+            if (speedboost != null) {
                 BoostData speedBoostData = new BoostData();
                 speedBoostData.type = PowerupComponent.powerupType.speedBoost;
-                speedBoostData.time = speedBoost.timeHad;
+                speedBoostData.time = speedboost.timeHad;
                 boostsData.add(speedBoostData);
             }
-            timeFreezeBoostComponent timeFreezeBoost = cook.getComponent(timeFreezeBoostComponent.class);
-            if(timeFreezeBoost != null) {
+            timeFreezeBoostComponent timefreezeboost = cook.getComponent(timeFreezeBoostComponent.class);
+            if (timefreezeboost != null) {
                 BoostData timeFreezeBoostData = new BoostData();
                 timeFreezeBoostData.type = PowerupComponent.powerupType.timeFreezeBoost;
-                timeFreezeBoostData.time = timeFreezeBoost.timeHad;
+                timeFreezeBoostData.time = timefreezeboost.timeHad;
                 boostsData.add(timeFreezeBoostData);
             }
             cookData.boosts = boostsData.toArray(new BoostData[boostsData.size()]);
 
             cookData.active = cook.getComponent(PlayerComponent.class) != null;
+            if (cookData.active) {
+                engine.getSystem(PlayerControlSystem.class).playerComponent = cooks.get(0)
+                        .getComponent(PlayerComponent.class);
+                engine.getSystem(PlayerControlSystem.class).hasInitComponent = true;
+            }
 
             saveData.cooks[i] = cookData;
         }
-
-        
 
         // Take the structured data and now save it.
 
@@ -187,7 +193,7 @@ public class SaveHandler {
 
         saveData = json.fromJson(SaveData.class, saveText);
 
-        // Set values in the world and hud based on the structured data.
+        // Global values.
 
         hud.initMoney(saveData.money);
         // hud.addMoney(saveData.money);
@@ -199,6 +205,8 @@ public class SaveHandler {
 
         CustomerAISystem customerAISystem = engine.getSystem(CustomerAISystem.class);
         customerAISystem.firstSpawn = false;
+
+        // Customers.
 
         // Clear out existing customers (and also consequently their orders).
         for (Entity customer : engine.getEntitiesFor(Family.all(CustomerComponent.class).get())) {
@@ -223,14 +231,125 @@ public class SaveHandler {
             customerAISystem.customers.add(customer);
             customerAISystem.numOfCustomerTotal++;
 
-            if(customerData.objective != -1) {
+            if (customerData.objective != -1) {
                 customerAISystem.numActiveCustomers++;
             }
-            
+
             customerComponent.timer.start();
             customerComponent.timer.setElapsed(customerData.patience);
 
             customerAISystem.makeItGoThere(aiAgentComponent, customerData.objective);
+        }
+
+        // Cooks.
+
+        // Make the existing 3 cooks match the first 3 of the save data - it's a bit
+        // scuffed but I'm a bit scared to be the first to write code to *delete* cooks.
+        int i = 0;
+        for (Entity cook : engine.getEntitiesFor(Family.all(ControllableComponent.class).get())) {
+            cook.remove(PlayerComponent.class); // Just make sure you don't get lots of cooks controllable
+                                                // simultaneously.
+
+            CookData cookData = saveData.cooks[i];
+
+            TransformComponent transformComponent = cook.getComponent(TransformComponent.class);
+            ControllableComponent controllableComponent = cook.getComponent(ControllableComponent.class);
+
+            transformComponent.position.x = cookData.x;
+            transformComponent.position.y = cookData.y;
+
+            for (FoodData foodData : cookData.inventory) {
+                Entity food = entityFactory.createFood(foodData.type);
+                ItemComponent itemComponent = new ItemComponent();
+                itemComponent.holderTransform = cook.getComponent(TransformComponent.class);
+                food.add(itemComponent);
+
+                controllableComponent.currentFood.add(food);
+            }
+
+            for (BoostData boostData : cookData.boosts) {
+                switch (boostData.type) {
+                    case cookBoost:
+                        cookBoostComponent cookboost = new cookBoostComponent();
+                        cookboost.timeHad = boostData.time;
+                        cook.add(cookboost);
+                        break;
+                    case cutBoost:
+                        cutBoostComponent cutboost = new cutBoostComponent();
+                        cutboost.timeHad = boostData.time;
+                        cook.add(cutboost);
+                        break;
+                    case speedBoost:
+                        speedBoostComponent speedboost = new speedBoostComponent();
+                        speedboost.timeHad = boostData.time;
+                        cook.add(speedboost);
+                        break;
+                    case timeFreezeBoost:
+                        timeFreezeBoostComponent timefreezeboost = new timeFreezeBoostComponent();
+                        timefreezeboost.timeHad = boostData.time;
+                        cook.add(timefreezeboost);
+                        break;
+                    case orderBoost:
+                        System.out.println(
+                                "Whatthefuck.                                (Somehow tried to load in a chef with an active orderboost???)");
+                }
+            }
+
+            if (cookData.active) {
+                cook.add(new PlayerComponent());
+            }
+            i++;
+        } // I LOVE CODE DUPLICATION.
+        for (; i < saveData.cooks.length; i++) {
+            CookData cookData = saveData.cooks[i];
+            Entity cook = entityFactory.createCook((int) cookData.x, (int) cookData.y);
+
+            TransformComponent transformComponent = cook.getComponent(TransformComponent.class);
+            ControllableComponent controllableComponent = cook.getComponent(ControllableComponent.class);
+
+            transformComponent.position.x = cookData.x;
+            transformComponent.position.y = cookData.y;
+
+            for (FoodData foodData : cookData.inventory) {
+                Entity food = entityFactory.createFood(foodData.type);
+                ItemComponent itemComponent = new ItemComponent();
+                itemComponent.holderTransform = cook.getComponent(TransformComponent.class);
+                food.add(itemComponent);
+
+                controllableComponent.currentFood.add(food);
+            }
+
+            for (BoostData boostData : cookData.boosts) {
+                switch (boostData.type) {
+                    case cookBoost:
+                        cookBoostComponent cookboost = new cookBoostComponent();
+                        cookboost.timeHad = boostData.time;
+                        cook.add(cookboost);
+                        break;
+                    case cutBoost:
+                        cutBoostComponent cutboost = new cutBoostComponent();
+                        cutboost.timeHad = boostData.time;
+                        cook.add(cutboost);
+                        break;
+                    case speedBoost:
+                        speedBoostComponent speedboost = new speedBoostComponent();
+                        speedboost.timeHad = boostData.time;
+                        cook.add(speedboost);
+                        break;
+                    case timeFreezeBoost:
+                        timeFreezeBoostComponent timefreezeboost = new timeFreezeBoostComponent();
+                        timefreezeboost.timeHad = boostData.time;
+                        cook.add(timefreezeboost);
+                        break;
+                    case orderBoost:
+                        System.out.println(
+                                "Whatthefuck.                                (Somehow tried to load in a chef with an active orderboost???)");
+                }
+            }
+
+            if (cookData.active) {
+                cook.add(new PlayerComponent());
+            }
         }
     }
 }
