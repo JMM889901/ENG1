@@ -60,13 +60,16 @@ public class testCustomerAISystem {
         assert (reputation[0] == 3);
     }
 
+    /** 
+     * Test that the player gets money for successfully fulfilling an order.
+     */
     @Test
     public void testMoneyReward() {
         new testEnvironment();
         Engine engine = new PooledEngine();
         Integer[] money = { 0 };
         Hud.setMoneyReference_TEST(money);
-        Hud hud = new Hud(null, null, null, null, money, null, null);
+        Hud hud = new Hud(null, null, null, null, money, money, null);
         EntityFactory factory = new EntityFactory((PooledEngine) engine);
         CustomerAISystem system = new CustomerAISystem(null, null, factory, hud, null);
         engine.addSystem(system);
@@ -85,6 +88,9 @@ public class testCustomerAISystem {
         assert (money[0] > 0); // Should give money for order
     }
 
+    /** 
+     * Test that the AI pathfinding works properly
+     */
     @Test
     public void testAiPathing() {
         // Gdx setup
@@ -119,6 +125,9 @@ public class testCustomerAISystem {
         assert (AiComponent.steeringBody.getOrientation() != 0);
     }
 
+    /**
+     * Test that the customer can take the order. 
+     */
     @Test
     public void testCustomerTakesOrder() {
         // Create environment
@@ -132,6 +141,7 @@ public class testCustomerAISystem {
         // Create customer and set order
         Entity customer = env.factory.createCustomer(new Vector2(0, 0));
         CustomerComponent component = customer.getComponent(CustomerComponent.class);
+        AIAgentComponent aiComponent = customer.getComponent(AIAgentComponent.class);
         component.order = FoodType.bakedPotato;
 
         // Create chef and give him a baked potato
@@ -152,9 +162,13 @@ public class testCustomerAISystem {
         assertTrue(player.currentFood.isEmpty());
         assertTrue(component.order == null);
         assertTrue(component.food == food);
+        assertTrue(aiComponent.currentObjective == -1);
 
     }
 
+    /**
+     * Test that the cusotmer can reject an incorrect order.
+     */
     @Test
     public void testCustomerRejectsOrder() {
         // Create environment
@@ -168,6 +182,7 @@ public class testCustomerAISystem {
         // Create customer and set order
         Entity customer = env.factory.createCustomer(new Vector2(0, 0));
         CustomerComponent component = customer.getComponent(CustomerComponent.class);
+        AIAgentComponent aiComponent = customer.getComponent(AIAgentComponent.class);
         component.order = FoodType.bakedPotato;
 
         // Create chef and give him a baked potato
@@ -176,6 +191,8 @@ public class testCustomerAISystem {
         ControllableComponent player = chef.getComponent(ControllableComponent.class);
         player.currentFood.push(food);
 
+        env.engine.update(0.1f);
+        int objective = aiComponent.currentObjective;
         // get playercomponent
         PlayerComponent playerComponent = env.engine.createComponent(PlayerComponent.class);
         chef.add(playerComponent);
@@ -188,8 +205,12 @@ public class testCustomerAISystem {
         assertTrue(!player.currentFood.isEmpty());
         assertTrue(component.order != null);
         assertTrue(component.food == null);
+        assertTrue(aiComponent.currentObjective == objective);
     }
 
+    /**
+     * Test that gamers can change the difficulty settings. 
+     */
     @Test
     public void testDifficulty() {
         // Create environment

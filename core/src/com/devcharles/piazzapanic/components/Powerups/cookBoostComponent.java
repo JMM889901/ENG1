@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Pool.Poolable;
  * <li>timeMax (static, unchanging) is the maximum time the player can be under the effect of the boost.</li>
  * <li>timeHad (instance variable) is the time the player has been under the effect of the boost.</li>
  * </ul>
+ * Used in implementation of FR_POWERUPS
  * Values specified here {@link com.devcharles.piazzapanic.componentsystems.StationSystem#processStation(ControllableComponent, StationComponent) StationSystem.java}
  */
 public class cookBoostComponent implements Component, Poolable {

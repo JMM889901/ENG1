@@ -19,6 +19,9 @@ import com.badlogic.gdx.math.Vector2;
 
 public class testPlayerMovementSystem {
     @Test
+    /**
+     * Test the player can move left and right
+     */
     public void PlayerMoveLeftRight() {
         testEnvironment testEnvironment = new testEnvironment();
         EntityFactory entityFactory = testEnvironment.factory;
@@ -59,6 +62,9 @@ public class testPlayerMovementSystem {
         // it's not worth it
     }
 
+    /**
+     * Test the player can move up and down
+     */
     @Test
     public void MoveUpDown() {
         testEnvironment testEnvironment = new testEnvironment();

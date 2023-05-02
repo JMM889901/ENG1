@@ -43,6 +43,7 @@ public class StationSystem extends IteratingSystem {
     // This is the colour that an ingredient flashes with when it needs to be
     // flipped/turned over/etc.
     private TintComponent readyTint;
+    // Additional tint for overcooked food as per FR_PREP_FAIl
     private TintComponent overcookedTint;
     private float tickAccumulator = 0;
 
@@ -71,6 +72,7 @@ public class StationSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         StationComponent station = Mappers.station.get(entity);
 
+        // Implementation of stations starting locked as per FR_INVESTMENT
         if (entity.getComponent(LockedComponent.class) != null) {
             return;// Station is not unlocked yet
         }
@@ -109,7 +111,7 @@ public class StationSystem extends IteratingSystem {
                     case serve:
                         processServe(station.interactingCook);
                         break;
-
+                    // Logic for implementation of FR_COUNTER
                     case counterBack:
                     case counter:
                         processCounterTop(controllable, station);
@@ -151,7 +153,7 @@ public class StationSystem extends IteratingSystem {
                 player.interact = false;
                 interactStation(station);
 
-            } else if (player.compileMeal) {
+            } else if (player.compileMeal) { // Result of refactoring controls to seperate some controls from interact
                 player.compileMeal = false;
 
                 // If the player tries to compile a meal while not at a serving station, it
@@ -164,7 +166,7 @@ public class StationSystem extends IteratingSystem {
     }
 
     private void processCounterTop(ControllableComponent controllable, StationComponent station) {
-
+        // Countertop functionality as per FR_COUNTER
         if (controllable.currentFood.isEmpty()) {
             return;
         }
@@ -188,6 +190,7 @@ public class StationSystem extends IteratingSystem {
 
     /**
      * Try and process the food from the player.
+     * Function made public for testing purposes
      */
     public void processStation(ControllableComponent controllable, StationComponent station) {
 
@@ -228,6 +231,7 @@ public class StationSystem extends IteratingSystem {
         CookingComponent cooking = getEngine().createComponent(CookingComponent.class);
 
         // If the cook is currently boosted, we overwrite the default timer.
+        // Implementation of Cooking and cutting speed boosts as per FR_POWERUP
         if (station.type != StationType.cutting_board
                 && station.interactingCook.getComponent(cookBoostComponent.class) != null) {
             cooking.timer = new GdxTimer(cookBoostComponent.boostTime, false, false);
@@ -319,6 +323,7 @@ public class StationSystem extends IteratingSystem {
                 break;
             }
             if (foodEntity.getComponent(OvercookingComponent.class) != null
+                    // Refuse use of spoiled food for recipes as per FR_PREP_FAIL
                     && foodEntity.getComponent(OvercookingComponent.class).processed) {
                 System.out.println("Overcooked food");
                 continue;
@@ -329,7 +334,7 @@ public class StationSystem extends IteratingSystem {
         }
         FoodType recipe;
         recipe = Station.serveRecipes.get(ingredients);
-        if (recipe == null) {
+        if (recipe == null) {// Used for non servable food such as raw pizza
             recipe = Station.combineRecipes.get(ingredients);
         }
 
@@ -350,6 +355,7 @@ public class StationSystem extends IteratingSystem {
 
     /**
      * Pick up ready food from a station
+     * Made public for use in testing
      */
     public void stationPickup(StationComponent station, ControllableComponent controllable) {
         // For each food item stored in a station:...
@@ -376,6 +382,7 @@ public class StationSystem extends IteratingSystem {
     /**
      * Cook the food in the station. This progresses the timer in the food being
      * cooked in the station.
+     * Made public for use in testing
      * 
      * @param station
      * @param deltaTime
@@ -385,12 +392,15 @@ public class StationSystem extends IteratingSystem {
             return;
         }
 
+        // Counters do not have any tick logic, implemented as part of FR_COUNTER
         if (station.type == StationType.counter || station.type == StationType.counterBack) {
             return;
         }
 
         for (Entity foodEntity : station.food) {
 
+            // Cooking requirement removed as overcooking component can now be present
+            // instead
             if (foodEntity == null) {
                 continue;
             }
@@ -430,6 +440,7 @@ public class StationSystem extends IteratingSystem {
                 if ((tickAccumulator > 0.5f && cooking.debugPrintableTimer > 0.5f) && !cooking.processed)
                     System.out.println(cooking.debugPrintableTimer);// TEMP
             } else if (Mappers.overcooking.has(foodEntity)) {
+                // Main implementation of FR_PREP_FAIL
                 OvercookingComponent overcooking = Mappers.overcooking.get(foodEntity);
                 // Handle overcooking food
                 boolean ready = overcooking.timer.tick(deltaTime);
@@ -457,6 +468,7 @@ public class StationSystem extends IteratingSystem {
         super.addedToEngine(engine);
         readyTint = getEngine().createComponent(TintComponent.class);
         readyTint.tint = Color.ORANGE;
+        // Visual tint for overcooked food (FR_PREP_FAIL)
         overcookedTint = getEngine().createComponent(TintComponent.class);
         overcookedTint.tint = Color.GREEN;
 

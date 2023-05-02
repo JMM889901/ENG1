@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 /**
  * Given to players when they collect an order boost powerup. If there is a waiting customer, it
  * will be used up instantly.
+ * Used in implementation of FR_POWERUPS
  */
 public class orderBoostComponent implements Component, Poolable {
     public boolean used = false;

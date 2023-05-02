@@ -47,6 +47,8 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
     private Sprite sprite;
     private BitmapFont gamesFont;
     private Label title;
+    // Values used for the implementations of FR_DIFFICULTY, FR_SCRENARIO_MODE,
+    // FR_ENDLESS_MODE and FR_GAME_MODE
     private TextField input;
     private SelectBox<String> difficultySelect;
     private Dialog playModeDialog;
@@ -84,21 +86,22 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
 
         root.add(title).expandX().padBottom(100);
         root.row();
+        // Implementation of FR_GAME_MODES
         TextButton scenarioModeButton = new TextButton("Scenario Mode", skin);
         root.add(scenarioModeButton).expandX().padBottom(20);
 
-    
-        //Textfield to input number of customers in scenario mode
+        // Textfield to input number of customers in scenario mode
         input = new TextField("5", skin);
         input.setTextFieldFilter(new DigitsOnlyFilter());
         input.setAlignment(Align.center);
 
-        //SelectBox to choose difficulty setting
+        // SelectBox to choose difficulty setting
+        // Implementation of FR_DIFFICULTY
         difficultySelect = new SelectBox<String>(skin2);
         difficultySelect.setItems("Easy", "Medium", "Hard");
         difficultySelect.setAlignment(Align.center);
 
-        //listener to set the difficulty based on selection
+        // listener to set the difficulty based on selection
         difficultySelect.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 if (difficultySelect.getSelected().equals("Easy")) {
@@ -111,18 +114,16 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
             }
         });
 
-
-        //dialog box to pop up when endless mode is chosen
-        //includes difficulty selection
+        // dialog box to pop up when endless mode is chosen
+        // includes difficulty selection
         playModeDialog = new Dialog("", skin);
 
-        
         playModeDialog.text("Difficulty:");
         playModeDialog.getContentTable().add(difficultySelect);
         playModeDialog.getContentTable().row();
 
         playEndless = new TextButton("Play", skin);
-        playEndless.addListener(new ClickListener(){
+        playEndless.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new Slideshow(game, Slideshow.Type.tutorial));
                 dispose();
@@ -130,7 +131,8 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
         });
 
         playScenario = new TextButton("Play", skin);
-        playScenario.addListener(new ClickListener(){
+        // Implementation of configurable customer count as per FR_SCENARIO_MODE
+        playScenario.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 CustomerAISystem.setMaxCustomers(Integer.parseInt(input.getText()));
                 game.setScreen(new Slideshow(game, Slideshow.Type.tutorial));
@@ -161,14 +163,14 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
         // endless mode
         endlessModeButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                CustomerAISystem.setMaxCustomers((int)Double.POSITIVE_INFINITY);
+                CustomerAISystem.setMaxCustomers((int) Double.POSITIVE_INFINITY);
                 playModeDialog.button(playEndless);
                 playModeDialog.show(stage);
             }
         });
 
         root.row();
-
+        // Implementation of FR_SAVE_FILES
         TextButton loadFromFileButton = new TextButton("Resume previous", skin);
         root.add(loadFromFileButton).expandX().padBottom(20);
         File saveFile = new File(SaveHandler.SAVE_FILE);

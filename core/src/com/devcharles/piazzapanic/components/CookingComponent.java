@@ -15,6 +15,8 @@ import com.devcharles.piazzapanic.utility.GdxTimer;
  */
 public class CookingComponent implements Component, Poolable {
     public static int COOKING_TIME_BASE = 5000;
+    // Changed from constant to static for FR_INVESTMENT to allow store to reduce
+    // cooking time
     public GdxTimer timer = new GdxTimer(COOKING_TIME_BASE, false, false); // We may want to tweak this number for
                                                                            // difficulty levels.
     public float debugPrintableTimer = 0;
@@ -27,6 +29,8 @@ public class CookingComponent implements Component, Poolable {
     public void reset() {
         timer = new GdxTimer(COOKING_TIME_BASE, false, false);// HACK: This potentially creates 2 timers but that
                                                               // shouldnt cause any issues
+        // Result of implementing FR_POWERUPS to circumvent engine copying existing
+        // components instead of properly reinstating them
         processed = false;
     }
 }

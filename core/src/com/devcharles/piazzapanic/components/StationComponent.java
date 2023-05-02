@@ -21,6 +21,7 @@ public class StationComponent implements Component {
     public StationType type;
     
     // Which way the "front" of the station is facing, this only affects where abouts food is rendered on top of the station.
+    // Needed for effective implementation of FR_COUNTER
     public itemDisplayDir direction;
 
     // "List" of food in the station's inventory.

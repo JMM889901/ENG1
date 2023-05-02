@@ -45,6 +45,8 @@ import com.devcharles.piazzapanic.utility.saveStructure.SaveData;
  * - Game time
  * - What's on each station.
  * - How processed each item in a station is.
+ * 
+ * Core implementation of FR_SAVE_FILES.
  */
 public class SaveHandler {
     public final static String SAVE_FILE = "save1.json";

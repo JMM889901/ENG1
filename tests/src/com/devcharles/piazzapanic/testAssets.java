@@ -17,6 +17,7 @@ public class testAssets {
         Assert.assertTrue(Gdx.files.internal("droplet.png").exists());
         Assert.assertTrue(Gdx.files.internal("recipe0.png").exists());
         Assert.assertTrue(Gdx.files.internal("recipe1.png").exists());
+        //TODO - add the further recipes
         Assert.assertTrue(Gdx.files.internal("tutorial0.png").exists());
         Assert.assertTrue(Gdx.files.internal("tutorial1.png").exists());
         Assert.assertTrue(Gdx.files.internal("tutorial2.png").exists());

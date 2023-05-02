@@ -9,6 +9,8 @@ import com.devcharles.piazzapanic.utility.GdxTimer;
  * <p>
  * This component is removed when the food is cooked or processed.
  * <p>
+ * Functionality added for FR_PREP_FAIL to allow food to be overcooked, also
+ * reused for botched cutting
  * See
  * {@link com.devcharles.piazzapanic.componentsystems.StationSystem#stationTick(StationComponent,
  * float) StationSystem.java} for details.

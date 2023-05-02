@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Pool.Poolable;
  * <li>timeMax (static, unchanging) is the maximum time the player can be under the effect of the boost.</li>
  * <li>timeHad (instance variable) is the time the player has been under the effect of the boost.</li>
  * </ul>
+ * Used in implementation of FR_POWERUPS
  */
 public class speedBoostComponent implements Component, Poolable {
     public static int boostSpeed = 4000;
