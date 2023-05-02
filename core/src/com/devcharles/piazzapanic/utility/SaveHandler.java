@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.ArrayList;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
