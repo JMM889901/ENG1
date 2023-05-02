@@ -264,7 +264,7 @@ public class SaveHandler {
                 itemComponent.holderTransform = cook.getComponent(TransformComponent.class);
                 food.add(itemComponent);
 
-                controllableComponent.currentFood.add(food);
+                controllableComponent.currentFood.pushItem(food, cook);
             }
 
             for (BoostData boostData : cookData.boosts) {
@@ -316,7 +316,7 @@ public class SaveHandler {
                 itemComponent.holderTransform = cook.getComponent(TransformComponent.class);
                 food.add(itemComponent);
 
-                controllableComponent.currentFood.add(food);
+                controllableComponent.currentFood.pushItem(food, cook);
             }
 
             for (BoostData boostData : cookData.boosts) {
