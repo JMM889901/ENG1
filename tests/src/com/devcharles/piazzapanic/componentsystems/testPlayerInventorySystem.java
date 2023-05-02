@@ -162,7 +162,7 @@ public class testPlayerInventorySystem {
 
     @Test
     /**
-     * Tests if a player can pick up an item with a full inventory.
+     * Tests that a player can't pick up an item with a full inventory.
      */
     public void testPlayerPickUpItemInventoryFull() {
         // Set up environment.
@@ -210,7 +210,7 @@ public class testPlayerInventorySystem {
 
     @Test
     /**
-     * Tests if a player can pick up an item from an empty station.
+     * Tests that a player can't pick up an item from an empty station.
      */
     public void testPlayerPickUpItemStationEmpty() {
         // Set up environment.
@@ -437,6 +437,9 @@ public class testPlayerInventorySystem {
         Assert.assertTrue(testControllableComponent.currentFood.peek() == testTater);
     }
 
+    /**
+     * Test that a chef rembers the item it is holidng even when not selected
+     */
     @Test
     public void testChefRememberItems() {
         testEnvironment environment = new testEnvironment();

@@ -60,6 +60,9 @@ public class testCustomerAISystem {
         assert (reputation[0] == 3);
     }
 
+    /** 
+     * Test that the player gets money for successfully fulfilling an order.
+     */
     @Test
     public void testMoneyReward() {
         new testEnvironment();
@@ -85,6 +88,9 @@ public class testCustomerAISystem {
         assert (money[0] > 0); // Should give money for order
     }
 
+    /** 
+     * Test that the AI pathfinding works properly
+     */
     @Test
     public void testAiPathing() {
         // Gdx setup
@@ -119,6 +125,9 @@ public class testCustomerAISystem {
         assert (AiComponent.steeringBody.getOrientation() != 0);
     }
 
+    /**
+     * Test that the customer can take the order. 
+     */
     @Test
     public void testCustomerTakesOrder() {
         // Create environment
@@ -155,6 +164,9 @@ public class testCustomerAISystem {
 
     }
 
+    /**
+     * Test that the cusotmer can reject an incorrect order.
+     */
     @Test
     public void testCustomerRejectsOrder() {
         // Create environment
@@ -190,6 +202,9 @@ public class testCustomerAISystem {
         assertTrue(component.food == null);
     }
 
+    /**
+     * Test that gamers can change the difficulty settings. 
+     */
     @Test
     public void testDifficulty() {
         // Create environment
