@@ -198,6 +198,7 @@ public class Hud extends ApplicationAdapter {
         saveButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 SaveHandler.save(SaveHandler.SAVE_FILE, GameScreen.world, myHud);
+                //saveButton.setDisabled(true);
             }
         });
 

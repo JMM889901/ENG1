@@ -35,6 +35,7 @@ public class SaveHandler {
         saveData.reputation = Hud.reputation[0];
         saveData.difficulty = CustomerAISystem.getDifficulty();
         saveData.maxCustomers = CustomerAISystem.getMaxCustomers();
+        saveData.gameTime = hud.customerTimer;
 
         // Take the structured data and now save it.
 
@@ -50,6 +51,7 @@ public class SaveHandler {
             System.out.println("Error saving to " + filename);
         }
     }
+
 
     public static void load(String filename, World world, Hud hud) {
         Json json = new Json();
@@ -77,14 +79,10 @@ public class SaveHandler {
 
         // Set values in the world and hud based on the structured data.
 
-        saveData.money = 1000;
-
         hud.initMoney(saveData.money);
-        //hud.addMoney(saveData.money);
         Hud.reputation[0] = saveData.reputation;
         CustomerAISystem.setDifficulty(saveData.difficulty);
-        if (saveData.maxCustomers != -1)
-            CustomerAISystem.setMaxCustomers(saveData.maxCustomers);// Leave it at infinite if it's -1.
-
+        CustomerAISystem.setMaxCustomers(saveData.maxCustomers == -1 ? (int) Double.POSITIVE_INFINITY : saveData.maxCustomers);
+        hud.customerTimer = saveData.gameTime;
     }
 }

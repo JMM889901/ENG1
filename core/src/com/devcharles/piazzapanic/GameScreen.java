@@ -54,7 +54,7 @@ public class GameScreen implements Screen {
 
     private Integer[] money = { 0 };
 
-    public static String loadFrom = null;
+    public static String loadFrom = null;  // File name to load level data from.
 
     public GameScreen(PiazzaPanic game) {
         this.game = game;
@@ -106,6 +106,7 @@ public class GameScreen implements Screen {
         multiplexer.addProcessor(kbInput);
         multiplexer.addProcessor(hud.stage);
 
+        
         // DO THE LOADING IN FROM FILE STUFF HERE.
 
         if (loadFrom != null) {
