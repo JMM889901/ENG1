@@ -203,7 +203,7 @@ public class Hud extends ApplicationAdapter {
         storeButton.addListener(createListener(new StoreScreen(game, gameScreen, inWorldStoreSystem, this)));
         saveButton.addListener(new ClickListener() {// Store button added for implementation of FR_INVESTMENT
             public void clicked(InputEvent event, float x, float y) {
-                SaveHandler.save(SaveHandler.SAVE_FILE, engine, GameScreen.world, myHud);
+                SaveHandler.save(SaveHandler.SAVE_FILE, engine, GameScreen.world, myHud, true);
                 // saveButton.setDisabled(true);
             }
         });

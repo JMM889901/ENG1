@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -51,7 +50,16 @@ import com.devcharles.piazzapanic.utility.saveStructure.SaveData;
 public class SaveHandler {
     public final static String SAVE_FILE = "save1.json";
 
-    public static void save(String filename, Engine engine, World world, Hud hud) {
+    /**
+     * Save key elements of game state to a file.
+     * @param filename Which file to save to.
+     * @param engine The engine with all game systems in.
+     * @param world The Box2D world.
+     * @param hud Display and global values such as money, customer reputation.
+     * @param affectFiles Set to false to do a "dry run".
+     * @return JSON formatted string that was written in to the file.
+     */
+    public static String save(String filename, Engine engine, World world, Hud hud, boolean affectFiles) {
 
         SaveData saveData = new SaveData();
 
@@ -161,39 +169,32 @@ public class SaveHandler {
         Json json = new Json();
         String saveText = json.prettyPrint(saveData);
 
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
-            writer.write(saveText);
-            writer.close();
-            System.out.println("Saved to " + filename);
-        } catch (Exception e) {
-            System.out.println("Error saving to " + filename);
+
+        if(affectFiles) {
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
+                writer.write(saveText);
+                writer.close();
+                System.out.println("Saved to " + filename);
+            } catch (Exception e) {
+                System.out.println("Error saving to " + filename);
+            }
         }
+
+        return saveText;
     }
 
-    public static void load(String filename, Engine engine, EntityFactory entityFactory, World world, Hud hud) {
+    /**
+     * Complete loading actions from a json String.
+     * @param saveText JSON formatted string with save data.
+     * @param engine The engine with the game systems in.
+     * @param entityFactory Produce entities from this.
+     * @param world The Box2D world.
+     * @param hud Display and global values such as money, customer reputation.
+     */
+    public static void loadFromString(String saveText, Engine engine, EntityFactory entityFactory, World world, Hud hud) {
         Json json = new Json();
-        SaveData saveData = new SaveData();
-        String saveText = "";
-
-        // Read structured data from the save file.
-
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(filename));
-
-            String curLine;
-            curLine = reader.readLine();
-            while (curLine != null) {
-                saveText += curLine + "\n";
-                curLine = reader.readLine();
-            }
-            reader.close();
-            System.out.println("Loaded from " + filename);
-        } catch (Exception e) {
-            System.out.println("Error loading from " + filename);
-        }
-
-        saveData = json.fromJson(SaveData.class, saveText);
+        SaveData saveData = json.fromJson(SaveData.class, saveText);
 
         // Global values.
 
@@ -257,8 +258,7 @@ public class SaveHandler {
             TransformComponent transformComponent = cook.getComponent(TransformComponent.class);
             ControllableComponent controllableComponent = cook.getComponent(ControllableComponent.class);
 
-            transformComponent.position.x = cookData.x;
-            transformComponent.position.y = cookData.y;
+            transformComponent.position.set(cookData.x, cookData.y, transformComponent.position.z);
 
             for (FoodData foodData : cookData.inventory) {
                 Entity food = entityFactory.createFood(foodData.type);
@@ -309,8 +309,7 @@ public class SaveHandler {
             TransformComponent transformComponent = cook.getComponent(TransformComponent.class);
             ControllableComponent controllableComponent = cook.getComponent(ControllableComponent.class);
 
-            transformComponent.position.x = cookData.x;
-            transformComponent.position.y = cookData.y;
+            transformComponent.position.set(cookData.x, cookData.y, transformComponent.position.z);
 
             for (FoodData foodData : cookData.inventory) {
                 Entity food = entityFactory.createFood(foodData.type);
@@ -353,5 +352,37 @@ public class SaveHandler {
                 cook.add(new PlayerComponent());
             }
         }
+    }
+
+    /**
+     * Load key elements of game state from a file.
+     * @param filename The file to load from.
+     * @param engine The engine with the game systems in.
+     * @param entityFactory Produce entities from this.
+     * @param world The Box2D world.
+     * @param hud Display and global values such as money, customer reputation.
+     * @return The text loaded from the file.
+     */
+    public static void load(String filename, Engine engine, EntityFactory entityFactory, World world, Hud hud) {
+        String saveText = "";
+
+        // Read structured data from the save file.
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(filename));
+
+            String curLine;
+            curLine = reader.readLine();
+            while (curLine != null) {
+                saveText += curLine + "\n";
+                curLine = reader.readLine();
+            }
+            reader.close();
+            System.out.println("Loaded from " + filename);
+        } catch (Exception e) {
+            System.out.println("Error loading from " + filename);
+        }
+        
+        loadFromString(saveText, engine, entityFactory, world, hud);
     }
 }

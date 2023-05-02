@@ -1,45 +1,64 @@
 {
-reputation: 1
+money: 5
+reputation: 3
 customers: [
 	{
-		x: 66.68956
-		y: 25.966463
-		patience: 47190
-		objective: 1
+		x: 61.8829
+		y: 26
+		patience: 50969
 		order: {
-			type: bakedPotato
-		}
-	}
-	{
-		x: 61.836773
-		y: 25.955
-		patience: 5
-		order: {
-			type: bakedPotato
+			type: burger
 		}
 	}
 ]
 cooks: [
 	{
-		x: 57.402164
-		y: 27.78904
-		inventory: []
+		x: 47.38503
+		y: 23.85861
+		inventory: [
+			{
+				type: slicedLettuce
+			}
+			{
+				type: onion
+			}
+			{
+				type: tomato
+			}
+		]
 		boosts: []
 		active: true
 	}
 	{
-		x: 60.49094
-		y: 24.222855
-		inventory: []
+		x: 59.196198
+		y: 13.58086
+		inventory: [
+			{
+				type: potato
+			}
+		]
 		boosts: []
 	}
 	{
-		x: 57.422096
-		y: 24.51863
-		inventory: []
+		x: 60.468147
+		y: 20.043272
+		inventory: [
+			{
+				type: unformedPatty
+			}
+			{
+				type: unformedPatty
+			}
+			{
+				type: unformedPatty
+			}
+			{
+				type: unformedPatty
+			}
+		]
 		boosts: []
 	}
 ]
-gameTime: 133
-maxCustomers: 5
+gameTime: 53
+maxCustomers: 6
 }
