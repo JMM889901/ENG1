@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Json;
 import com.devcharles.piazzapanic.components.AIAgentComponent;
+import com.devcharles.piazzapanic.components.B2dBodyComponent;
 import com.devcharles.piazzapanic.components.ControllableComponent;
 import com.devcharles.piazzapanic.components.CustomerComponent;
 import com.devcharles.piazzapanic.components.FoodComponent;
@@ -257,8 +258,11 @@ public class SaveHandler {
 
             TransformComponent transformComponent = cook.getComponent(TransformComponent.class);
             ControllableComponent controllableComponent = cook.getComponent(ControllableComponent.class);
+            B2dBodyComponent b2dBodyComponent = cook.getComponent(B2dBodyComponent.class);
 
             transformComponent.position.set(cookData.x, cookData.y, transformComponent.position.z);
+            b2dBodyComponent.body.setTransform(transformComponent.position.x, transformComponent.position.y, b2dBodyComponent.body.getAngle());
+
 
             for (FoodData foodData : cookData.inventory) {
                 Entity food = entityFactory.createFood(foodData.type);
@@ -308,8 +312,10 @@ public class SaveHandler {
 
             TransformComponent transformComponent = cook.getComponent(TransformComponent.class);
             ControllableComponent controllableComponent = cook.getComponent(ControllableComponent.class);
+            B2dBodyComponent b2dBodyComponent = cook.getComponent(B2dBodyComponent.class);
 
             transformComponent.position.set(cookData.x, cookData.y, transformComponent.position.z);
+            b2dBodyComponent.body.setTransform(transformComponent.position.x, transformComponent.position.y, b2dBodyComponent.body.getAngle());
 
             for (FoodData foodData : cookData.inventory) {
                 Entity food = entityFactory.createFood(foodData.type);

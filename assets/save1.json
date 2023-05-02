@@ -5,7 +5,7 @@ customers: [
 	{
 		x: 61.8829
 		y: 26
-		patience: 50969
+		patience: 70028
 		order: {
 			type: burger
 		}
@@ -13,8 +13,8 @@ customers: [
 ]
 cooks: [
 	{
-		x: 47.38503
-		y: 23.85861
+		x: 44.417194
+		y: 29.683565
 		inventory: [
 			{
 				type: slicedLettuce
@@ -27,21 +27,26 @@ cooks: [
 			}
 		]
 		boosts: []
-		active: true
 	}
 	{
-		x: 59.196198
-		y: 13.58086
+		x: 40.53624
+		y: 23.303072
 		inventory: [
 			{
 				type: potato
 			}
 		]
-		boosts: []
+		boosts: [
+			{
+				type: cutBoost
+				time: 0.46615204
+			}
+		]
+		active: true
 	}
 	{
-		x: 60.468147
-		y: 20.043272
+		x: 61.072784
+		y: 20.032251
 		inventory: [
 			{
 				type: unformedPatty
@@ -59,6 +64,6 @@ cooks: [
 		boosts: []
 	}
 ]
-gameTime: 53
+gameTime: 72
 maxCustomers: 6
 }
