@@ -80,6 +80,7 @@ public class SaveHandler {
         // Set values in the world and hud based on the structured data.
 
         hud.initMoney(saveData.money);
+        // hud.addMoney(saveData.money);
         Hud.reputation[0] = saveData.reputation;
         CustomerAISystem.setDifficulty(saveData.difficulty);
         CustomerAISystem.setMaxCustomers(saveData.maxCustomers == -1 ? (int) Double.POSITIVE_INFINITY : saveData.maxCustomers);
