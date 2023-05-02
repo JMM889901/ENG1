@@ -37,7 +37,6 @@ public class SaveHandler {
         saveData.difficulty = CustomerAISystem.getDifficulty();
         saveData.maxCustomers = CustomerAISystem.getMaxCustomers();
 
-
         // Take the structured data and now save it.
 
         Json json = new Json();
@@ -57,12 +56,12 @@ public class SaveHandler {
         Json json = new Json();
         SaveData saveData = new SaveData();
         String saveText = "";
-        
+
         // Read structured data from the save file.
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader(filename));
-            
+
             String curLine;
             curLine = reader.readLine();
             while (curLine != null) {
@@ -76,13 +75,13 @@ public class SaveHandler {
 
         saveData = json.fromJson(SaveData.class, saveText);
 
-
         // Set values in the world and hud based on the structured data.
 
-        Hud.money[0] = saveData.money;
+        hud.addMoney(saveData.money);
         Hud.reputation[0] = saveData.reputation;
         CustomerAISystem.setDifficulty(saveData.difficulty);
-        CustomerAISystem.setMaxCustomers(saveData.maxCustomers);
+        if (saveData.maxCustomers != -1)
+            CustomerAISystem.setMaxCustomers(saveData.maxCustomers);// Leave it at infinite if it's -1.
 
     }
 }

@@ -82,9 +82,9 @@ public class Hud extends ApplicationAdapter {
 
         _ISNTTEST = spriteBatch != null;
         this.game = game;
-        this.reputation = reputationPoints;
+        Hud.reputation = reputationPoints;
         this.gameScreen = savedGame;
-        this.money = money; // Yes player money is handled here, cope and seethe bozo
+        Hud.money = money; // Yes player money is handled here, cope and seethe bozo
         this.inWorldStoreSystem = inWorldStoreSystem;
 
         // Setup the viewport
@@ -190,7 +190,7 @@ public class Hud extends ApplicationAdapter {
             }
         });
 
-        final Hud myHud = this;  //  :)
+        final Hud myHud = this; // :)
 
         recipeBookButton.addListener(createListener(new Slideshow(game, Slideshow.Type.recipe, gameScreen)));
         tutorialButton.addListener(createListener(new Slideshow(game, Slideshow.Type.tutorial, gameScreen)));
@@ -200,7 +200,6 @@ public class Hud extends ApplicationAdapter {
                 SaveHandler.save(SaveHandler.SAVE_FILE, GameScreen.world, myHud);
             }
         });
-
 
         tablePause.add(resumeButton).width(240).height(70).padBottom(30);
         tablePause.row();

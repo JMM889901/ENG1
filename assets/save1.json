@@ -1,4 +1,6 @@
 {
 money: 1234567
 reputation: 2
+maxCustomers: -1
+difficulty: 1
 }
