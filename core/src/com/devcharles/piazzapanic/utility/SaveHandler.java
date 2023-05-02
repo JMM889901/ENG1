@@ -156,11 +156,11 @@ public class SaveHandler {
             cookData.boosts = boostsData.toArray(new BoostData[boostsData.size()]);
 
             cookData.active = cook.getComponent(PlayerComponent.class) != null;
-            if (cookData.active) {
+            /*if (cookData.active) {
                 engine.getSystem(PlayerControlSystem.class).playerComponent = cooks.get(0)
                         .getComponent(PlayerComponent.class);
                 engine.getSystem(PlayerControlSystem.class).hasInitComponent = true;
-            }
+            }*/
 
             saveData.cooks[i] = cookData;
         }
