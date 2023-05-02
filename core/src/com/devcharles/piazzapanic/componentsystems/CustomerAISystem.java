@@ -270,6 +270,7 @@ public class CustomerAISystem extends IteratingSystem {
         numOfCustomerTotal++;
         numActiveCustomers++;
         Mappers.customer.get(newCustomer).timer.start();
+        makeItGoThere(newCustomer.getComponent(AIAgentComponent.class), customers.size() - 1);
     }
 
     void tickCustomerTimer(Entity entity, CustomerComponent customer, float deltaTime) {
@@ -350,7 +351,7 @@ public class CustomerAISystem extends IteratingSystem {
         makeItGoThere(aiAgent, -1);
 
         hud.addMoney(5);
-        //Hud.money[0] += 5;
+        // Hud.money[0] += 5;
 
         numActiveCustomers--;
 
@@ -389,7 +390,7 @@ public class CustomerAISystem extends IteratingSystem {
         makeItGoThere(aiAgent, -1);
 
         hud.addMoney(5);
-        //Hud.money[0] += 5;
+        // Hud.money[0] += 5;
 
         numActiveCustomers--;
 

@@ -2,6 +2,7 @@ package com.devcharles.piazzapanic.components;
 
 import org.junit.*;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.devcharles.piazzapanic.testEnvironment;
 import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
@@ -29,29 +30,31 @@ public class testCookingComponent {
         Entity testPatty = environment.factory.createFood(FoodType.formedPatty); // Grill.
         Entity testPotato = environment.factory.createFood(FoodType.potato); // Oven.
 
-
         // Create a chef to put things on the station.
         Entity testChef = environment.factory.createCook(0, 0);
         PlayerComponent testPlayerComponent = new PlayerComponent();
         testChef.add(testPlayerComponent); // Make our chef the active "player".
 
         ControllableComponent testControllableComponent = Mappers.controllable.get(testChef);
-        testControllableComponent.currentFood.pushItem(testOnion, testChef);  // There are "redundant" references to testChef due to 'slightly' dodgy architecture inherited from Group26.
+        testControllableComponent.currentFood.pushItem(testOnion, testChef); // There are "redundant" references to
+                                                                             // testChef due to 'slightly' dodgy
+                                                                             // architecture inherited from Group26.
         testControllableComponent.currentFood.pushItem(testPatty, testChef);
         testControllableComponent.currentFood.pushItem(testPotato, testChef);
-        
 
         // Create stations to process food.
-        Entity testCuttingBoard = environment.factory.createStation(StationType.cutting_board, new Vector2(3, 0), null, false);
+        Entity testCuttingBoard = environment.factory.createStation(StationType.cutting_board, new Vector2(3, 0), null,
+                false);
         Entity testOven = environment.factory.createStation(StationType.oven, new Vector2(1, 0), null, false);
         Entity testGrill = environment.factory.createStation(StationType.grill, new Vector2(2, 0), null, false);
-        
+
         StationComponent cuttingBoardComponent = Mappers.station.get(testCuttingBoard);
         StationComponent ovenComponent = Mappers.station.get(testOven);
         StationComponent grillComponent = Mappers.station.get(testGrill);
 
         // Start the first stage of processing.
-        ovenComponent.interactingCook = testChef;  // (This is done in reverse order as above because the player's foodstack is of course LIFO.)
+        ovenComponent.interactingCook = testChef; // (This is done in reverse order as above because the player's
+                                                  // foodstack is of course LIFO.)
         testPlayerComponent.putDown = true;
         environment.engine.update(0.1f);
         ovenComponent.interactingCook = null;
@@ -68,6 +71,14 @@ public class testCookingComponent {
 
         // Everything processes for just long enough for the first stage.
         environment.engine.update(CookingComponent.COOKING_TIME_BASE / 1000f + 0.1f);
+
+        Assert.assertTrue(Mappers.food.get(grillComponent.food.get(0)).type != FoodType.grilledPatty);
+        Assert.assertTrue(Mappers.food.get(ovenComponent.food.get(0)).type != FoodType.bakedPotatoPlain);
+        Assert.assertTrue(Mappers.food.get(cuttingBoardComponent.food.get(0)).type != FoodType.slicedOnion);
+
+        Assert.assertTrue(testPatty.getComponent(TintComponent.class).tint == Color.ORANGE);
+        Assert.assertTrue(testPotato.getComponent(TintComponent.class).tint == Color.ORANGE);
+        Assert.assertTrue(testOnion.getComponent(TintComponent.class).tint == Color.ORANGE);
 
         cuttingBoardComponent.interactingCook = null;
 
