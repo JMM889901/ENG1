@@ -22,7 +22,7 @@ import com.devcharles.piazzapanic.utility.saveStructure.SaveData;
  * - What's on each station.
  * - How processed each item in a station is.
  */
-public class SaveHandler {
+public class SaveHandler2 {
     public final static String SAVE_FILE = "save1.json";
 
     public static void save(String filename, World world, Hud hud) {
