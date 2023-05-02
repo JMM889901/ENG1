@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.ArrayList;
 
+import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -13,10 +15,20 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Json;
 import com.devcharles.piazzapanic.components.AIAgentComponent;
+import com.devcharles.piazzapanic.components.ControllableComponent;
 import com.devcharles.piazzapanic.components.CustomerComponent;
+import com.devcharles.piazzapanic.components.FoodComponent;
+import com.devcharles.piazzapanic.components.PlayerComponent;
 import com.devcharles.piazzapanic.components.TransformComponent;
+import com.devcharles.piazzapanic.components.Powerups.PowerupComponent;
+import com.devcharles.piazzapanic.components.Powerups.cookBoostComponent;
+import com.devcharles.piazzapanic.components.Powerups.cutBoostComponent;
+import com.devcharles.piazzapanic.components.Powerups.speedBoostComponent;
+import com.devcharles.piazzapanic.components.Powerups.timeFreezeBoostComponent;
 import com.devcharles.piazzapanic.componentsystems.CustomerAISystem;
 import com.devcharles.piazzapanic.scene2d.Hud;
+import com.devcharles.piazzapanic.utility.saveStructure.BoostData;
+import com.devcharles.piazzapanic.utility.saveStructure.CookData;
 import com.devcharles.piazzapanic.utility.saveStructure.CustomerData;
 import com.devcharles.piazzapanic.utility.saveStructure.FoodData;
 import com.devcharles.piazzapanic.utility.saveStructure.SaveData;
@@ -39,7 +51,7 @@ public class SaveHandler {
 
         SaveData saveData = new SaveData();
 
-        // Get data from passed in world and hud.
+        // Global values.
 
         saveData.money = Hud.getMoney();
         saveData.reputation = Hud.reputation[0];
@@ -47,8 +59,11 @@ public class SaveHandler {
         saveData.maxCustomers = CustomerAISystem.getMaxCustomers();
         saveData.gameTime = hud.customerTimer;
 
-        ImmutableArray<Entity> customers = engine.getEntitiesFor(Family.all(CustomerComponent.class).get());
 
+        // Customers.
+
+        ImmutableArray<Entity> customers = engine.getEntitiesFor(Family.all(CustomerComponent.class).get());
+        
         saveData.customers = new CustomerData[customers.size()];
 
         for (int i = 0; i < customers.size(); i++) {
@@ -69,6 +84,69 @@ public class SaveHandler {
 
             saveData.customers[i] = customerData;
         }
+
+
+        // Chefs/cooks.
+
+        ImmutableArray<Entity> cooks = engine.getEntitiesFor(Family.all(ControllableComponent.class).get());
+
+        saveData.cooks = new CookData[cooks.size()];
+
+        for(int i = 0; i < cooks.size(); i++) {
+            Entity cook = cooks.get(i);
+            CookData cookData = new CookData();
+            ControllableComponent controllableComponent = cook.getComponent(ControllableComponent.class);
+            TransformComponent transformComponent = cook.getComponent(TransformComponent.class);
+
+            cookData.x = transformComponent.position.x;
+            cookData.y = transformComponent.position.y;
+
+            cookData.inventory = new FoodData[controllableComponent.currentFood.size()];
+            int j = controllableComponent.currentFood.size() - 1;  // A bit scuffed but you can only peak through a Deque with a for each loop, so we need a separate increment.
+            for(Entity currentFood : controllableComponent.currentFood) {
+                FoodData foodData = new FoodData();
+                foodData.type = currentFood.getComponent(FoodComponent.class).type;
+                cookData.inventory[j] = foodData;
+                j--;
+            }
+
+            ArrayList<BoostData> boostsData = new ArrayList<BoostData>();
+            cookBoostComponent cookBoost = cook.getComponent(cookBoostComponent.class);
+            if(cookBoost != null) {
+                BoostData cookBoostData = new BoostData();
+                cookBoostData.type = PowerupComponent.powerupType.cookBoost;
+                cookBoostData.time = cookBoost.timeHad;
+                boostsData.add(cookBoostData);
+            }
+            cutBoostComponent cutBoost = cook.getComponent(cutBoostComponent.class);
+            if(cutBoost != null) {
+                BoostData cutBoostData = new BoostData();
+                cutBoostData.type = PowerupComponent.powerupType.cutBoost;
+                cutBoostData.time = cutBoost.timeHad;
+                boostsData.add(cutBoostData);
+            }
+            speedBoostComponent speedBoost = cook.getComponent(speedBoostComponent.class);
+            if(speedBoost != null) {
+                BoostData speedBoostData = new BoostData();
+                speedBoostData.type = PowerupComponent.powerupType.speedBoost;
+                speedBoostData.time = speedBoost.timeHad;
+                boostsData.add(speedBoostData);
+            }
+            timeFreezeBoostComponent timeFreezeBoost = cook.getComponent(timeFreezeBoostComponent.class);
+            if(timeFreezeBoost != null) {
+                BoostData timeFreezeBoostData = new BoostData();
+                timeFreezeBoostData.type = PowerupComponent.powerupType.timeFreezeBoost;
+                timeFreezeBoostData.time = timeFreezeBoost.timeHad;
+                boostsData.add(timeFreezeBoostData);
+            }
+            cookData.boosts = boostsData.toArray(new BoostData[boostsData.size()]);
+
+            cookData.active = cook.getComponent(PlayerComponent.class) != null;
+
+            saveData.cooks[i] = cookData;
+        }
+
+        
 
         // Take the structured data and now save it.
 
