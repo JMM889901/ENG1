@@ -38,7 +38,7 @@ public class TestHud extends Hud {
      * Create a dud Hud.
      */
     public TestHud() {
-        super(null, null, null, new Integer[] { 1 }, new Integer[] { 1 }, null);
+        super(null, null, null, null, new Integer[] { 1 }, new Integer[] { 1 }, null);
     }
 
     /**
