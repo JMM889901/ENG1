@@ -110,7 +110,7 @@ public class GameScreen implements Screen {
         // DO THE LOADING IN FROM FILE STUFF HERE.
 
         if (loadFrom != null) {
-            SaveHandler.load(loadFrom, engine, world, hud);
+            SaveHandler.load(loadFrom, engine, factory, world, hud);
             loadFrom = null;
         }
 

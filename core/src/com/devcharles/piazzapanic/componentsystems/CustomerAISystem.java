@@ -49,7 +49,7 @@ public class CustomerAISystem extends IteratingSystem {
     private static int maxCustomers = (int) Double.POSITIVE_INFINITY;
     private static int difficulty; // This is just a record to be recalled when saving, this doesn't set anything.
     private static int maxActiveCustomers = 7;
-    private boolean firstSpawn = true;
+    public boolean firstSpawn = true;
     public static int MaxGroupSize = 3;// easy is 1(this is kind of a hack ig), hard is 3 Spawning more than 3 may
                                        // cause funky stuff so dont
     private int spawnedThisGroup = 0;

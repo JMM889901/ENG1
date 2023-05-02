@@ -10,6 +10,7 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Json;
 import com.devcharles.piazzapanic.components.AIAgentComponent;
@@ -89,7 +90,7 @@ public class SaveHandler {
     }
 
 
-    public static void load(String filename, Engine engine, World world, Hud hud) {
+    public static void load(String filename, Engine engine, EntityFactory entityFactory, World world, Hud hud) {
         Json json = new Json();
         SaveData saveData = new SaveData();
         String saveText = "";
@@ -121,5 +122,26 @@ public class SaveHandler {
         CustomerAISystem.setDifficulty(saveData.difficulty);
         CustomerAISystem.setMaxCustomers(saveData.maxCustomers == -1 ? (int) Double.POSITIVE_INFINITY : saveData.maxCustomers);
         hud.customerTimer = saveData.gameTime;
+
+        engine.getSystem(CustomerAISystem.class).firstSpawn = false;
+
+        // Clear out existing customers (and also consequently their orders).
+        for(Entity customer : engine.getEntitiesFor(Family.all(CustomerComponent.class).get())) {
+            engine.removeEntity(Mappers.customer.get(customer).food);
+            world.destroyBody(Mappers.b2body.get(customer).body);
+            engine.removeEntity(customer);
+        }
+
+        // Create new customers.
+        for(CustomerData customer : saveData.customers) {
+            Entity customerEntity = entityFactory.createCustomer(new Vector2(customer.x, customer.y));
+            
+            CustomerComponent customerComponent = customerEntity.getComponent(CustomerComponent.class);
+            AIAgentComponent aiAgentComponent = customerEntity.getComponent(AIAgentComponent.class);
+            
+            customerComponent.timer.setElapsed(customer.patience);
+            aiAgentComponent.currentObjective = customer.objective;
+            customerComponent.order = customer.order.type;
+        }
     }
 }
