@@ -63,10 +63,12 @@ public class MapLoader {
     static final String stationIdProperty = "stationID";
     static final String ingredientTypeProperty = "ingredientType";
 
+    // Primarily used for testing purposes
     private Map<Integer, Box2dLocation> aiObjectives;
 
     public ArrayList<Vector2> cookSpawns;
 
+    // Required for FR_INVESTMENT, handles locking of stations on first load
     boolean lockedCookMade = false;
     boolean lockedCutMade = false;
     boolean lockedGrillMade = false;
@@ -154,13 +156,15 @@ public class MapLoader {
 
                 } else if (properties.containsKey(aiSpawnPoint)) {
                     Gdx.app.log("map parsing", String.format("Ai spawn point at x:%.2f y:%.2f", pos.x, pos.y));
+                    // Modified to add 2 additional spawn points to facilitate FR_CUSTOMER_FLOW
+                    // customer groups
                     aiObjectives.put(-2 - (int) properties.get(aiSpawnPoint), new Box2dLocation(pos, 0));
                 } else if (properties.containsKey(aiObjective)) {
                     int objective = (int) properties.get(aiObjective);
                     aiObjectives.put(objective, new Box2dLocation(new Vector2(pos.x, pos.y), (float) (1.5f * Math.PI)));
                     Gdx.app.log("map parsing",
                             String.format("Ai objective %d at x:%.2f y:%.2f", objective, pos.x, pos.y));
-                } else if (properties.containsKey(powerupSpawner)) {
+                } else if (properties.containsKey(powerupSpawner)) { // Powerup spawners from FR_POWERUPS
                     factory.createPowerupSpawner(pos);
                     Gdx.app.log("map parsing",
                             String.format("Powerup spawner at x:%.2f y:%.2f", pos.x, pos.y));
@@ -189,6 +193,7 @@ public class MapLoader {
     public void buildStations(Engine engine, World world) {
         TiledMapTileLayer stations = (TiledMapTileLayer) (map.getLayers().get(stationLayer));
         TiledMapTileLayer stations_f = (TiledMapTileLayer) (map.getLayers().get(stationLayer + "_f"));
+        // Additional map layers counted to implement FR_COUNTER
         TiledMapTileLayer counters = (TiledMapTileLayer) (map.getLayers().get(counterTopLayer));
         TiledMapTileLayer counters_f = (TiledMapTileLayer) (map.getLayers().get(counterTopLayer + "_f"));
         int columns = Math.max(stations.getWidth(), counters.getWidth());
@@ -198,6 +203,8 @@ public class MapLoader {
 
         for (int i = 0; i < columns; i++) {
             for (int j = 0; j < rows; j++) {
+                // Multilayer search now handles all four layers instead of the two origianlly
+                // done through an inline if statement
                 currentCell = stations.getCell(i, j);
                 if (currentCell == null) {
                     currentCell = stations_f.getCell(i, j);
@@ -220,7 +227,7 @@ public class MapLoader {
                         }
                         System.out.println("Creating station at " + i + ", " + j + " of type " + stationType);
                         Boolean locked = false;
-                        switch (stationType) {
+                        switch (stationType) { // Apply locking of stations to implement FR_INVESTMENT
                             case cutting_board:
                                 if (lockedCutMade)
                                     break;
@@ -257,6 +264,7 @@ public class MapLoader {
         }
     }
 
+    // Mostly used for testing purposes
     public ArrayList<Vector2> GetCookSpawns() {
         return cookSpawns;
     }

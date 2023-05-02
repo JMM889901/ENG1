@@ -118,6 +118,10 @@ public class WorldContactListener implements ContactListener {
         return null;
     }
 
+    /*
+     * Things to do upon finishing a contact interaction between cook and powerup.
+     * FR_POWERUPS
+     */
     private void powerupInteractResolver(Contact contact) {
         Object objA = contact.getFixtureA().getUserData();
         Object objB = contact.getFixtureB().getUserData();

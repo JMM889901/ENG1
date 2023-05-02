@@ -19,6 +19,8 @@ import com.devcharles.piazzapanic.scene2d.Hud;
 
 /**
  * A system that runs constantly, proactively checking if powerups have been collided with, marked for deletion etc.
+ * Responsible for handling giving players powerups as per functional requirement FR_POWERUPS.
+ * Values here are specified by collision systems.
  */
 public class PowerupPickupSystem extends IteratingSystem {
 

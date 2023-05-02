@@ -7,6 +7,7 @@ import com.devcharles.piazzapanic.utility.EntityFactory;
 
 /**
  * Given to entities that spawn powerups.
+ * Used in implementation of FR_POWERUPS
  */
 public class PowerupSpawnerComponent implements Component {
     public Vector2 pos;

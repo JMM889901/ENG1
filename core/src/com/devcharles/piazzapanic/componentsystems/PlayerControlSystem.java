@@ -24,6 +24,7 @@ public class PlayerControlSystem extends IteratingSystem {
     /**
      * Given that there is only one instance of PlayerControlSystem, this kind of
      * acts like a static value.
+     * Rendered public for FR_SAVE_FILES
      */
     public boolean hasInitComponent = false;
 
@@ -64,6 +65,8 @@ public class PlayerControlSystem extends IteratingSystem {
         // the start).
         if (!hasInitComponent) {
             PlayerComponent component = Mappers.player.get(entity);
+            // Remove logical dependency on first spawned chef having playerComponent
+            // Neccessary for implementation of FR_SAVE_FILES
             if (component != null) {
                 this.playerComponent = component;
 
@@ -102,7 +105,8 @@ public class PlayerControlSystem extends IteratingSystem {
             entity.remove(PlayerComponent.class);
             return;
         }
-
+        // Reverse cook changing implemented to improve functionality of FR_COOKS and
+        // FR_INVESTMENT as more than 2 cooks can be clunky to cycle through
         if (input.changeCooksReverse) {
             input.changeCooksReverse = false;
 
@@ -120,6 +124,8 @@ public class PlayerControlSystem extends IteratingSystem {
             return;
         }
 
+        // Seperation of keys to make control scheme more intuitive vs assessment 1, as
+        // well as for testing purposes
         if (input.putDown) {
             input.putDown = false;
             Mappers.player.get(entity).putDown = true;
@@ -165,6 +171,7 @@ public class PlayerControlSystem extends IteratingSystem {
         // and length (speed) is sqrt(2)
         // but we need length to be 1
         direction.nor();
+        // Implementation of FR_POWERUPS speedboost
         int moveSpeed = 2000; // Default speed.
         if (entity.getComponent(speedBoostComponent.class) != null) {
             moveSpeed = speedBoostComponent.boostSpeed; // Boosted speed.
@@ -180,6 +187,8 @@ public class PlayerControlSystem extends IteratingSystem {
         }
 
         // Tick the timers forwards here.
+        // Implementation of timers for timed powerups as per functional requirement
+        // FR_POWERUPS
 
         if (entity.getComponent(cookBoostComponent.class) != null) {
             if (entity.getComponent(cookBoostComponent.class).timeHad > cookBoostComponent.timeMax) {

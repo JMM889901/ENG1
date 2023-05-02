@@ -10,4 +10,5 @@ public class LockedComponent implements Component {
 
     public static ArrayList<Entity> lockedStations = new ArrayList<Entity>();
     // Dummy compoenent to lock a station entity from being used
+    // Used for locking/unlocking stations as a a subrequirement of FR_INVESTMENT
 }

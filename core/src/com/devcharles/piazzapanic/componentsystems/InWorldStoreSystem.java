@@ -9,6 +9,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.devcharles.piazzapanic.utility.EntityFactory;
 import com.devcharles.piazzapanic.utility.MapLoader;
 
+/*
+ * Responsible for spawning entities as per store purchasses to fulfill more cooks subrequirement of FR_INVESTMENT
+ */
 public class InWorldStoreSystem {
     // Ok i will concede this doesnt technically belong here but like, cope, seethe
     // and mald

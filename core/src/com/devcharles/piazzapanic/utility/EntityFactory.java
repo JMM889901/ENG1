@@ -366,7 +366,8 @@ public class EntityFactory {
     /**
      * This gets run run by the component system. Given a location, this code
      * chooses a powerup and places it.
-     * 
+     * In world/gameplay implementation of FR_POWERUPS 
+     *
      * @param position Where the powerup will be placed.
      * @return The powerup (stored as an entity with various relevant components).
      */
@@ -429,7 +430,9 @@ public class EntityFactory {
                 String.format("Powerup " + boost.type + " spawned at x:%.2f y:%.2f", position.x, position.y));
         return entity;
     }
-
+    /**
+    * Used to define a location that can be used to spawn powerups, required for FR_POWERUPS
+    */
     public Entity createPowerupSpawner(Vector2 position) {
         Entity entity = engine.createEntity();
 

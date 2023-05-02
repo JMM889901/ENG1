@@ -40,6 +40,8 @@ public class RenderingSystem extends IteratingSystem {
     private YComparator Ycomparator;
 
     List<Entity> entities = new ArrayList<Entity>();
+    // Neccessary for rendering entities on top of the map, required for
+    // implementation of FR_COUNTER
     List<Entity> foregroundEntities = new ArrayList<Entity>();
 
     public RenderingSystem(TiledMap map, SpriteBatch batch, OrthographicCamera camera) {
@@ -70,6 +72,8 @@ public class RenderingSystem extends IteratingSystem {
         mapRenderer.renderBackground();
 
         for (Entity entity : entities) {
+            // Entity rendering loop moved externally the reduce code duplication with
+            // forgeground rendering loop
             renderEntity(entity);
         }
         mapRenderer.renderForeground();
@@ -172,7 +176,8 @@ public class RenderingSystem extends IteratingSystem {
         ArrayList<Entity> foods = Mappers.station.get(station).food;
 
         Vector3 stationPos = Mappers.transform.get(station).position;
-
+        // Function modified with support for display directions in order to support
+        // implementation of FR_COUNTER
         for (Entity entity : foods) {
             if (entity == null) {
                 continue;

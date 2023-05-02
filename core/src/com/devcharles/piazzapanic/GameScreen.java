@@ -54,7 +54,7 @@ public class GameScreen implements Screen {
 
     private Integer[] money = { 0 };
 
-    public static String loadFrom = null;  // File name to load level data from.
+    public static String loadFrom = null; // File name to load level data from.
 
     public GameScreen(PiazzaPanic game) {
         this.game = game;
@@ -79,6 +79,8 @@ public class GameScreen implements Screen {
         mapLoader.buildFromObjects(engine, rayhandler);
         mapLoader.buildStations(engine, world);
 
+        // Creating new system for handling store as per requirement FR_INVESTMENT
+        // largely as a result of the lack of statics
         InWorldStoreSystem inWorldStoreSystem = new InWorldStoreSystem(engine, factory, world, mapLoader);
         hud = new Hud(game.batch, this, game, engine, reputationPoints, money, inWorldStoreSystem);
 
@@ -93,6 +95,7 @@ public class GameScreen implements Screen {
         engine.addSystem(new CarryItemsSystem());
         engine.addSystem(new InventoryUpdateSystem(hud));
 
+        // Implementation of powerup system as per requirement FR_POWERUPS
         Entity powerupController = engine.createEntity();
         powerupController.add(engine.createComponent(PowerupSpawnControllerComponent.class));
         engine.addEntity(powerupController);
@@ -106,9 +109,10 @@ public class GameScreen implements Screen {
         multiplexer.addProcessor(kbInput);
         multiplexer.addProcessor(hud.stage);
 
-
         // DO THE LOADING IN FROM FILE STUFF HERE.
 
+        // Handles loading of data to fulfill requirement FR_SAVE_FILES
+        // Loadfrom handled in main menu screen line 182
         if (loadFrom != null) {
             SaveHandler.load(loadFrom, engine, factory, world, hud);
             loadFrom = null;

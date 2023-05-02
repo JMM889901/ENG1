@@ -39,8 +39,9 @@ public class Hud extends ApplicationAdapter {
                                              // counts down.
     private float timeCounter = 0;
     public static Integer[] reputation;
-    private static Integer[] money; // This is static purely for the sake of simplicity, yes its bad practice but
-                                    // cry about it
+    // Money as a practical requirement of functional requirement FR_INVESTMENT
+    private static Integer[] money; // This is static purely for the sake of simplicity (and testing), yes its bad
+                                    // practice but cry about it
     private Skin skin;
 
     private final float fontScale = 0.6f;
@@ -79,7 +80,8 @@ public class Hud extends ApplicationAdapter {
      * @param reputationPoints Must be an object to pass by reference, see
      *                         https://stackoverflow.com/questions/3326112/java-best-way-to-pass-int-by-reference
      */
-    public Hud(SpriteBatch spriteBatch, final GameScreen savedGame, final Game game, Engine engine, Integer[] reputationPoints,
+    public Hud(SpriteBatch spriteBatch, final GameScreen savedGame, final Game game, Engine engine,
+            Integer[] reputationPoints,
             Integer[] money, InWorldStoreSystem inWorldStoreSystem) {
 
         _ISNTTEST = spriteBatch != null;
@@ -88,7 +90,7 @@ public class Hud extends ApplicationAdapter {
         Hud.reputation = reputationPoints;
         this.gameScreen = savedGame;
         Hud.money = money; // Yes player money is handled here, cope and seethe bozo
-        this.inWorldStoreSystem = inWorldStoreSystem;
+        this.inWorldStoreSystem = inWorldStoreSystem; // In world store system for implementation of FR_INVESTMENT
 
         // Setup the viewport
         if (_ISNTTEST) {
@@ -108,7 +110,7 @@ public class Hud extends ApplicationAdapter {
         titleLabelStyle = new Label.LabelStyle();
         titleLabelStyle.font = uiTitleFont;
 
-        if (_ISNTTEST) {
+        if (_ISNTTEST) {// Not active in testing for gdx.graphics reasons
             stage.addListener(new InputListener() {
                 @Override
                 public boolean keyDown(InputEvent event, int keycode) {
@@ -130,7 +132,7 @@ public class Hud extends ApplicationAdapter {
         }
 
         // Create the UI layout.
-        if (_ISNTTEST) {
+        if (_ISNTTEST) {// UI not generated in headless tests for obvious reasons
             createTables();
         }
     }
@@ -139,10 +141,10 @@ public class Hud extends ApplicationAdapter {
 
         timerLabel = new Label(String.format("%03d", customerTimer), hudLabelStyle);
         reputationLabel = new Label(String.format("%01d", reputation[0]), hudLabelStyle);
-        moneyLabel = new Label(String.format("%01d", money[0]), hudLabelStyle);
+        moneyLabel = new Label(String.format("%01d", money[0]), hudLabelStyle); // (FR_INVESTMENT)
         timeNameLabel = new Label("Time", hudLabelStyle);
         reputationNameLabel = new Label("Reputation", hudLabelStyle);
-        moneyNameLabel = new Label("$", hudLabelStyle);
+        moneyNameLabel = new Label("$", hudLabelStyle); // (FR_INVESTMENT)
         // Creates a bunch of labels and sets the fontsize
         reputationLabel.setFontScale(fontScale + 0.1f);
         timerLabel.setFontScale(fontScale + 0.1f);
@@ -184,7 +186,8 @@ public class Hud extends ApplicationAdapter {
         TextButton resumeButton = new TextButton("Resume", skin);
         TextButton recipeBookButton = new TextButton("Recipe Book", skin);
         TextButton tutorialButton = new TextButton("Tutorial", skin);
-        TextButton storeButton = new TextButton("Store", skin);
+        TextButton storeButton = new TextButton("Store", skin); // Store button added for implementation of
+                                                                // FR_INVESTMENT
         TextButton saveButton = new TextButton("Save", skin);
 
         resumeButton.addListener(new ClickListener() {
@@ -198,10 +201,10 @@ public class Hud extends ApplicationAdapter {
         recipeBookButton.addListener(createListener(new Slideshow(game, Slideshow.Type.recipe, gameScreen)));
         tutorialButton.addListener(createListener(new Slideshow(game, Slideshow.Type.tutorial, gameScreen)));
         storeButton.addListener(createListener(new StoreScreen(game, gameScreen, inWorldStoreSystem, this)));
-        saveButton.addListener(new ClickListener() {
+        saveButton.addListener(new ClickListener() {// Store button added for implementation of FR_INVESTMENT
             public void clicked(InputEvent event, float x, float y) {
                 SaveHandler.save(SaveHandler.SAVE_FILE, engine, GameScreen.world, myHud);
-                //saveButton.setDisabled(true);
+                // saveButton.setDisabled(true);
             }
         });
 
@@ -272,6 +275,7 @@ public class Hud extends ApplicationAdapter {
         }
     }
 
+    // Helper functions for FR_INVESTMENT, FR_SAVE_FILES and testing
     public int initMoney(int moneyToSet) {
         money[0] = moneyToSet;
         moneyLabel.setText(money[0]);
@@ -339,12 +343,13 @@ public class Hud extends ApplicationAdapter {
             if (triggerWin) {
                 triggerWin = false;
                 win();
-            } else if (reputation[0] < 1) {
+            } else if (reputation[0] < 1) { // Implementation of FR_GAME_OVER as an extention of FR_REPUTATION
                 lose();// BOO AND I CANNOT STRESS THIS ENOUGH, WOMP
 
             }
             timeCounter -= 1;
         }
+        // Pause toggle moved out of timecounter loop to reduce visible input lag
         if (pauseToggled) {
             pauseToggled = false;
             this.pause();
@@ -390,6 +395,7 @@ public class Hud extends ApplicationAdapter {
 
     /**
      * Freeze the customer timer for a given amount of time.
+     * Implemented as a part of the timefreeze powerup (FR_POWERUPS)
      * 
      * @param freezeTime how many seconds to freeze the timer for.
      */
@@ -437,6 +443,7 @@ public class Hud extends ApplicationAdapter {
         stage.addActor(centerTable);
     }
 
+    // Implementation of loss ui as per FR_GAME_OVER
     private void lose() {
         won = true;// "But you didnt win you cant set won to true" cope harder
         // losescreen table made
