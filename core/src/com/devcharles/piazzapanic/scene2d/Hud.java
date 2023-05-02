@@ -1,5 +1,6 @@
 package com.devcharles.piazzapanic.scene2d;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -59,6 +60,7 @@ public class Hud extends ApplicationAdapter {
     private Image photo;
 
     private Game game;
+    private Engine engine;
     private InWorldStoreSystem inWorldStoreSystem;
     private Table tableBottom, tableRight, tableTop, tablePause, tableBottomLabel;
 
@@ -77,11 +79,12 @@ public class Hud extends ApplicationAdapter {
      * @param reputationPoints Must be an object to pass by reference, see
      *                         https://stackoverflow.com/questions/3326112/java-best-way-to-pass-int-by-reference
      */
-    public Hud(SpriteBatch spriteBatch, final GameScreen savedGame, final Game game, Integer[] reputationPoints,
+    public Hud(SpriteBatch spriteBatch, final GameScreen savedGame, final Game game, Engine engine, Integer[] reputationPoints,
             Integer[] money, InWorldStoreSystem inWorldStoreSystem) {
 
         _ISNTTEST = spriteBatch != null;
         this.game = game;
+        this.engine = engine;
         Hud.reputation = reputationPoints;
         this.gameScreen = savedGame;
         Hud.money = money; // Yes player money is handled here, cope and seethe bozo
@@ -197,7 +200,7 @@ public class Hud extends ApplicationAdapter {
         storeButton.addListener(createListener(new StoreScreen(game, gameScreen, inWorldStoreSystem, this)));
         saveButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                SaveHandler.save(SaveHandler.SAVE_FILE, GameScreen.world, myHud);
+                SaveHandler.save(SaveHandler.SAVE_FILE, engine, GameScreen.world, myHud);
                 //saveButton.setDisabled(true);
             }
         });

@@ -4,11 +4,21 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.ArrayList;
 
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Json;
+import com.devcharles.piazzapanic.components.AIAgentComponent;
+import com.devcharles.piazzapanic.components.CustomerComponent;
+import com.devcharles.piazzapanic.components.TransformComponent;
 import com.devcharles.piazzapanic.componentsystems.CustomerAISystem;
 import com.devcharles.piazzapanic.scene2d.Hud;
+import com.devcharles.piazzapanic.utility.saveStructure.CustomerData;
+import com.devcharles.piazzapanic.utility.saveStructure.FoodData;
 import com.devcharles.piazzapanic.utility.saveStructure.SaveData;
 
 /**
@@ -25,7 +35,7 @@ import com.devcharles.piazzapanic.utility.saveStructure.SaveData;
 public class SaveHandler {
     public final static String SAVE_FILE = "save1.json";
 
-    public static void save(String filename, World world, Hud hud) {
+    public static void save(String filename, Engine engine, World world, Hud hud) {
 
         SaveData saveData = new SaveData();
 
@@ -36,6 +46,32 @@ public class SaveHandler {
         saveData.difficulty = CustomerAISystem.getDifficulty();
         saveData.maxCustomers = CustomerAISystem.getMaxCustomers();
         saveData.gameTime = hud.customerTimer;
+
+        ImmutableArray<Entity> customers = engine.getEntitiesFor(Family.all(CustomerComponent.class).get());
+    
+        saveData.customers = new CustomerData[customers.size()];
+
+        for(int i=0; i<customers.size(); i++) {
+            Entity customer = customers.get(i);
+            CustomerData customerData = new CustomerData();
+            CustomerComponent customerComponent = customer.getComponent(CustomerComponent.class);
+            TransformComponent transformComponent = customer.getComponent(TransformComponent.class);
+            AIAgentComponent aiAgentComponent = customer.getComponent(AIAgentComponent.class);
+
+            FoodData foodData = new FoodData();
+            foodData.type = customerComponent.order;
+
+            customerData.x = transformComponent.position.x;
+            customerData.y = transformComponent.position.y;
+            customerData.patience = customerComponent.timer.peakElapsed();
+            customerData.objective = aiAgentComponent.currentObjective;
+            customerData.order = foodData;
+
+            saveData.customers[i] = customerData;
+        }
+
+
+
 
         // Take the structured data and now save it.
 
@@ -53,7 +89,7 @@ public class SaveHandler {
     }
 
 
-    public static void load(String filename, World world, Hud hud) {
+    public static void load(String filename, Engine engine, World world, Hud hud) {
         Json json = new Json();
         SaveData saveData = new SaveData();
         String saveText = "";

@@ -80,7 +80,7 @@ public class GameScreen implements Screen {
         mapLoader.buildStations(engine, world);
 
         InWorldStoreSystem inWorldStoreSystem = new InWorldStoreSystem(engine, factory, world, mapLoader);
-        hud = new Hud(game.batch, this, game, reputationPoints, money, inWorldStoreSystem);
+        hud = new Hud(game.batch, this, game, engine, reputationPoints, money, inWorldStoreSystem);
 
         engine.addSystem(new PhysicsSystem(world));
         engine.addSystem(new RenderingSystem(mapLoader.map, game.batch, camera));
@@ -106,11 +106,11 @@ public class GameScreen implements Screen {
         multiplexer.addProcessor(kbInput);
         multiplexer.addProcessor(hud.stage);
 
-        
+
         // DO THE LOADING IN FROM FILE STUFF HERE.
 
         if (loadFrom != null) {
-            SaveHandler.load(loadFrom, world, hud);
+            SaveHandler.load(loadFrom, engine, world, hud);
             loadFrom = null;
         }
 
