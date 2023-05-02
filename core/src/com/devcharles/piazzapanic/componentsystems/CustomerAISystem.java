@@ -67,7 +67,7 @@ public class CustomerAISystem extends IteratingSystem {
 
     // List of customers, on removal we move the other customers up a place
     // (queueing).
-    private final ArrayList<Entity> customers = new ArrayList<Entity>() {
+    public final ArrayList<Entity> customers = new ArrayList<Entity>() {
         // Just list of customers apart from it does extra things when you remove a
         // customer off the list. - Joss
         @Override

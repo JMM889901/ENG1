@@ -49,10 +49,10 @@ public class SaveHandler {
         saveData.gameTime = hud.customerTimer;
 
         ImmutableArray<Entity> customers = engine.getEntitiesFor(Family.all(CustomerComponent.class).get());
-    
+
         saveData.customers = new CustomerData[customers.size()];
 
-        for(int i=0; i<customers.size(); i++) {
+        for (int i = 0; i < customers.size(); i++) {
             Entity customer = customers.get(i);
             CustomerData customerData = new CustomerData();
             CustomerComponent customerComponent = customer.getComponent(CustomerComponent.class);
@@ -71,9 +71,6 @@ public class SaveHandler {
             saveData.customers[i] = customerData;
         }
 
-
-
-
         // Take the structured data and now save it.
 
         Json json = new Json();
@@ -88,7 +85,6 @@ public class SaveHandler {
             System.out.println("Error saving to " + filename);
         }
     }
-
 
     public static void load(String filename, Engine engine, EntityFactory entityFactory, World world, Hud hud) {
         Json json = new Json();
@@ -120,27 +116,29 @@ public class SaveHandler {
         // hud.addMoney(saveData.money);
         Hud.reputation[0] = saveData.reputation;
         CustomerAISystem.setDifficulty(saveData.difficulty);
-        CustomerAISystem.setMaxCustomers(saveData.maxCustomers == -1 ? (int) Double.POSITIVE_INFINITY : saveData.maxCustomers);
+        CustomerAISystem
+                .setMaxCustomers(saveData.maxCustomers == -1 ? (int) Double.POSITIVE_INFINITY : saveData.maxCustomers);
         hud.customerTimer = saveData.gameTime;
 
         engine.getSystem(CustomerAISystem.class).firstSpawn = false;
 
         // Clear out existing customers (and also consequently their orders).
-        for(Entity customer : engine.getEntitiesFor(Family.all(CustomerComponent.class).get())) {
+        for (Entity customer : engine.getEntitiesFor(Family.all(CustomerComponent.class).get())) {
+            engine.getSystem(CustomerAISystem.class).customers.remove(customer);
             engine.removeEntity(Mappers.customer.get(customer).food);
             world.destroyBody(Mappers.b2body.get(customer).body);
             engine.removeEntity(customer);
         }
 
         // Create new customers.
-        for(CustomerData customer : saveData.customers) {
+        for (CustomerData customer : saveData.customers) {
             Entity customerEntity = entityFactory.createCustomer(new Vector2(customer.x, customer.y));
-            
+
             CustomerComponent customerComponent = customerEntity.getComponent(CustomerComponent.class);
             AIAgentComponent aiAgentComponent = customerEntity.getComponent(AIAgentComponent.class);
-            
+
             customerComponent.timer.setElapsed(customer.patience);
-            aiAgentComponent.currentObjective = customer.objective;
+            engine.getSystem(CustomerAISystem.class).makeItGoThere(aiAgentComponent, customer.objective - 1);
             customerComponent.order = customer.order.type;
         }
     }

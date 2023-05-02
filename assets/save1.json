@@ -14,7 +14,7 @@ customers: [
 		x: 78.391655
 		y: 25.82431
 		patience: 19370
-		objective: 6
+		objective: 1
 		order: {
 			type: bakedPotato
 		}
@@ -23,7 +23,7 @@ customers: [
 		x: 79.816765
 		y: 25.379175
 		patience: 19370
-		objective: 6
+		objective: 2
 		order: {
 			type: salad
 		}
@@ -41,7 +41,7 @@ customers: [
 		x: 73.49745
 		y: 26.14938
 		patience: 49378
-		objective: 3
+		objective: 4
 		order: {
 			type: pizza
 		}
@@ -50,7 +50,7 @@ customers: [
 		x: 72.5441
 		y: 25.874388
 		patience: 49378
-		objective: 3
+		objective: 5
 		order: {
 			type: bakedPotato
 		}
