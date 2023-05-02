@@ -1,0 +1,45 @@
+{
+reputation: 1
+customers: [
+	{
+		x: 66.68956
+		y: 25.966463
+		patience: 47190
+		objective: 1
+		order: {
+			type: bakedPotato
+		}
+	}
+	{
+		x: 61.836773
+		y: 25.955
+		patience: 5
+		order: {
+			type: bakedPotato
+		}
+	}
+]
+cooks: [
+	{
+		x: 57.402164
+		y: 27.78904
+		inventory: []
+		boosts: []
+		active: true
+	}
+	{
+		x: 60.49094
+		y: 24.222855
+		inventory: []
+		boosts: []
+	}
+	{
+		x: 57.422096
+		y: 24.51863
+		inventory: []
+		boosts: []
+	}
+]
+gameTime: 133
+maxCustomers: 5
+}

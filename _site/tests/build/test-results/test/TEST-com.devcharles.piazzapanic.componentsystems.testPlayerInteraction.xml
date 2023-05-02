@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.devcharles.piazzapanic.componentsystems.testPlayerInteraction" tests="3" skipped="0" failures="0" errors="0" timestamp="2023-05-02T20:28:00" hostname="THONKPAD" time="0.042">
+  <properties/>
+  <testcase name="testPlayerInteractCounter" classname="com.devcharles.piazzapanic.componentsystems.testPlayerInteraction" time="0.016"/>
+  <testcase name="testPlayerInteractFoodStation" classname="com.devcharles.piazzapanic.componentsystems.testPlayerInteraction" time="0.01"/>
+  <testcase name="testPlayerServingStation" classname="com.devcharles.piazzapanic.componentsystems.testPlayerInteraction" time="0.015"/>
+  <system-out><![CDATA[[putDown on countertop] lettuce
+[Picked up] lettuce
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

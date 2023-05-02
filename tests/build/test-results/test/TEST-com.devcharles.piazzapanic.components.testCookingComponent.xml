@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.devcharles.piazzapanic.components.testCookingComponent" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-05-02T20:28:00" hostname="THONKPAD" time="0.036">
+  <properties/>
+  <testcase name="testCooking" classname="com.devcharles.piazzapanic.components.testCookingComponent" time="0.036"/>
+  <system-out><![CDATA[[putDown] potato
+[Food processed] potato turned into bakedPotatoPlain
+[putDown] formedPatty
+[Food processed] formedPatty turned into grilledPatty
+[putDown] onion
+[Food processed] onion turned into slicedOnion
+5.1
+5.2999997
+5.2
+5.3999996
+5.2999997
+5.4999995
+5.2
+[Food ready] slicedOnion
+[Food ready] bakedPotatoPlain
+[Food ready] grilledPatty
+slicedOnion
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

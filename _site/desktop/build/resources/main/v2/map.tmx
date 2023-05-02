@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="60" height="35" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="113">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="60" height="35" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="120">
  <tileset firstgid="1" source="tileset_32.tsx"/>
  <tileset firstgid="43" source="objects.tsx"/>
  <tileset firstgid="85" source="maxwell32.tsx"/>
@@ -380,7 +380,7 @@
    </properties>
    <point/>
   </object>
-  <object id="55" x="1408" y="704">
+  <object id="55" x="1416" y="704.667">
    <properties>
     <property name="aiobjective" type="int" value="-1"/>
    </properties>
@@ -491,6 +491,48 @@
   <object id="112" x="1134.67" y="841.333">
    <properties>
     <property name="lightID" type="int" value="1"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="113" x="1238.86" y="703.975">
+   <properties>
+    <property name="aiobjective" type="int" value="5"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="114" x="1267.79" y="703.735">
+   <properties>
+    <property name="aiobjective" type="int" value="6"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="115" x="1294.02" y="703.792">
+   <properties>
+    <property name="aiobjective" type="int" value="7"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="116" x="1319.82" y="704.055">
+   <properties>
+    <property name="aiobjective" type="int" value="8"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="117" x="1344.24" y="703.621">
+   <properties>
+    <property name="aiobjective" type="int" value="9"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="118" x="1394" y="705.334">
+   <properties>
+    <property name="aispawnpoint" type="int" value="1"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="119" x="1373.34" y="706.666">
+   <properties>
+    <property name="aispawnpoint" type="int" value="2"/>
    </properties>
    <point/>
   </object>
