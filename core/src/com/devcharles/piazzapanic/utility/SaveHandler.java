@@ -27,6 +27,7 @@ import com.devcharles.piazzapanic.components.Powerups.cutBoostComponent;
 import com.devcharles.piazzapanic.components.Powerups.speedBoostComponent;
 import com.devcharles.piazzapanic.components.Powerups.timeFreezeBoostComponent;
 import com.devcharles.piazzapanic.componentsystems.CustomerAISystem;
+import com.devcharles.piazzapanic.componentsystems.PlayerControlSystem;
 import com.devcharles.piazzapanic.scene2d.Hud;
 import com.devcharles.piazzapanic.utility.saveStructure.BoostData;
 import com.devcharles.piazzapanic.utility.saveStructure.CookData;
@@ -60,11 +61,10 @@ public class SaveHandler {
         saveData.maxCustomers = CustomerAISystem.getMaxCustomers();
         saveData.gameTime = hud.customerTimer;
 
-
         // Customers.
 
         ImmutableArray<Entity> customers = engine.getEntitiesFor(Family.all(CustomerComponent.class).get());
-        
+
         saveData.customers = new CustomerData[customers.size()];
 
         for (int i = 0; i < customers.size(); i++) {
@@ -86,14 +86,14 @@ public class SaveHandler {
             saveData.customers[i] = customerData;
         }
 
-
         // Chefs/cooks.
 
         ImmutableArray<Entity> cooks = engine.getEntitiesFor(Family.all(ControllableComponent.class).get());
 
         saveData.cooks = new CookData[cooks.size()];
 
-        for(int i = 0; i < cooks.size(); i++) {
+        for (int i = 0; i < cooks.size(); i++) {
+
             Entity cook = cooks.get(i);
             CookData cookData = new CookData();
             ControllableComponent controllableComponent = cook.getComponent(ControllableComponent.class);
@@ -103,8 +103,10 @@ public class SaveHandler {
             cookData.y = transformComponent.position.y;
 
             cookData.inventory = new FoodData[controllableComponent.currentFood.size()];
-            int j = controllableComponent.currentFood.size() - 1;  // A bit scuffed but you can only peak through a Deque with a for each loop, so we need a separate increment.
-            for(Entity currentFood : controllableComponent.currentFood) {
+            int j = controllableComponent.currentFood.size() - 1; // A bit scuffed but you can only peak through a Deque
+                                                                  // with a for each loop, so we need a separate
+                                                                  // increment.
+            for (Entity currentFood : controllableComponent.currentFood) {
                 FoodData foodData = new FoodData();
                 foodData.type = currentFood.getComponent(FoodComponent.class).type;
                 cookData.inventory[j] = foodData;
@@ -113,28 +115,28 @@ public class SaveHandler {
 
             ArrayList<BoostData> boostsData = new ArrayList<BoostData>();
             cookBoostComponent cookboost = cook.getComponent(cookBoostComponent.class);
-            if(cookboost != null) {
+            if (cookboost != null) {
                 BoostData cookBoostData = new BoostData();
                 cookBoostData.type = PowerupComponent.powerupType.cookBoost;
                 cookBoostData.time = cookboost.timeHad;
                 boostsData.add(cookBoostData);
             }
             cutBoostComponent cutboost = cook.getComponent(cutBoostComponent.class);
-            if(cutboost != null) {
+            if (cutboost != null) {
                 BoostData cutBoostData = new BoostData();
                 cutBoostData.type = PowerupComponent.powerupType.cutBoost;
                 cutBoostData.time = cutboost.timeHad;
                 boostsData.add(cutBoostData);
             }
             speedBoostComponent speedboost = cook.getComponent(speedBoostComponent.class);
-            if(speedboost != null) {
+            if (speedboost != null) {
                 BoostData speedBoostData = new BoostData();
                 speedBoostData.type = PowerupComponent.powerupType.speedBoost;
                 speedBoostData.time = speedboost.timeHad;
                 boostsData.add(speedBoostData);
             }
             timeFreezeBoostComponent timefreezeboost = cook.getComponent(timeFreezeBoostComponent.class);
-            if(timefreezeboost != null) {
+            if (timefreezeboost != null) {
                 BoostData timeFreezeBoostData = new BoostData();
                 timeFreezeBoostData.type = PowerupComponent.powerupType.timeFreezeBoost;
                 timeFreezeBoostData.time = timefreezeboost.timeHad;
@@ -143,11 +145,14 @@ public class SaveHandler {
             cookData.boosts = boostsData.toArray(new BoostData[boostsData.size()]);
 
             cookData.active = cook.getComponent(PlayerComponent.class) != null;
+            if (cookData.active) {
+                engine.getSystem(PlayerControlSystem.class).playerComponent = cooks.get(0)
+                        .getComponent(PlayerComponent.class);
+                engine.getSystem(PlayerControlSystem.class).hasInitComponent = true;
+            }
 
             saveData.cooks[i] = cookData;
         }
-
-        
 
         // Take the structured data and now save it.
 
@@ -188,7 +193,6 @@ public class SaveHandler {
 
         saveData = json.fromJson(SaveData.class, saveText);
 
-
         // Global values.
 
         hud.initMoney(saveData.money);
@@ -201,7 +205,6 @@ public class SaveHandler {
 
         CustomerAISystem customerAISystem = engine.getSystem(CustomerAISystem.class);
         customerAISystem.firstSpawn = false;
-
 
         // Customers.
 
@@ -228,23 +231,24 @@ public class SaveHandler {
             customerAISystem.customers.add(customer);
             customerAISystem.numOfCustomerTotal++;
 
-            if(customerData.objective != -1) {
+            if (customerData.objective != -1) {
                 customerAISystem.numActiveCustomers++;
             }
-            
+
             customerComponent.timer.start();
             customerComponent.timer.setElapsed(customerData.patience);
 
             customerAISystem.makeItGoThere(aiAgentComponent, customerData.objective);
         }
 
-
         // Cooks.
 
-        // Make the existing 3 cooks match the first 3 of the save data - it's a bit scuffed but I'm a bit scared to be the first to write code to *delete* cooks.
+        // Make the existing 3 cooks match the first 3 of the save data - it's a bit
+        // scuffed but I'm a bit scared to be the first to write code to *delete* cooks.
         int i = 0;
-        for(Entity cook : engine.getEntitiesFor(Family.all(ControllableComponent.class).get())) {
-            cook.remove(PlayerComponent.class);  // Just make sure you don't get lots of cooks controllable simultaneously.
+        for (Entity cook : engine.getEntitiesFor(Family.all(ControllableComponent.class).get())) {
+            cook.remove(PlayerComponent.class); // Just make sure you don't get lots of cooks controllable
+                                                // simultaneously.
 
             CookData cookData = saveData.cooks[i];
 
@@ -254,7 +258,7 @@ public class SaveHandler {
             transformComponent.position.x = cookData.x;
             transformComponent.position.y = cookData.y;
 
-            for(FoodData foodData : cookData.inventory) {
+            for (FoodData foodData : cookData.inventory) {
                 Entity food = entityFactory.createFood(foodData.type);
                 ItemComponent itemComponent = new ItemComponent();
                 itemComponent.holderTransform = cook.getComponent(TransformComponent.class);
@@ -263,8 +267,8 @@ public class SaveHandler {
                 controllableComponent.currentFood.add(food);
             }
 
-            for(BoostData boostData : cookData.boosts) {
-                switch(boostData.type) {
+            for (BoostData boostData : cookData.boosts) {
+                switch (boostData.type) {
                     case cookBoost:
                         cookBoostComponent cookboost = new cookBoostComponent();
                         cookboost.timeHad = boostData.time;
@@ -286,16 +290,17 @@ public class SaveHandler {
                         cook.add(timefreezeboost);
                         break;
                     case orderBoost:
-                        System.out.println("Whatthefuck.                                (Somehow tried to load in a chef with an active orderboost???)");
+                        System.out.println(
+                                "Whatthefuck.                                (Somehow tried to load in a chef with an active orderboost???)");
                 }
             }
 
-            if(cookData.active) {
+            if (cookData.active) {
                 cook.add(new PlayerComponent());
             }
             i++;
-        } //  I LOVE CODE DUPLICATION.
-        for(; i < saveData.cooks.length; i++) {
+        } // I LOVE CODE DUPLICATION.
+        for (; i < saveData.cooks.length; i++) {
             CookData cookData = saveData.cooks[i];
             Entity cook = entityFactory.createCook((int) cookData.x, (int) cookData.y);
 
@@ -305,7 +310,7 @@ public class SaveHandler {
             transformComponent.position.x = cookData.x;
             transformComponent.position.y = cookData.y;
 
-            for(FoodData foodData : cookData.inventory) {
+            for (FoodData foodData : cookData.inventory) {
                 Entity food = entityFactory.createFood(foodData.type);
                 ItemComponent itemComponent = new ItemComponent();
                 itemComponent.holderTransform = cook.getComponent(TransformComponent.class);
@@ -314,8 +319,8 @@ public class SaveHandler {
                 controllableComponent.currentFood.add(food);
             }
 
-            for(BoostData boostData : cookData.boosts) {
-                switch(boostData.type) {
+            for (BoostData boostData : cookData.boosts) {
+                switch (boostData.type) {
                     case cookBoost:
                         cookBoostComponent cookboost = new cookBoostComponent();
                         cookboost.timeHad = boostData.time;
@@ -337,11 +342,12 @@ public class SaveHandler {
                         cook.add(timefreezeboost);
                         break;
                     case orderBoost:
-                        System.out.println("Whatthefuck.                                (Somehow tried to load in a chef with an active orderboost???)");
+                        System.out.println(
+                                "Whatthefuck.                                (Somehow tried to load in a chef with an active orderboost???)");
                 }
             }
 
-            if(cookData.active) {
+            if (cookData.active) {
                 cook.add(new PlayerComponent());
             }
         }
