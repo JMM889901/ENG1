@@ -1,0 +1,82 @@
+{
+reputation: 3
+customers: [
+	{
+		x: 61.8829
+		y: 26
+		patience: 52430
+		order: {
+			type: pizza
+		}
+	}
+	{
+		x: 66.6913
+		y: 25.968857
+		patience: 22421
+		objective: 1
+		order: {
+			type: bakedPotato
+		}
+	}
+	{
+		x: 70.00703
+		y: 25.806627
+		patience: 22421
+		objective: 2
+		order: {
+			type: pizza
+		}
+	}
+	{
+		x: 72.9171
+		y: 25.769966
+		patience: 22421
+		objective: 3
+		order: {
+			type: pizza
+		}
+	}
+]
+cooks: [
+	{
+		x: 59.899178
+		y: 18.057137
+		inventory: [
+			{
+				type: unformedPatty
+			}
+			{
+				type: unformedPatty
+			}
+		]
+		boosts: []
+	}
+	{
+		x: 45.59849
+		y: 22.132084
+		inventory: [
+			{
+				type: onion
+			}
+			{
+				type: slicedTomato
+			}
+		]
+		boosts: [
+			{
+				type: speedBoost
+				time: 2.0166461
+			}
+		]
+		active: true
+	}
+	{
+		x: 58.758263
+		y: 17.874855
+		inventory: []
+		boosts: []
+	}
+]
+gameTime: 50
+maxCustomers: 2147483647
+}
