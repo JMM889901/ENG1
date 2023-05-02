@@ -18,6 +18,9 @@ import com.devcharles.piazzapanic.utility.Station.StationType;
 
 public class testPlayerInteraction {
     @Test
+    /**
+     * Test that a player can interact with a Food Station successfully
+     */
     public void testPlayerInteractFoodStation() {
         // Create environment
         testEnvironment env = new testEnvironment();
@@ -49,6 +52,9 @@ public class testPlayerInteraction {
 
     }
 
+    /**
+     * Test that a player can pick up or put down food on a counter
+     */
     @Test
     public void testPlayerInteractCounter() {
         // Counters can store food and have food picked up
@@ -97,6 +103,9 @@ public class testPlayerInteraction {
 
     }
 
+    /**
+     * Test that a plate combines food into a meal
+     */
     @Test
     public void testPlayerServingStation() {
         // Plate compiles food into a meal
