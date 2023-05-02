@@ -82,7 +82,7 @@ public class SaveHandler {
         saveData.money = 1000;
 
         hud.initMoney(saveData.money);
-        //hud.addMoney(saveData.money);
+        // hud.addMoney(saveData.money);
         Hud.reputation[0] = saveData.reputation;
         CustomerAISystem.setDifficulty(saveData.difficulty);
         if (saveData.maxCustomers != -1)

@@ -39,7 +39,7 @@ public class Hud extends ApplicationAdapter {
     private float timeCounter = 0;
     public static Integer[] reputation;
     private static Integer[] money; // This is static purely for the sake of simplicity, yes its bad practice but
-                                   // cry about it
+                                    // cry about it
     private Skin skin;
 
     private final float fontScale = 0.6f;
@@ -276,7 +276,8 @@ public class Hud extends ApplicationAdapter {
 
     public int addMoney(int moneyToAdd) {
         money[0] += moneyToAdd;
-        moneyLabel.setText(money[0]);
+        if (moneyLabel != null)// hehe
+            moneyLabel.setText(money[0]);
         return money[0];
     }
 
@@ -286,6 +287,7 @@ public class Hud extends ApplicationAdapter {
 
     /**
      * ONLY USE FOR UNIT TESTS.
+     * 
      * @param moneyToSet
      * @return
      */
@@ -306,6 +308,7 @@ public class Hud extends ApplicationAdapter {
                 pauseToggled = false;
                 this.resume();
             }
+
             stage.act();
             stage.draw();
             return;
