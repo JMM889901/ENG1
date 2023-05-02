@@ -29,7 +29,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.devcharles.piazzapanic.componentsystems.CustomerAISystem;
-import com.devcharles.piazzapanic.input.MyTextInputListener;
 import com.devcharles.piazzapanic.scene2d.Slideshow;
 import com.devcharles.piazzapanic.utility.SaveHandler;
 
@@ -197,8 +196,6 @@ public class MainMenuScreen extends ApplicationAdapter implements Screen {
             }
         });
 
-        MyTextInputListener listener = new MyTextInputListener();
-        Gdx.input.getTextInput(listener, "Dialog Title", "Initial Textfield Value", "Hint Value");
 
     }
 
