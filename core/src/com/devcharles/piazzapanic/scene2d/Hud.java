@@ -278,7 +278,8 @@ public class Hud extends ApplicationAdapter {
     // Helper functions for FR_INVESTMENT, FR_SAVE_FILES and testing
     public int initMoney(int moneyToSet) {
         money[0] = moneyToSet;
-        moneyLabel.setText(money[0]);
+        if (moneyLabel != null)
+            moneyLabel.setText(money[0]);
         return money[0];
     }
 

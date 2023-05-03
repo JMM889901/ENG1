@@ -4,6 +4,7 @@ import org.junit.*;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.devcharles.piazzapanic.testEnvironment;
@@ -11,8 +12,12 @@ import com.devcharles.piazzapanic.components.AIAgentComponent;
 import com.devcharles.piazzapanic.components.B2dBodyComponent;
 import com.devcharles.piazzapanic.components.ControllableComponent;
 import com.devcharles.piazzapanic.components.CustomerComponent;
+import com.devcharles.piazzapanic.components.FoodComponent;
 import com.devcharles.piazzapanic.components.TransformComponent;
 import com.devcharles.piazzapanic.components.Powerups.cookBoostComponent;
+import com.devcharles.piazzapanic.components.Powerups.cutBoostComponent;
+import com.devcharles.piazzapanic.components.Powerups.speedBoostComponent;
+import com.devcharles.piazzapanic.components.Powerups.timeFreezeBoostComponent;
 import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
 import com.devcharles.piazzapanic.components.ItemComponent;
 import com.devcharles.piazzapanic.components.PlayerComponent;
@@ -20,6 +25,7 @@ import com.devcharles.piazzapanic.componentsystems.CustomerAISystem;
 import com.devcharles.piazzapanic.componentsystems.PlayerControlSystem;
 import com.devcharles.piazzapanic.scene2d.Hud;
 import com.devcharles.piazzapanic.utility.EntityFactory;
+import com.devcharles.piazzapanic.utility.FoodStack;
 import com.devcharles.piazzapanic.utility.SaveHandler;
 import com.devcharles.piazzapanic.utility.saveStructure.FoodData;
 
@@ -40,8 +46,6 @@ public class testSaveHandler {
         Hud hud = new Hud(null, null, null, engine, reputation, money, null);
         engine.addSystem(new CustomerAISystem(null, world, entityFactory, hud, reputation));
         CustomerAISystem customerAISystem = engine.getSystem(CustomerAISystem.class);
-        PlayerControlSystem playerControlSystem = engine.getSystem(PlayerControlSystem.class);
-        
 
 
         // Customer 1.
@@ -136,6 +140,88 @@ public class testSaveHandler {
      * Test that the save handler converts the correct string into game state.
      */
     public void testLoad() {
-        Assert.assertTrue(true);
+        String testString = "{\nmoney: 876\nreputation: 1\ncustomers: [\n	{\n		x: 7\n		y: 18912\n		patience: 40000\n		order: {\n			type: burger\n		}\n	}\n]\ncooks: [\n	{\n		x: 67.35416\n		y: 14.406686\n		inventory: [\n			{\n				type: onion\n			}\n			{\n				type: onion\n			}\n			{\n				type: onion\n			}\n			{\n				type: tomato\n			}\n			{\n				type: tomato\n			}\n			{\n				type: tomato\n			}\n			{\n				type: buns\n			}\n		]\n		boosts: []\n	}\n	{\n		x: 1\n		y: 10\n		inventory: [\n			{\n				type: tomato\n			}\n			{\n				type: slicedTomato\n			}\n		]\n		boosts: [\n			{\n				type: cookBoost\n				time: 505\n			}\n		]\n		active: true\n	}\n]\nmaxCustomers: 9\n}";
+
+        testEnvironment testEnv = new testEnvironment();
+        EntityFactory entityFactory = testEnv.factory;
+        Engine engine = testEnv.engine;
+        World world = testEnv.world;
+
+        Integer money[] = { 123 };
+        Integer reputation[] = { 2 };
+
+        Hud hud = new Hud(null, null, null, engine, reputation, money, null);
+        engine.addSystem(new CustomerAISystem(null, world, entityFactory, hud, reputation));
+        CustomerAISystem customerAISystem = engine.getSystem(CustomerAISystem.class);
+
+        SaveHandler.loadFromString(testString, engine, entityFactory, world, hud);
+
+
+        Assert.assertTrue(hud.getMoney() == 876);
+        Assert.assertTrue(hud.reputation[0] == 1);
+
+        // Customer 1.
+        Assert.assertTrue(customerAISystem.customers.size() == 1);
+        Entity customer = customerAISystem.customers.get(0);
+        CustomerComponent customerComponent = customer.getComponent(CustomerComponent.class);
+        B2dBodyComponent customerB2dBodyComponent = customer.getComponent(B2dBodyComponent.class);
+        
+        Assert.assertEquals(7, customerB2dBodyComponent.body.getPosition().x, 0.01);
+        Assert.assertEquals(18912, customerB2dBodyComponent.body.getPosition().y, 0.01);
+        Assert.assertEquals(40000, customerComponent.timer.peakElapsed(), 5);
+        Assert.assertTrue(customerComponent.order == FoodType.burger);
+
+
+        // Cooks 1 and 2.
+        Entity cook1 = engine.getEntitiesFor(Family.all(ControllableComponent.class).get()).first();
+        Entity cook2 = engine.getEntitiesFor(Family.all(ControllableComponent.class).get()).get(1);
+
+        // Note that the order is not guaranteed (and has no reason to be), just swap them round if needs be, for testing.
+        if(cook1.getComponent(TransformComponent.class).position.x == 1) {
+            Entity temp = cook1;
+            cook1 = cook2;
+            cook2 = temp;
+        }
+
+        // Cook 1.
+        Assert.assertEquals(67.35416, cook1.getComponent(TransformComponent.class).position.x, 0.01);
+        Assert.assertEquals(14.406686, cook1.getComponent(TransformComponent.class).position.y, 0.01);
+
+        FoodStack inventory1 = cook1.getComponent(ControllableComponent.class).currentFood;
+        Assert.assertTrue(inventory1.size() == 7);
+        Assert.assertTrue(inventory1.pop().getComponent(FoodComponent.class).type == FoodType.buns);
+        Assert.assertTrue(inventory1.pop().getComponent(FoodComponent.class).type == FoodType.tomato);
+        Assert.assertTrue(inventory1.pop().getComponent(FoodComponent.class).type == FoodType.tomato);
+        Assert.assertTrue(inventory1.pop().getComponent(FoodComponent.class).type == FoodType.tomato);
+        Assert.assertTrue(inventory1.pop().getComponent(FoodComponent.class).type == FoodType.onion);
+        Assert.assertTrue(inventory1.pop().getComponent(FoodComponent.class).type == FoodType.onion);
+        Assert.assertTrue(inventory1.pop().getComponent(FoodComponent.class).type == FoodType.onion);
+
+        Assert.assertTrue(cook1.getComponent(cookBoostComponent.class) == null);
+        Assert.assertTrue(cook1.getComponent(cutBoostComponent.class) == null);
+        Assert.assertTrue(cook1.getComponent(speedBoostComponent.class) == null);
+        Assert.assertTrue(cook1.getComponent(timeFreezeBoostComponent.class) == null);
+        
+        Assert.assertTrue(cook1.getComponent(PlayerComponent.class) == null);
+
+
+        // Cook 2.
+        Assert.assertEquals(1, cook2.getComponent(TransformComponent.class).position.x, 0.01);
+        Assert.assertEquals(10, cook2.getComponent(TransformComponent.class).position.y, 0.01);
+
+        FoodStack inventory2 = cook2.getComponent(ControllableComponent.class).currentFood;
+        Assert.assertTrue(inventory2.size() == 2);
+        Assert.assertTrue(inventory2.pop().getComponent(FoodComponent.class).type == FoodType.slicedTomato);
+        Assert.assertTrue(inventory2.pop().getComponent(FoodComponent.class).type == FoodType.tomato);
+
+        Assert.assertTrue(cook2.getComponent(cookBoostComponent.class) != null);
+        Assert.assertTrue(cook2.getComponent(cutBoostComponent.class) == null);
+        Assert.assertTrue(cook2.getComponent(speedBoostComponent.class) == null);
+        Assert.assertTrue(cook2.getComponent(timeFreezeBoostComponent.class) == null);
+
+        cookBoostComponent cookBoost2 = cook2.getComponent(cookBoostComponent.class);
+        Assert.assertEquals(cookBoost2.timeHad, 505, 0.1);
+
+        Assert.assertTrue(cook2.getComponent(PlayerComponent.class) != null);
     }
 }
