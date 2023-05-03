@@ -46,6 +46,7 @@ public class testSaveHandler {
         Hud hud = new Hud(null, null, null, engine, reputation, money, null);
         engine.addSystem(new CustomerAISystem(null, world, entityFactory, hud, reputation));
         CustomerAISystem customerAISystem = engine.getSystem(CustomerAISystem.class);
+        customerAISystem.numOfCustomerTotal = 2147483647;
 
 
         // Customer 1.
