@@ -1,7 +1,6 @@
 {
-    "activeFile": "objects.tsx",
+    "activeFile": "map.tmx",
     "expandedProjectPaths": [
-        "."
     ],
     "fileStates": {
         "": {
@@ -28,12 +27,12 @@
             "scale": 1.5,
             "selectedLayer": 6,
             "viewCenter": {
-                "x": 811.3333333333333,
-                "y": 420.66666666666663
+                "x": 834.3333333333333,
+                "y": 771.3333333333333
             }
         },
         "objects.tsx": {
-            "scaleInDock": 3,
+            "scaleInDock": 1,
             "scaleInEditor": 4
         },
         "tileset_32.tsx": {
@@ -54,12 +53,12 @@
         "objects.tsx",
         "tileset_32.tsx"
     ],
-    "project": "maps.tiled-project",
+    "project": "",
     "property.type": "int",
     "recentFiles": [
-        "map.tmx",
         "tileset_32.tsx",
         "objects.tsx",
+        "map.tmx",
         "tileset_321.tsx",
         "b_kitchen.tsx",
         "kitchen.tmx"
