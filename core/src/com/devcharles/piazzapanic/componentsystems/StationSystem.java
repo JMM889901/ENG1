@@ -1,5 +1,6 @@
 package com.devcharles.piazzapanic.componentsystems;
 
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,12 +13,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.devcharles.piazzapanic.components.ControllableComponent;
 import com.devcharles.piazzapanic.components.FoodComponent;
+import com.devcharles.piazzapanic.components.LockedComponent;
+import com.devcharles.piazzapanic.components.OvercookingComponent;
 import com.devcharles.piazzapanic.components.PlayerComponent;
 import com.devcharles.piazzapanic.components.StationComponent;
 import com.devcharles.piazzapanic.components.TintComponent;
 import com.devcharles.piazzapanic.components.CookingComponent;
 import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
 import com.devcharles.piazzapanic.components.Powerups.cookBoostComponent;
+import com.devcharles.piazzapanic.components.Powerups.cutBoostComponent;
 import com.devcharles.piazzapanic.input.KeyboardInput;
 import com.devcharles.piazzapanic.utility.EntityFactory;
 import com.devcharles.piazzapanic.utility.GdxTimer;
@@ -36,7 +40,11 @@ public class StationSystem extends IteratingSystem {
 
     EntityFactory factory;
 
+    // This is the colour that an ingredient flashes with when it needs to be
+    // flipped/turned over/etc.
     private TintComponent readyTint;
+    // Additional tint for overcooked food as per FR_PREP_FAIl
+    private TintComponent overcookedTint;
     private float tickAccumulator = 0;
 
     public StationSystem(KeyboardInput input, EntityFactory factory) {
@@ -54,9 +62,20 @@ public class StationSystem extends IteratingSystem {
         }
     }
 
+    /**
+     * Process a station in a tick, i.e. picking up and putting down to a station.
+     * <p>
+     * This interacts with the currently playing/active cook by grabbing it
+     * from the various engines/systems running.
+     */
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         StationComponent station = Mappers.station.get(entity);
+
+        // Implementation of stations starting locked as per FR_INVESTMENT
+        if (entity.getComponent(LockedComponent.class) != null) {
+            return;// Station is not unlocked yet
+        }
 
         stationTick(station, deltaTime);
 
@@ -73,8 +92,15 @@ public class StationSystem extends IteratingSystem {
 
                 ControllableComponent controllable = Mappers.controllable.get(station.interactingCook);
 
+                // AFTER YOU PUT DOWN FOOD, THE LOCATION OF THE FOOD IS LATER DETERMINED BY THE
+                // RENDERING SYSTEM.
+                // In: `renderEntity(Entity entity)`, because the food does not exist in it's
+                // own right, it is
+                // stored in a list by the station, not recorded by the entity system directly.
+
                 switch (station.type) {
                     case ingredient:
+                        // Using the put down key on an ingredient station will also pick up food.
                         controllable.currentFood.pushItem(factory.createFood(station.ingredient),
                                 station.interactingCook);
                         break;
@@ -85,7 +111,11 @@ public class StationSystem extends IteratingSystem {
                     case serve:
                         processServe(station.interactingCook);
                         break;
-
+                    // Logic for implementation of FR_COUNTER
+                    case counterBack:
+                    case counter:
+                        processCounterTop(controllable, station);
+                        break;
                     default:
                         processStation(controllable, station);
                         break;
@@ -96,28 +126,73 @@ public class StationSystem extends IteratingSystem {
                 ControllableComponent controllable = Mappers.controllable.get(station.interactingCook);
 
                 switch (station.type) {
+                    // Ingredient station: create the food first, then give it to the player.
                     case ingredient:
                         controllable.currentFood.pushItem(factory.createFood(station.ingredient),
                                 station.interactingCook);
                         break;
+
+                    // Bin: do nothing (can't take out of bin).
                     case bin:
+                        break;
+
+                    // Serve: do nothing (can't take out of serving station).
                     case serve:
                         break;
+
+                    // Default (counter, chopping board etc): take the food from the station if it
+                    // allows.
                     default:
                         stationPickup(station, controllable);
                         break;
                 }
             } else if (player.interact) {
+                // Interacting with a station is basically setting a flag that a station has
+                // been
+                // interacted with.
                 player.interact = false;
                 interactStation(station);
+
+            } else if (player.compileMeal) { // Result of refactoring controls to seperate some controls from interact
+                player.compileMeal = false;
+
+                // If the player tries to compile a meal while not at a serving station, it
+                // doesn't matter, the code doesn't need to handle that.
+                if (station.type == StationType.serve) {
+                    processServe(station.interactingCook);
+                }
             }
         }
     }
 
+    private void processCounterTop(ControllableComponent controllable, StationComponent station) {
+        // Countertop functionality as per FR_COUNTER
+        if (controllable.currentFood.isEmpty()) {
+            return;
+        }
+
+        Gdx.app.log("putDown on countertop", Mappers.food.get(controllable.currentFood.peek()).type.name());
+
+        FoodComponent food = Mappers.food.get(controllable.currentFood.peek());
+
+        int foodIndex = station.food.indexOf(null);
+
+        // If there is space on the station
+        if (foodIndex != -1) {
+            // Pop if off player stack
+            // Store in station
+            station.food.set(foodIndex, controllable.currentFood.pop());
+        } else {
+            return;
+        }
+
+    }
+
     /**
      * Try and process the food from the player.
+     * Function made public for testing purposes
      */
-    private void processStation(ControllableComponent controllable, StationComponent station) {
+    public void processStation(ControllableComponent controllable, StationComponent station) {
 
         if (controllable.currentFood.isEmpty()) {
             return;
@@ -152,10 +227,17 @@ public class StationSystem extends IteratingSystem {
 
         // success
 
+        // Cooking timer is set here by default when initialising CookingComponent.
         CookingComponent cooking = getEngine().createComponent(CookingComponent.class);
 
-        if (station.interactingCook.getComponent(cookBoostComponent.class) != null) {
+        // If the cook is currently boosted, we overwrite the default timer.
+        // Implementation of Cooking and cutting speed boosts as per FR_POWERUP
+        if (station.type != StationType.cutting_board
+                && station.interactingCook.getComponent(cookBoostComponent.class) != null) {
             cooking.timer = new GdxTimer(cookBoostComponent.boostTime, false, false);
+        } else if (station.type == StationType.cutting_board
+                && station.interactingCook.getComponent(cutBoostComponent.class) != null) {
+            cooking.timer = new GdxTimer(cutBoostComponent.boostTime, false, false);
         }
         cooking.timer.start();
 
@@ -170,7 +252,7 @@ public class StationSystem extends IteratingSystem {
      * 
      * @param station the station the action is being performed on.
      */
-    private void interactStation(StationComponent station) {
+    public void interactStation(StationComponent station) {
         for (Entity food : station.food) {
             if (food == null || !Mappers.cooking.has(food)) {
                 continue;
@@ -199,10 +281,15 @@ public class StationSystem extends IteratingSystem {
     private void processServe(Entity cook) {
         ControllableComponent controllable = Mappers.controllable.get(cook);
 
+        // If there is only one (or zero) ingredient[s] then skip testing for recipes.
+        // (This is a premature optimisation.)
         if (controllable.currentFood.size() < 2) {
             return;
         }
 
+        // Assume that the player is trying to make a meal with the first 2 ingredients,
+        // so if you
+        // have 3 ingredients but the first 2 make a baked potato, ignore the third.
         int count = 2;
         FoodType result = tryServe(controllable, count);
 
@@ -224,6 +311,7 @@ public class StationSystem extends IteratingSystem {
 
     /**
      * Attempt to create a food.
+     * Allows combining ingredients for non servable as well such as raw pizza
      * 
      * @param count number of ingredients to combine
      */
@@ -234,12 +322,23 @@ public class StationSystem extends IteratingSystem {
             if (i > count - 1) {
                 break;
             }
+            if (foodEntity.getComponent(OvercookingComponent.class) != null
+                    // Refuse use of spoiled food for recipes as per FR_PREP_FAIL
+                    && foodEntity.getComponent(OvercookingComponent.class).processed) {
+                System.out.println("Overcooked food");
+                continue;
+            }
             ingredients.add(Mappers.food.get(foodEntity).type);
 
             i++;
         }
+        FoodType recipe;
+        recipe = Station.serveRecipes.get(ingredients);
+        if (recipe == null) {// Used for non servable food such as raw pizza
+            recipe = Station.combineRecipes.get(ingredients);
+        }
 
-        return Station.serveRecipes.get(ingredients);
+        return recipe;
     }
 
     /**
@@ -256,10 +355,20 @@ public class StationSystem extends IteratingSystem {
 
     /**
      * Pick up ready food from a station
+     * Made public for use in testing
      */
-    private void stationPickup(StationComponent station, ControllableComponent controllable) {
+    public void stationPickup(StationComponent station, ControllableComponent controllable) {
+        // For each food item stored in a station:...
         for (Entity foodEntity : station.food) {
+
+            // Check first the food is actual food (ie not null) and that it is ready (ie no
+            // longer
+            // cooking, so no longer has the cooking component).
             if (foodEntity != null && !Mappers.cooking.has(foodEntity)) {
+
+                // "Push" the food into the player's inventory, if this succeeds (ie the
+                // player's
+                // inventory is not full), then remove the food from the station.
                 if (controllable.currentFood.pushItem(foodEntity, station.interactingCook)) {
                     station.food.set(station.food.indexOf(foodEntity), null);
                     Mappers.transform.get(foodEntity).scale.set(1, 1);
@@ -273,46 +382,82 @@ public class StationSystem extends IteratingSystem {
     /**
      * Cook the food in the station. This progresses the timer in the food being
      * cooked in the station.
+     * Made public for use in testing
      * 
      * @param station
      * @param deltaTime
      */
-    private void stationTick(StationComponent station, float deltaTime) {
+    public void stationTick(StationComponent station, float deltaTime) {
         if (station.type == StationType.cutting_board && station.interactingCook == null) {
+            return;
+        }
+
+        // Counters do not have any tick logic, implemented as part of FR_COUNTER
+        if (station.type == StationType.counter || station.type == StationType.counterBack) {
             return;
         }
 
         for (Entity foodEntity : station.food) {
 
-            if (foodEntity == null || !Mappers.cooking.has(foodEntity)) {
+            // Cooking requirement removed as overcooking component can now be present
+            // instead
+            if (foodEntity == null) {
                 continue;
             }
 
-            CookingComponent cooking = Mappers.cooking.get(foodEntity);
+            if (Mappers.cooking.has(foodEntity)) {
+                CookingComponent cooking = Mappers.cooking.get(foodEntity);
 
-            boolean ready = cooking.timer.tick(deltaTime);
+                boolean ready = cooking.timer.tick(deltaTime);
 
-            if (ready && cooking.processed) {
-                cooking.timer.stop();
-                cooking.timer.reset();
+                cooking.debugPrintableTimer += deltaTime;
 
-                FoodComponent food = Mappers.food.get(foodEntity);
-                // Process the food into it's next form
-                food.type = Station.recipeMap.get(station.type).get(food.type);
-                Mappers.texture.get(foodEntity).region = EntityFactory.getFoodTexture(food.type);
-                foodEntity.remove(CookingComponent.class);
-                Gdx.app.log("Food ready", food.type.name());
-            } else if (ready) {
+                if (ready && cooking.processed) {
+                    cooking.timer.stop();
+                    cooking.timer.reset();
+                    cooking.debugPrintableTimer = 0;
+                    FoodComponent food = Mappers.food.get(foodEntity);
+                    // Process the food into it's next form
+                    food.type = Station.recipeMap.get(station.type).get(food.type);
+                    Mappers.texture.get(foodEntity).region = EntityFactory.getFoodTexture(food.type);
+                    foodEntity.remove(CookingComponent.class);
+                    Gdx.app.log("Food ready", food.type.name());
+                    OvercookingComponent overcooking = getEngine().createComponent(OvercookingComponent.class);
+                    overcooking.timer.start();
+                    foodEntity.add(overcooking);
+                } else if (ready) { // Handles flashing food every 0.5 seconds
 
-                if (tickAccumulator > 0.5f) {
+                    if (tickAccumulator > 0.5f) {
 
-                    if (!Mappers.tint.has(foodEntity)) {
-                        foodEntity.add(readyTint);
-                    } else {
-                        foodEntity.remove(TintComponent.class);
+                        if (!Mappers.tint.has(foodEntity)) {
+                            foodEntity.add(readyTint);
+                        } else {
+                            foodEntity.remove(TintComponent.class);
+                        }
                     }
-                }
 
+                }
+                if ((tickAccumulator > 0.5f && cooking.debugPrintableTimer > 0.5f) && !cooking.processed)
+                    System.out.println(cooking.debugPrintableTimer);// TEMP
+            } else if (Mappers.overcooking.has(foodEntity)) {
+                // Main implementation of FR_PREP_FAIL
+                OvercookingComponent overcooking = Mappers.overcooking.get(foodEntity);
+                // Handle overcooking food
+                boolean ready = overcooking.timer.tick(deltaTime);
+
+                if (ready) {
+                    overcooking.timer.stop();
+                    overcooking.timer.reset();
+                    FoodComponent food = Mappers.food.get(foodEntity);
+                    // Process the food into it's next form
+                    // food.type = Station.recipeMap.get(station.type).get(food.type);
+                    // TODO: This stuff
+                    // Mappers.texture.get(foodEntity).region =
+                    // EntityFactory.getFoodTexture(food.type);
+                    overcooking.processed = true;
+                    foodEntity.add(overcookedTint);
+                    Gdx.app.log("Food overdone", food.type.name());
+                }
             }
 
         }
@@ -323,6 +468,10 @@ public class StationSystem extends IteratingSystem {
         super.addedToEngine(engine);
         readyTint = getEngine().createComponent(TintComponent.class);
         readyTint.tint = Color.ORANGE;
+        // Visual tint for overcooked food (FR_PREP_FAIL)
+        overcookedTint = getEngine().createComponent(TintComponent.class);
+        overcookedTint.tint = Color.GREEN;
+
     }
 
 }

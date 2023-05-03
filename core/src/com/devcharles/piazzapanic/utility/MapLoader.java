@@ -1,5 +1,7 @@
 package com.devcharles.piazzapanic.utility;
 
+import java.beans.VetoableChangeSupport;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,9 +21,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.devcharles.piazzapanic.components.LockedComponent;
 import com.devcharles.piazzapanic.components.PlayerComponent;
+import com.devcharles.piazzapanic.components.StationComponent;
 import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
 import com.devcharles.piazzapanic.utility.Station.StationType;
+import com.devcharles.piazzapanic.utility.Station.itemDisplayDir;
 import com.devcharles.piazzapanic.utility.box2d.Box2dLocation;
 import com.devcharles.piazzapanic.utility.box2d.LightBuilder;
 import com.devcharles.piazzapanic.utility.box2d.MapBodyBuilder;
@@ -58,7 +63,15 @@ public class MapLoader {
     static final String stationIdProperty = "stationID";
     static final String ingredientTypeProperty = "ingredientType";
 
+    // Primarily used for testing purposes
     private Map<Integer, Box2dLocation> aiObjectives;
+
+    public ArrayList<Vector2> cookSpawns;
+
+    // Required for FR_INVESTMENT, handles locking of stations on first load
+    boolean lockedCookMade = false;
+    boolean lockedCutMade = false;
+    boolean lockedGrillMade = false;
 
     /**
      * Load the {@link TiledMap} from a {@code .tmx} file.
@@ -77,7 +90,7 @@ public class MapLoader {
         } else {
             map = new TmxMapLoader().load("v2/map.tmx");
         }
-
+        this.cookSpawns = new ArrayList<Vector2>();
         this.factory = factory;
     }
 
@@ -136,19 +149,22 @@ public class MapLoader {
                     int cookID = (int) properties.get(cookSpawnPoint);
                     Gdx.app.log("map parsing", String.format("Cook spawn point at x:%.2f y:%.2f", pos.x, pos.y));
                     Entity cook = factory.createCook((int) pos.x, (int) pos.y);
+                    cookSpawns.add(new Vector2(pos.x, pos.y));
                     if (cookID == 0) {
                         cook.add(new PlayerComponent());
                     }
 
                 } else if (properties.containsKey(aiSpawnPoint)) {
                     Gdx.app.log("map parsing", String.format("Ai spawn point at x:%.2f y:%.2f", pos.x, pos.y));
-                    aiObjectives.put(-2, new Box2dLocation(pos, 0));
+                    // Modified to add 2 additional spawn points to facilitate FR_CUSTOMER_FLOW
+                    // customer groups
+                    aiObjectives.put(-2 - (int) properties.get(aiSpawnPoint), new Box2dLocation(pos, 0));
                 } else if (properties.containsKey(aiObjective)) {
                     int objective = (int) properties.get(aiObjective);
                     aiObjectives.put(objective, new Box2dLocation(new Vector2(pos.x, pos.y), (float) (1.5f * Math.PI)));
                     Gdx.app.log("map parsing",
                             String.format("Ai objective %d at x:%.2f y:%.2f", objective, pos.x, pos.y));
-                } else if (properties.containsKey(powerupSpawner)) {
+                } else if (properties.containsKey(powerupSpawner)) { // Powerup spawners from FR_POWERUPS
                     factory.createPowerupSpawner(pos);
                     Gdx.app.log("map parsing",
                             String.format("Powerup spawner at x:%.2f y:%.2f", pos.x, pos.y));
@@ -169,7 +185,7 @@ public class MapLoader {
 
     /**
      * Create station entities from map metadata. Metadata is given to the tile in
-     * Edit Tileset -> Tile Properties.
+     * Edit Tileset, Tile Properties.
      * 
      * @param engine Ashley {@link Engine} instance.
      * @param world  The Box2D world instance to add sensor bodies to.
@@ -177,31 +193,79 @@ public class MapLoader {
     public void buildStations(Engine engine, World world) {
         TiledMapTileLayer stations = (TiledMapTileLayer) (map.getLayers().get(stationLayer));
         TiledMapTileLayer stations_f = (TiledMapTileLayer) (map.getLayers().get(stationLayer + "_f"));
-
-        int columns = stations.getWidth();
-        int rows = stations.getHeight();
+        // Additional map layers counted to implement FR_COUNTER
+        TiledMapTileLayer counters = (TiledMapTileLayer) (map.getLayers().get(counterTopLayer));
+        TiledMapTileLayer counters_f = (TiledMapTileLayer) (map.getLayers().get(counterTopLayer + "_f"));
+        int columns = Math.max(stations.getWidth(), counters.getWidth());
+        int rows = Math.max(stations.getHeight(), counters.getHeight());
 
         Cell currentCell;
 
         for (int i = 0; i < columns; i++) {
             for (int j = 0; j < rows; j++) {
-                currentCell = stations.getCell(i, j) != null ? stations.getCell(i, j) : stations_f.getCell(i, j);
+                // Multilayer search now handles all four layers instead of the two origianlly
+                // done through an inline if statement
+                currentCell = stations.getCell(i, j);
+                if (currentCell == null) {
+                    currentCell = stations_f.getCell(i, j);
+                }
+                if (currentCell == null) {
+                    currentCell = counters.getCell(i, j);
+                }
+                if (currentCell == null) {
+                    currentCell = counters_f.getCell(i, j);
+                }
                 if (currentCell != null) {
                     Object object = currentCell.getTile().getProperties().get(stationIdProperty);
                     if (object != null && object instanceof Integer) {
                         StationType stationType = StationType.from((int) object);
 
                         FoodType ingredientType = null;
-
                         if (stationType == StationType.ingredient) {
                             ingredientType = FoodType
                                     .from((Integer) currentCell.getTile().getProperties().get(ingredientTypeProperty));
                         }
-
-                        factory.createStation(stationType, new Vector2((i * 2) + 1, (j * 2) + 1), ingredientType);
+                        System.out.println("Creating station at " + i + ", " + j + " of type " + stationType);
+                        Boolean locked = false;
+                        switch (stationType) { // Apply locking of stations to implement FR_INVESTMENT
+                            case cutting_board:
+                                if (lockedCutMade)
+                                    break;
+                                lockedCutMade = true;
+                                locked = true;
+                                break;
+                            case grill:
+                                if (lockedGrillMade)
+                                    break;
+                                lockedGrillMade = true;
+                                locked = true;
+                                break;
+                            case oven:
+                                if (lockedCookMade)
+                                    break;
+                                lockedCookMade = true;
+                                locked = true;
+                                break;
+                            default:
+                                break;
+                        }
+                        Entity station = factory.createStation(stationType, new Vector2((i * 2) + 1, (j * 2) + 1),
+                                ingredientType, locked);
+                        if (locked)
+                            LockedComponent.lockedStations.add(station);
+                        if (stationType == StationType.counter) {
+                            itemDisplayDir direction = itemDisplayDir.valueOf(
+                                    (String) currentCell.getTile().getProperties().get("inventoryDirection"));
+                            station.getComponent(StationComponent.class).direction = direction;
+                        }
                     }
                 }
             }
         }
+    }
+
+    // Mostly used for testing purposes
+    public ArrayList<Vector2> GetCookSpawns() {
+        return cookSpawns;
     }
 }

@@ -14,11 +14,19 @@ import com.devcharles.piazzapanic.components.FoodComponent.FoodType;
 public class Station {
 
     public StationType type;
-
+    // Itemdisplaydirections used for FR_COUNTER
+    public itemDisplayDir direction;
     public static HashMap<FoodType, FoodType> grillRecipes = new HashMap<FoodType, FoodType>() {
         {
             put(FoodType.formedPatty, FoodType.grilledPatty);
             put(FoodType.buns, FoodType.toastedBuns);
+        }
+    };
+
+    public static HashMap<FoodType, FoodType> ovenRecipes = new HashMap<FoodType, FoodType>() {
+        {
+            put(FoodType.rawPizza, FoodType.pizza);
+            put(FoodType.potato, FoodType.bakedPotatoPlain);
         }
     };
 
@@ -28,6 +36,20 @@ public class Station {
             put(FoodType.lettuce, FoodType.slicedLettuce);
             put(FoodType.unformedPatty, FoodType.formedPatty);
             put(FoodType.onion, FoodType.slicedOnion);
+            put(FoodType.dough, FoodType.pizzaBase);
+            put(FoodType.slicedTomato, FoodType.tomatoSauce);
+            put(FoodType.cheese, FoodType.slicedCheese);
+        }
+    };
+    public static HashMap<Set<FoodType>, FoodType> combineRecipes = new HashMap<Set<FoodType>, FoodType>() {
+        {
+            put(new HashSet<FoodType>() {
+                {
+                    add(FoodType.pizzaBase);
+                    add(FoodType.tomatoSauce);
+                    add(FoodType.slicedCheese);
+                }
+            }, FoodType.rawPizza);
         }
     };
 
@@ -46,17 +68,42 @@ public class Station {
                     add(FoodType.slicedTomato);
                 }
             }, FoodType.salad);
+            put(new HashSet<FoodType>() {
+                {
+                    add(FoodType.pizza);
+                }
+            }, FoodType.pizza);
+            put(new HashSet<FoodType>() {
+                {
+                    add(FoodType.bakedPotatoPlain);
+                    add(FoodType.butter);
+                }
+            }, FoodType.bakedPotato);
         }
     };
     /**
-     * Maps the stationType to recipes available to that station. This avoids excessive branching.
+     * Maps the stationType to recipes available to that station. This avoids
+     * excessive branching.
      */
     public static Map<StationType, HashMap<FoodType, FoodType>> recipeMap = new HashMap<StationType, HashMap<FoodType, FoodType>>() {
         {
             put(StationType.grill, grillRecipes);
             put(StationType.cutting_board, cuttingBoardRecipes);
+            put(StationType.oven, ovenRecipes);
         }
     };
+
+    /**
+     * Named enumeration of the item display directions.
+     * represents the starting positions and offsets of items displayed (FR_COUNTER)
+     */
+    public enum itemDisplayDir {
+        top,
+        bottom,
+        leftDown,
+        rightDown;
+
+    }
 
     /**
      * Named enumeration of the station types.
@@ -69,7 +116,10 @@ public class Station {
         sink(4),
         bin(5),
         ingredient(6),
-        serve(7);
+        serve(7),
+        counter(8),
+        counterBack(9), // Used where food needs to be shifted down so it draws correctly
+        UnlockStation(10);
 
         private int value;
 

@@ -1,7 +1,6 @@
 package com.devcharles.piazzapanic;
 
 import com.badlogic.ashley.core.Entity;
-//poggers. `
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -10,10 +9,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Null;
 import com.devcharles.piazzapanic.componentsystems.StationSystem;
 import com.devcharles.piazzapanic.components.Powerups.PowerupSpawnControllerComponent;
 import com.devcharles.piazzapanic.componentsystems.CarryItemsSystem;
 import com.devcharles.piazzapanic.componentsystems.CustomerAISystem;
+import com.devcharles.piazzapanic.componentsystems.InWorldStoreSystem;
 import com.devcharles.piazzapanic.componentsystems.InventoryUpdateSystem;
 import com.devcharles.piazzapanic.componentsystems.LightingSystem;
 import com.devcharles.piazzapanic.componentsystems.PhysicsSystem;
@@ -24,6 +25,7 @@ import com.devcharles.piazzapanic.componentsystems.RenderingSystem;
 import com.devcharles.piazzapanic.input.KeyboardInput;
 import com.devcharles.piazzapanic.utility.EntityFactory;
 import com.devcharles.piazzapanic.utility.MapLoader;
+import com.devcharles.piazzapanic.utility.SaveHandler;
 import com.devcharles.piazzapanic.utility.box2d.WorldContactListener;
 import com.devcharles.piazzapanic.scene2d.Hud;
 import box2dLight.RayHandler;
@@ -34,7 +36,7 @@ public class GameScreen implements Screen {
 
     private KeyboardInput kbInput;
 
-    private World world;
+    public static World world; // :)
 
     private OrthographicCamera camera;
 
@@ -49,6 +51,10 @@ public class GameScreen implements Screen {
     private MapLoader mapLoader;
 
     private Integer[] reputationPoints = { 3 };
+
+    private Integer[] money = { 0 };
+
+    public static String loadFrom = null; // File name to load level data from.
 
     public GameScreen(PiazzaPanic game) {
         this.game = game;
@@ -68,29 +74,33 @@ public class GameScreen implements Screen {
         EntityFactory factory = new EntityFactory(engine, world);
         EntityFactory.cutFood(null);
 
-        hud = new Hud(game.batch, this, game, reputationPoints);
-
         mapLoader = new MapLoader(null, null, factory);
         mapLoader.buildCollisions(world);
         mapLoader.buildFromObjects(engine, rayhandler);
         mapLoader.buildStations(engine, world);
+
+        // Creating new system for handling store as per requirement FR_INVESTMENT
+        // largely as a result of the lack of statics
+        InWorldStoreSystem inWorldStoreSystem = new InWorldStoreSystem(engine, factory, world, mapLoader);
+        hud = new Hud(game.batch, this, game, engine, reputationPoints, money, inWorldStoreSystem);
 
         engine.addSystem(new PhysicsSystem(world));
         engine.addSystem(new RenderingSystem(mapLoader.map, game.batch, camera));
         engine.addSystem(new LightingSystem(rayhandler, camera));
         // This can be commented in during debugging.
         // engine.addSystem(new DebugRendererSystem(world, camera));
-        engine.addSystem(new PlayerControlSystem(kbInput));
+        engine.addSystem(new PlayerControlSystem(kbInput, engine));
         engine.addSystem(new StationSystem(kbInput, factory));
         engine.addSystem(new CustomerAISystem(mapLoader.getObjectives(), world, factory, hud, reputationPoints));
         engine.addSystem(new CarryItemsSystem());
         engine.addSystem(new InventoryUpdateSystem(hud));
 
+        // Implementation of powerup system as per requirement FR_POWERUPS
         Entity powerupController = engine.createEntity();
         powerupController.add(engine.createComponent(PowerupSpawnControllerComponent.class));
         engine.addEntity(powerupController);
         engine.addSystem(new PowerupSpawnSystem(engine, factory, world));
-        engine.addSystem(new PowerupPickupSystem(engine, world));
+        engine.addSystem(new PowerupPickupSystem(engine, world, hud));
 
         world.setContactListener(new WorldContactListener());
 
@@ -98,6 +108,15 @@ public class GameScreen implements Screen {
         multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(kbInput);
         multiplexer.addProcessor(hud.stage);
+
+        // DO THE LOADING IN FROM FILE STUFF HERE.
+
+        // Handles loading of data to fulfill requirement FR_SAVE_FILES
+        // Loadfrom handled in main menu screen line 182
+        if (loadFrom != null) {
+            SaveHandler.load(loadFrom, engine, factory, world, hud);
+            loadFrom = null;
+        }
 
     }
 

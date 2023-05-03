@@ -3,6 +3,9 @@ package com.devcharles.piazzapanic.componentsystems;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
+
+import javax.swing.undo.StateEdit;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
@@ -38,24 +41,59 @@ public class CustomerAISystem extends IteratingSystem {
     private final Map<Integer, Boolean> objectiveTaken;
 
     private final World world;
-    private final GdxTimer spawnTimer = new GdxTimer(30000, false, true);
     private final EntityFactory factory;
-    private int numOfCustomerTotal = 0;
+    public int numOfCustomerTotal = 0;
+    public int numActiveCustomers = 0;
     private final Hud hud;
     private final Integer[] reputationPoints;
-    private final int CUSTOMER = 5;
-    private boolean firstSpawn = true;
+    private static int maxCustomers = (int) Double.POSITIVE_INFINITY;
+    private static int difficulty; // This is just a record to be recalled when saving, this doesn't set anything.
+    private static int maxActiveCustomers = 7;
+    public boolean firstSpawn = true;
+    public static int MaxGroupSize = 3;// easy is 1(this is kind of a hack ig), hard is 3 Spawning more than 3 may
+                                       // cause funky stuff so dont
+    private int spawnedThisGroup = 0;
+    public static int SpawnTime = 30000;// easy is 30000, hard is 10000
+    public static int SpawnRampTime = 1;// Seconds for group spawn frequency to ramp up, should be 300
+    private final GdxTimer spawnTimer = new GdxTimer(SpawnTime, false, true);
 
-    // List of customers, on removal we move the other customers up a place (queueing).
-    private final ArrayList<Entity> customers = new ArrayList<Entity>() {
+    // https://stackoverflow.com/questions/33997169/when-to-use-anonymous-classes
+    // https://www.baeldung.com/java-anonymous-classes
+    // Anonymous classes are weird, I've added a whole bunch more comments,
+    // hopefully it's more clear now. - Joss
+    // `customers` is an anonymous class, based of ArrayList<Entity> but it does
+    // fancy stuff when
+    // .remove() is called.
+
+    // List of customers, on removal we move the other customers up a place
+    // (queueing).
+    public final ArrayList<Entity> customers = new ArrayList<Entity>() {
+        // Just list of customers apart from it does extra things when you remove a
+        // customer off the list. - Joss
         @Override
         public boolean remove(Object o) {
+            // For every customer other than "this" one, get it's AI agent controller and
+            // tell it
+            // to shuffle up the queue.
             for (Entity entity : customers) {
                 if (entity != o) {
+                    // Get the AIAgentComponent of each customer in the queue (apart from the one
+                    // getting removed).
                     AIAgentComponent aiAgent = Mappers.aiAgent.get(entity);
 
+                    // If the customer is not at the front of the queue...
                     if (aiAgent.currentObjective - 1 >= 0) {
+
+                        // ... and that space in the queue is not taken (objectiveTaken is a map of
+                        // queue indeces to booleans noting whether there is something in that queue
+                        // index)
+                        System.out.println("Objective taken: " + objectiveTaken.get(aiAgent.currentObjective - 1));
+                        if (!objectiveTaken.containsKey(aiAgent.currentObjective - 1)) {
+                            System.out.println("Objective does not exist");
+                            continue;// This is a hack, I don't know why it's happening but it's happening
+                        }
                         if (!objectiveTaken.get(aiAgent.currentObjective - 1)) {
+                            // ... then move the customer up the queue.
                             makeItGoThere(aiAgent, aiAgent.currentObjective - 1);
                         }
                     }
@@ -66,13 +104,42 @@ public class CustomerAISystem extends IteratingSystem {
         }
     };
 
+    public static void setDifficulty(int i) {
+        difficulty = i; // Just remember this for saving.
+
+        if (i == 0) {
+            MaxGroupSize = 1;
+            SpawnTime = 30000;
+            SpawnRampTime = 300;
+        } else if (i == 1) {
+            MaxGroupSize = 2;
+            SpawnTime = 20000;
+            SpawnRampTime = 200;
+        } else if (i == 2) {
+            MaxGroupSize = 3;
+            SpawnTime = 10000;
+            SpawnRampTime = 100;
+        }
+    }
+
+    public static int getDifficulty() {
+        return difficulty;
+    }
+
+    public void forceTick(Entity entity, Float deltaTime) {
+        tickCustomerTimer(entity, entity.getComponent(CustomerComponent.class), deltaTime);
+    }
+
     /**
      * Instantiate the system.
-     * @param objectives Map of objectives available
-     * @param world Box2D {@link World} for AI and disposing of customer entities.
-     * @param factory {@link EntityFactory} for creating new customers
-     * @param hud {@link HUD} for updating orders, reputation
-     * @param reputationPoints array-wrapped integer reputation passed by-reference See {@link Hud}
+     * 
+     * @param objectives       Map of objectives available
+     * @param world            Box2D {@link World} for AI and disposing of customer
+     *                         entities.
+     * @param factory          {@link EntityFactory} for creating new customers
+     * @param hud              Hud for updating orders, reputation
+     * @param reputationPoints array-wrapped integer reputation passed by-reference
+     * 
      */
     public CustomerAISystem(Map<Integer, Box2dLocation> objectives, World world, EntityFactory factory, Hud hud,
             Integer[] reputationPoints) {
@@ -93,12 +160,9 @@ public class CustomerAISystem extends IteratingSystem {
 
     @Override
     public void update(float deltaTime) {
-        if (firstSpawn || (spawnTimer.tick(deltaTime) && numOfCustomerTotal < CUSTOMER)) {
+        if (firstSpawn || (spawnTimer.tick(deltaTime))) {
             firstSpawn = false;
-            Entity newCustomer = factory.createCustomer(objectives.get(-2).getPosition());
-            customers.add(newCustomer);
-            numOfCustomerTotal++;
-            Mappers.customer.get(newCustomer).timer.start();
+            SpawnCustomerGroup();
         }
 
         FoodType[] orders = new FoodType[customers.size()];
@@ -108,7 +172,7 @@ public class CustomerAISystem extends IteratingSystem {
             i++;
         }
 
-        if (!hud.won && customers.size() == 0 && numOfCustomerTotal == CUSTOMER) {
+        if (!hud.won && customers.size() == 0 && numOfCustomerTotal == maxCustomers) {
             hud.triggerWin = true;
         }
 
@@ -123,11 +187,17 @@ public class CustomerAISystem extends IteratingSystem {
         CustomerComponent customer = Mappers.customer.get(entity);
         TransformComponent transform = Mappers.transform.get(entity);
 
+        // Once the customer has got their food (setting customer.food to a non-null
+        // value), they
+        // wander off to the right. This code destroys the customer once they have gone
+        // far enough.
         if (customer.food != null && transform.position.x >= (objectives.get(-1).getPosition().x - 2)) {
             destroyCustomer(entity);
             return;
         }
 
+        // Set the customer's location ID to be that of their position in the queue
+        // (customers.size() is the number of customers.)
         if (aiAgent.steeringBody.getSteeringBehavior() == null) {
             makeItGoThere(aiAgent, customers.size() - 1);
         }
@@ -135,22 +205,17 @@ public class CustomerAISystem extends IteratingSystem {
         aiAgent.steeringBody.update(deltaTime);
 
         // lower reputation points if they have waited longer than time alloted (1 min)
-        if (customer.timer.tick(deltaTime)) {
-            if (reputationPoints[0] > 0) {
-                reputationPoints[0]--;
-            }
-            customer.timer.stop();
-        }
+        tickCustomerTimer(entity, customer, deltaTime);
 
         if (customer.interactingCook != null) {
             PlayerComponent player = Mappers.player.get(customer.interactingCook);
 
-            // In order, check if the player is touching and pressing
-            // the correct key to interact with the customer.
-            if (player == null || !player.putDown) {
+            // If there is both a player, and they are pressing the giveToCustomer key, then
+            // continue below...
+            if (player == null || !player.giveToCustomer) {
                 return;
             }
-            player.putDown = false;
+            player.giveToCustomer = false;
 
             ControllableComponent cook = Mappers.controllable.get(customer.interactingCook);
 
@@ -158,17 +223,62 @@ public class CustomerAISystem extends IteratingSystem {
                 return;
             }
 
-            Entity food = cook.currentFood.pop();
+            Entity food = cook.currentFood.getLast();
 
             if (Mappers.food.get(food).type == customer.order) {
                 // Fulfill order
                 Gdx.app.log("Order success", customer.order.name());
-                fulfillOrder(entity, customer, food);
+                fulfillOrder(entity, customer, cook.currentFood.pop());
 
-            } else {
-                getEngine().removeEntity(food);
             }
 
+        }
+    }
+
+    void SpawnCustomerGroup() {
+        if (numActiveCustomers < maxActiveCustomers
+                && numOfCustomerTotal < maxCustomers) {
+            if (ShouldSpawnGroup()) {
+                int numToSpawn = ThreadLocalRandom.current().nextInt(1,
+                        Math.min(Math.min(maxActiveCustomers - numActiveCustomers, maxCustomers - numOfCustomerTotal),
+                                MaxGroupSize) + 1);// Not a huge fan of chaining min but what can you do
+                for (int i = 0; i < numToSpawn; i++) {
+                    SpawnCustomer();
+                    spawnedThisGroup++;
+                }
+                spawnedThisGroup = 0;
+                return;
+            }
+            SpawnCustomer();
+        }
+    }
+
+    boolean ShouldSpawnGroup() {
+        // Random chance scaling with difficulty and time
+        if (maxActiveCustomers - numActiveCustomers < 2 || maxCustomers - numOfCustomerTotal < 2)
+            return false;
+        Float chance = (float) (hud.customerTimer / SpawnRampTime); // yes this scales over 1, lol, lmao even
+        if (chance > 0.8) {
+            chance = 0.8f;
+        }
+        return ThreadLocalRandom.current().nextFloat() < chance;
+    }
+
+    void SpawnCustomer() {
+        Entity newCustomer = factory.createCustomer(objectives.get(-2 - spawnedThisGroup).getPosition());
+        customers.add(newCustomer);
+        numOfCustomerTotal++;
+        numActiveCustomers++;
+        Mappers.customer.get(newCustomer).timer.start();
+        makeItGoThere(newCustomer.getComponent(AIAgentComponent.class), customers.size() - 1);
+    }
+
+    void tickCustomerTimer(Entity entity, CustomerComponent customer, float deltaTime) {
+        if (customer.timer.tick(deltaTime)) {
+            if (reputationPoints[0] > 0) {
+                reputationPoints[0]--;
+            }
+            customer.timer.stop();
         }
     }
 
@@ -183,11 +293,14 @@ public class CustomerAISystem extends IteratingSystem {
 
     /**
      * Give the customer an objetive to go to.
+     * 
      * @param locationID and id from {@link CustomerAISystem.objectives}
      */
-    private void makeItGoThere(AIAgentComponent aiAgent, int locationID) {
+    public void makeItGoThere(AIAgentComponent aiAgent, int locationID) {
         objectiveTaken.put(aiAgent.currentObjective, false);
 
+        if (objectives == null)
+            return;// Hack for testing
         Box2dLocation there = objectives.get(locationID);
 
         Arrive<Vector2> arrive = new Arrive<Vector2>(aiAgent.steeringBody)
@@ -217,6 +330,9 @@ public class CustomerAISystem extends IteratingSystem {
 
     /**
      * Give customer food, send them away and remove the order from the list
+     * 
+     * @param entity   The actual customer that walks about.
+     * @param customer The component properties of the customer.
      */
     private void fulfillOrder(Entity entity, CustomerComponent customer, Entity foodEntity) {
 
@@ -234,10 +350,65 @@ public class CustomerAISystem extends IteratingSystem {
         AIAgentComponent aiAgent = Mappers.aiAgent.get(entity);
         makeItGoThere(aiAgent, -1);
 
+        hud.addMoney(5);
+        // Hud.money[0] += 5;
+
+        numActiveCustomers--;
+
         customer.timer.stop();
         customer.timer.reset();
 
         customers.remove(entity);
+    }
+
+    /**
+     * Fulfill the order as above, but determine the food type from the customer's
+     * order.
+     * 
+     * @param entity The actual customer that walks about.
+     */
+    public void autoFulfillOrder(Entity entity) {
+        CustomerComponent customer = entity.getComponent(CustomerComponent.class);
+        Gdx.app.log("Order automatically resolved", customer.order.name());
+        // This is created automatically rather than taking a food entity from the
+        // parameters of
+        // the method.
+        Entity foodEntity = factory.createFood(customer.order);
+
+        Engine engine = getEngine();
+
+        customer.order = null;
+
+        ItemComponent heldItem = engine.createComponent(ItemComponent.class);
+        heldItem.holderTransform = Mappers.transform.get(entity);
+
+        foodEntity.add(heldItem);
+
+        customer.food = foodEntity;
+
+        AIAgentComponent aiAgent = Mappers.aiAgent.get(entity);
+        makeItGoThere(aiAgent, -1);
+
+        hud.addMoney(5);
+        // Hud.money[0] += 5;
+
+        numActiveCustomers--;
+
+        customer.timer.stop();
+        customer.timer.reset();
+
+        customers.remove(entity);
+    }
+
+    public static void setMaxCustomers(int Customers) {
+        System.out.println("customer max changed from " + CustomerAISystem.maxCustomers + "to " + Customers);
+        // since we use instanced systems this should be static
+        // but also: Thats alot of effort and we dont have time
+        maxCustomers = Customers;
+    }
+
+    public static int getMaxCustomers() {
+        return maxCustomers;
     }
 
 }

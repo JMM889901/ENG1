@@ -5,8 +5,9 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.devcharles.piazzapanic.utility.EntityFactory;
 
-/*
- * {@link componentsystems.PowerupSpawnSystem}
+/**
+ * Given to entities that spawn powerups.
+ * Used in implementation of FR_POWERUPS
  */
 public class PowerupSpawnerComponent implements Component {
     public Vector2 pos;

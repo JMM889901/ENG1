@@ -22,6 +22,7 @@ import com.devcharles.piazzapanic.components.B2dBodyComponent;
 import com.devcharles.piazzapanic.components.ControllableComponent;
 import com.devcharles.piazzapanic.components.CustomerComponent;
 import com.devcharles.piazzapanic.components.FoodComponent;
+import com.devcharles.piazzapanic.components.LockedComponent;
 import com.devcharles.piazzapanic.components.TextureComponent;
 import com.devcharles.piazzapanic.components.TransformComponent;
 import com.devcharles.piazzapanic.components.WalkingAnimationComponent;
@@ -52,6 +53,11 @@ public class EntityFactory {
         this.world = world;
 
         createDefinitions();
+    }
+
+    public EntityFactory(PooledEngine engine) {// Test factory
+        this.engine = engine;
+        this.world = null;
     }
 
     private static final Map<FoodType, TextureRegion> foodTextures = new HashMap<FoodType, TextureRegion>();
@@ -88,6 +94,8 @@ public class EntityFactory {
     /**
      * Creates cook entity, and adds it to the engine.
      * 
+     * @param x X position of the chef (in weird tile units).
+     * @param y Y position of the chef (in weird tile units).
      * @return Reference to the entity.
      */
     public Entity createCook(int x, int y) {
@@ -200,7 +208,7 @@ public class EntityFactory {
      * @param ingredientType (optional) if this is an Ingredient station, which
      *                       ingredient should it spawn.
      */
-    public Entity createStation(Station.StationType type, Vector2 position, FoodType ingredientType) {
+    public Entity createStation(Station.StationType type, Vector2 position, FoodType ingredientType, boolean locked) {
         Entity entity = engine.createEntity();
 
         float[] size = { 1f, 1f };
@@ -212,6 +220,7 @@ public class EntityFactory {
         TransformComponent transform = engine.createComponent(TransformComponent.class);
 
         StationComponent station = engine.createComponent(StationComponent.class);
+
         station.type = type;
 
         if (type == Station.StationType.ingredient) {
@@ -244,7 +253,12 @@ public class EntityFactory {
         entity.add(transform);
         entity.add(texture);
         entity.add(station);
-
+        if (locked) {
+            LockedComponent lockedComponent = engine.createComponent(LockedComponent.class);
+            entity.add(lockedComponent);
+            texture.region = new TextureRegion(new Texture("padded-lock.jpg.exe.zip.rar.wav.ogg.gif.7z.stl.docx.png"));
+            texture.scale.set(0.05f, 0.05f);
+        }
         engine.addEntity(entity);
 
         return entity;
@@ -276,7 +290,7 @@ public class EntityFactory {
             }
         }
 
-        for (int i = 1; i < 14; i++) {
+        for (int i = 1; i < 26; i++) {
             foodTextures.put(FoodType.from(i), frames[i]);
         }
     }
@@ -349,6 +363,14 @@ public class EntityFactory {
         return entity;
     }
 
+    /**
+     * This gets run run by the component system. Given a location, this code
+     * chooses a powerup and places it.
+     * In world/gameplay implementation of FR_POWERUPS 
+     *
+     * @param position Where the powerup will be placed.
+     * @return The powerup (stored as an entity with various relevant components).
+     */
     public Entity createPowerup(Vector2 position) {
         Entity entity = engine.createEntity();
 
@@ -360,13 +382,29 @@ public class EntityFactory {
 
         PowerupComponent boost = engine.createComponent(PowerupComponent.class);
 
-        int type = ThreadLocalRandom.current().nextInt(0, 2);
-        switch (type) {
+        String boostIconPath = "boosts/boostError.png"; // Initiaise it to display an error if something goes wrong.
+
+        int newPowerupType = ThreadLocalRandom.current().nextInt(0, 5);
+        switch (newPowerupType) {
             case 0:
                 boost.type = powerupType.speedBoost;
+                boostIconPath = "boosts/boostSpeed.png";
                 break;
             case 1:
                 boost.type = powerupType.cookBoost;
+                boostIconPath = "boosts/boostCook.png";
+                break;
+            case 2:
+                boost.type = powerupType.cutBoost;
+                boostIconPath = "boosts/boostCut.png";
+                break;
+            case 3:
+                boost.type = powerupType.timeFreezeBoost;
+                boostIconPath = "boosts/boostTimeFreeze.png";
+                break;
+            case 4:
+                boost.type = powerupType.orderBoost;
+                boostIconPath = "boosts/boostOrder.png";
                 break;
         }
         boost.markedForDeletion = false;
@@ -378,21 +416,23 @@ public class EntityFactory {
         b2dBody.body = world.createBody(movingBodyDef);
         b2dBody.body.createFixture(movingFixtureDef).setUserData(entity);
 
-        texture.region = new TextureRegion(new Texture("droplet.png"));
+        texture.region = new TextureRegion(new Texture(boostIconPath));
         texture.scale.set(0.02f, 0.02f);
 
         transform.isHidden = false;
 
-        entity.add(b2dBody);
-        entity.add(transform);
-        entity.add(texture);
+        entity.add(b2dBody); // Attach a physics body to the entity.
+        entity.add(transform); // Attach location data to the entity.
+        entity.add(texture); // Give the powerup the relevant texture.
         // entity.add(an);
-        engine.addEntity(entity);
+        engine.addEntity(entity); // Let the engine know about this powerup.
         Gdx.app.log("PowerupSystem",
                 String.format("Powerup " + boost.type + " spawned at x:%.2f y:%.2f", position.x, position.y));
         return entity;
     }
-
+    /**
+    * Used to define a location that can be used to spawn powerups, required for FR_POWERUPS
+    */
     public Entity createPowerupSpawner(Vector2 position) {
         Entity entity = engine.createEntity();
 

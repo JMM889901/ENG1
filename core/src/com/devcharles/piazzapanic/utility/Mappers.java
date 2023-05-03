@@ -9,6 +9,7 @@ import com.devcharles.piazzapanic.components.CookingComponent;
 import com.devcharles.piazzapanic.components.CustomerComponent;
 import com.devcharles.piazzapanic.components.FoodComponent;
 import com.devcharles.piazzapanic.components.ItemComponent;
+import com.devcharles.piazzapanic.components.OvercookingComponent;
 import com.devcharles.piazzapanic.components.PlayerComponent;
 import com.devcharles.piazzapanic.components.StationComponent;
 import com.devcharles.piazzapanic.components.TextureComponent;
@@ -21,6 +22,8 @@ import com.devcharles.piazzapanic.components.WalkingAnimationComponent;
  * there is no reason to have multiple instaces of a {@link ComponentMapper}.
  */
 public class Mappers {
+        // I have no idea what Mappers does, they seem to be dictionary like but somehow
+        // they only refer to one type.
         public static final ComponentMapper<B2dBodyComponent> b2body = ComponentMapper.getFor(B2dBodyComponent.class);
         public static final ComponentMapper<TransformComponent> transform = ComponentMapper
                         .getFor(TransformComponent.class);
@@ -35,6 +38,8 @@ public class Mappers {
         public static final ComponentMapper<StationComponent> station = ComponentMapper.getFor(StationComponent.class);
         public static final ComponentMapper<FoodComponent> food = ComponentMapper.getFor(FoodComponent.class);
         public static final ComponentMapper<CookingComponent> cooking = ComponentMapper.getFor(CookingComponent.class);
+        public static final ComponentMapper<OvercookingComponent> overcooking = ComponentMapper
+                        .getFor(OvercookingComponent.class);
         public static final ComponentMapper<ItemComponent> item = ComponentMapper.getFor(ItemComponent.class);
         public static final ComponentMapper<TintComponent> tint = ComponentMapper.getFor(TintComponent.class);
         public static final ComponentMapper<AIAgentComponent> aiAgent = ComponentMapper.getFor(AIAgentComponent.class);
